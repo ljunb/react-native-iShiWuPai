@@ -7,7 +7,7 @@ const initialState = {
     isShow: true,
 };
 
-export default function strolling(state = initialState, action = {}) {
+let strollingReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case types.SHOW_MESSAGE:
             return {
@@ -21,3 +21,5 @@ export default function strolling(state = initialState, action = {}) {
             return state;
     }
 }
+
+export default strollingReducer;

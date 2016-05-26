@@ -6,17 +6,18 @@ import {
     StyleSheet,
     TouchableOpacity,
     Text,
+    Navigator,
 } from 'react-native';
 
 export default class Main extends React.Component {
 
     render() {
-        const { show, hide, isShow } = this.props;
-
+        const { hideAction, showAction } = this.props.actions;
+        const { isShow } = this.props.state;
         return (
             <TouchableOpacity
                 style = {styles.container}
-                onPress={isShow ? hide : show}
+                onPress={isShow ? hideAction : showAction}
             >
                 <Text>{isShow ? 'Show, Redux!' : 'Hide, Redux!'}</Text>
             </TouchableOpacity>

@@ -4,33 +4,41 @@
 import React from 'react';
 import {
     StyleSheet,
-    TouchableOpacity,
-    Text,
+    Navigator,
+    StatusBar,
+    View,
 } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as appActions from '../actions/strollingActions';
-import Main from '../pages/Main';
+
+import StatusBarIOS from '../components/StatusBarIOS';
+import TabBarView from '../containers/TabBarView';
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
 
-        const {state, actions} = this.props;
-        
         return (
-            <Main isShow = {state.isShow} {...actions}/>
+            <View style={styles.container}>
+                <StatusBarIOS barStyle="light-content"/>
+                <Navigator
+                    initialRoute={{name: 'TabBarView', component: TabBarView}}
+                    configureScene={()=>{
+                        return  Navigator.SceneConfigs.PushFromRight;
+                    }}
+                    renderScene={(route, navigator) => {
+                        let Component = route.component;
+                        return (
+                            <Component navigator = {navigator} route = {route} {...route.passProps} />
+                        )
+                    }}
+                />
+            </View>
         )
     }
 }
 
-export default connect(state => ({
-        state: state.strolling
-    }),
-    (dispatch) => ({
-        actions: bindActionCreators(appActions, dispatch)
-    })
-)(App);
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+})
+
+export default App;
