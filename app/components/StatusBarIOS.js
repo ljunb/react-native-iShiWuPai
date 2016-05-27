@@ -22,9 +22,7 @@ export default class StatusBarIOS extends React.Component {
 
 const styles = StyleSheet.create({
     statusBar: {
-        position: 'absolute',
-        right: 0,
-        left: 0,
+        flex: 1,
         height: 20,
         backgroundColor: Constants.colors.themeColor,
     }

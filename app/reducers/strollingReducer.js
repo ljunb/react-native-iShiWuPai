@@ -4,19 +4,31 @@
  */
 import * as types from '../actions/actionTypes';
 const initialState = {
-    isShow: true,
+    bannerList: [],
+    feedList: [],
+    isLoaded: false,
 };
 
-let strollingReducer = (state = initialState, action = {}) => {
+let strollingReducer = (state = initialState, action) => {
+   
     switch (action.type) {
-        case types.SHOW_MESSAGE:
+        case types.FETCH_BANNER_LIST:
             return {
-                isShow: true,
-            };
-        case types.HIDE_MESSAGE:
+                ...state,
+            }
+        case types.RECEIVE_BANNER_LIST:
+            return Object.assign({}, state, {
+                bannerList: action.bannerList,
+                isLoaded: action.isLoaded,
+            })
+        case types.FETCH_FEED_LIST:
             return {
-                isShow: false,
-            };
+                ...state,
+            }
+        case types.RECEIVE_FEED_LIST:
+            return Object.assign({}, state, {
+                feedList: action.feedList,
+            })
         default:
             return state;
     }

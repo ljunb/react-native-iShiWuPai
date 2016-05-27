@@ -8,14 +8,16 @@ import {
     Text,
     StyleSheet,
 } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import StrollingContainer from '../containers/StrollingContainer';
 import FoodsContainer from '../containers/FoodsContainer';
 import UserContainer from '../containers/UserContainer';
+import Constants from '../common/constants';
 
 const tabBarItems = [
-    {title: '逛吃', icon: 'ic_tab_homepage', selectedIcon: 'ic_tab_homepage_select', component: StrollingContainer},
-    {title: '食物百科', icon: 'ic_tab_search', selectedIcon: 'ic_tab_search_select',component: FoodsContainer},
-    {title: '我的', icon: 'ic_tab_my', selectedIcon: 'ic_tab_my_select',component: UserContainer},
+    {title: '逛吃', icon: 'shopping-basket', component: StrollingContainer},
+    {title: '食物百科', icon: 'book', component: FoodsContainer},
+    {title: '我的', icon: 'user', component: UserContainer},
 ]
 
 export default class TabBarView extends React.Component {
@@ -29,19 +31,20 @@ export default class TabBarView extends React.Component {
     }
 
     render() {
+        
         return (
-            <TabBarIOS tintColor='red'>
+            <TabBarIOS tintColor={Constants.colors.themeColor}>
                 {
                     tabBarItems.map((controller, i) => {
 
                         let Component = controller.component;
 
                         return (
-                            <TabBarIOS.Item
+                            <FontAwesome.TabBarItem
                                 key={i}
                                 title={controller.title}
-                                icon={{uri: controller.icon}}
-                                selectedIcon={{uri: controller.selectedIcon}}
+                                iconName={controller.icon}
+                                selectedIconName={controller.icon}
                                 selected={this.state.selectedTab === controller.title}
                                 onPress={() => {
                                     this.setState({
@@ -50,7 +53,7 @@ export default class TabBarView extends React.Component {
                                 }}
                             >
                                 <Component navigator = {this.props.navigator} {...this.props}/>
-                            </TabBarIOS.Item>
+                            </FontAwesome.TabBarItem>
                         )
                     })
                 }

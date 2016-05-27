@@ -7,13 +7,19 @@ import {
     View,
     Text,
 } from 'react-native';
-
+import SearchHeader from '../components/SearchHeader';
 export default class Foods extends React.Component {
 
     render() {
         return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text>食物百科</Text>
+            <View>
+                <SearchHeader
+                    searchAction={()=>alert('search')}
+                    scanAction={()=>alert('scan')}
+                />
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text>食物百科</Text>
+                </View>
             </View>
         )
     }

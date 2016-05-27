@@ -15,10 +15,9 @@ class StrollingContainer extends React.Component {
     }
 }
 
-export default connect((state) => ({
-        state: state.Strolling
-    }),
-    (dispatch) => ({
-        actions: bindActionCreators(strollingActions, dispatch)
-    })
-)(StrollingContainer);
+export default connect((state) => {
+    const { Strolling } = state;
+    return {
+        Strolling
+    }
+})(StrollingContainer);
