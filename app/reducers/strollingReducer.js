@@ -7,6 +7,8 @@ const initialState = {
     bannerList: [],
     feedList: [],
     isLoaded: false,
+    isLoadMore: false,
+    isRefreshing: false,
 };
 
 let strollingReducer = (state = initialState, action) => {
@@ -22,12 +24,14 @@ let strollingReducer = (state = initialState, action) => {
                 isLoaded: action.isLoaded,
             })
         case types.FETCH_FEED_LIST:
-            return {
-                ...state,
-            }
+            return Object.assign({}, state, {
+                isLoadMore: action.isLoadMore,
+                isRefreshing: action.isRefreshing,
+            })
         case types.RECEIVE_FEED_LIST:
             return Object.assign({}, state, {
-                feedList: action.feedList,
+                feedList: state.isLoadMore ? state.feedList.concat(action.feedList) : action.feedList,
+                isRefreshing: false,
             })
         default:
             return state;

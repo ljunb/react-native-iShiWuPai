@@ -1,9 +1,14 @@
 ## iShiWuPai
-该项目将抓取《食物派》的接口，作为自己学习Redux的切入点。
+iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食物派》。感谢[Reading](https://github.com/attentiveness/reading)的开源，目前项目编写思路是参考该项目的。
 
 ## 完成功能
-目前完成了iOS端的逛吃页面展示：
+目前只针对iOS端，完成功能：
+>* 逛吃页面展示，支持下拉刷新和上拖加载更多
+>* 资讯详情页面展示
+
+## 运行截图
 ![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/strolling.png)
+![资讯详情](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/feedDetail.png)
 
 ## 相关依赖
 ```

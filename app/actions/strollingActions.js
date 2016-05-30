@@ -34,12 +34,12 @@ let receiveBannerList = (bannerList) => {
     }
 }
 
-export let fetchFeeds = (page)=> {
+export let fetchFeeds = (page, isLoadMore, isRefreshing)=> {
     let URL = 'http://food.boohee.com/fb/v1/feeds?page=' + page + '&per=10';
 
     return dispatch => {
         // 请求轮播数据
-        dispatch(fetchFeedList());
+        dispatch(fetchFeedList(isLoadMore, isRefreshing));
 
         return Util.get(URL, (response) => {
             dispatch(receiveFeedList(response.feeds))
@@ -49,9 +49,11 @@ export let fetchFeeds = (page)=> {
     }
 }
 
-let fetchFeedList = ()=> {
+let fetchFeedList = (isLoadMore, isRefreshing)=> {
     return {
         type: types.FETCH_FEED_LIST,
+        isLoadMore: isLoadMore,
+        isRefreshing: isRefreshing,
     }
 }
 

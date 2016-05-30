@@ -9,12 +9,20 @@ import {
     Navigator,
     View,
     ListView,
+    RefreshControl,
     Image,
+    InteractionManager,
 } from 'react-native';
-import {fetchBanners, fetchFeeds} from '../actions/strollingActions'
+import Swiper from 'react-native-swiper';
+import {fetchBanners, fetchFeeds} from '../actions/strollingActions';
 import Common from '../common/constants';
 import SearchHeader from '../components/SearchHeader';
-import Swiper from 'react-native-swiper';
+import LoadMoreFooter from '../components/LoadMoreFooter';
+import FeedDetail from '../pages/FeedDetail';
+
+let page = 1;
+let canLoadMore = false;
+let isRefreshing = false;
 
 export default class Main extends React.Component {
 
@@ -38,9 +46,11 @@ export default class Main extends React.Component {
     }
 
     componentDidMount() {
-        const {dispatch} = this.props;
-        dispatch(fetchBanners());
-        dispatch(fetchFeeds(1));
+        InteractionManager.runAfterInteractions(() => {
+            const {dispatch} = this.props;
+            dispatch(fetchBanners());
+            dispatch(fetchFeeds(page, canLoadMore, isRefreshing));
+        });
     }
 
     render() {
@@ -69,8 +79,21 @@ export default class Main extends React.Component {
                 <ListView
                     dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIDs)}
                     renderRow={this._renderRow}
+                    initialListSize={1}
                     enableEmptySections={true}
+                    onScroll={this._onScroll}
+                    onEndReached={this._onEndReach.bind(this)}
+                    onEndReachedThreshold={10}
+                    renderFooter={this._renderFooter.bind(this)}
                     style={{height: Common.window.height - 64}}
+                    refreshControl={
+                        <RefreshControl
+                        refreshing={Strolling.isRefreshing}
+                        onRefresh={this._onRefresh.bind(this)}
+                        title="正在加载中……"
+                        color="#ccc"
+                        />
+                    }
                 />
             </View>
         )
@@ -84,7 +107,7 @@ export default class Main extends React.Component {
                 <Swiper
                     height={200}
                     loop={true}
-                    autoplay={bannerList.length > 1}
+                    autoplay={true}
                     dot={<View style={styles.customDot} />}
                     activeDot={<View style={styles.customActiveDot} />}
                     paginationStyle={{
@@ -115,30 +138,80 @@ export default class Main extends React.Component {
                 plainPVFontStyle.push({color: 'white'})
             }
 
+            let imageSource = data.background ? data.background : 'img_default_home_cover';
+
             return (
-                <View style={feedCellStyle}>
-                    {data.background ?
-                        <Image
-                            style={styles.feedImage}
-                            source={{uri: data.background}}
-                        >
-                            <View style={styles.plainTitleContainer}>
-                                <Text style={sourceFontStyle}>{data.source}</Text>
+                <TouchableOpacity
+                    activeOpacity={0.75}
+                    onPress={this._onPressFeedItem.bind(this, data)}
+                >
+                    <View style={feedCellStyle}>
+                        {data.background ?
+                            <Image
+                                style={styles.feedImage}
+                                source={{uri: imageSource}}
+                            >
+                                <View style={styles.plainTitleContainer}>
+                                    <Text style={sourceFontStyle}>{data.source}</Text>
+                                </View>
+                                <Text style={plainContentStyle}>{data.title}</Text>
+                                <Text style={plainPVFontStyle}>{data.tail}</Text>
+                            </Image>
+                            :
+                            <View style={styles.plainFeed}>
+                                <View style={styles.plainTitleContainer}>
+                                    <Text style={sourceFontStyle}>{data.source}</Text>
+                                </View>
+                                <Text style={plainContentStyle}>{data.title}</Text>
+                                <Text style={plainPVFontStyle}>{data.tail}</Text>
                             </View>
-                            <Text style={plainContentStyle}>{data.title}</Text>
-                            <Text style={plainPVFontStyle}>{data.tail}</Text>
-                        </Image>
-                        :
-                        <View style={styles.plainFeed}>
-                            <View style={styles.plainTitleContainer}>
-                                <Text style={sourceFontStyle}>{data.source}</Text>
-                            </View>
-                            <Text style={plainContentStyle}>{data.title}</Text>
-                            <Text style={plainPVFontStyle}>{data.tail}</Text>
-                        </View>
-                    }
-                </View>
+                        }
+                    </View>
+                </TouchableOpacity>
             )
+        }
+    }
+
+    _onPressFeedItem(feedItem) {
+        InteractionManager.runAfterInteractions(() => {
+            this.props.navigator.push({
+                name: 'FeedDetail',
+                component: FeedDetail,
+                passProps: {
+                    feed: feedItem,
+                }
+            })
+        });
+    }
+
+    _renderFooter() {
+        const {Strolling} = this.props;
+        if (Strolling.isLoadMore) {
+            return <LoadMoreFooter />
+        }
+    }
+
+    _onScroll() {
+        if (!canLoadMore) canLoadMore = true;
+    }
+
+    // 下拉刷新
+    _onRefresh() {
+        page = 1;
+        const {dispatch} = this.props;
+        canLoadMore = false;
+        isRefreshing = true;
+        dispatch(fetchFeeds(page, canLoadMore, isRefreshing));
+        dispatch(fetchBanners());
+    }
+
+    // 上拉加载
+    _onEndReach() {
+        if (canLoadMore) {
+            page++;
+            const {dispatch} = this.props;
+            dispatch(fetchFeeds(page, canLoadMore, false));
+            canLoadMore = false;
         }
     }
 }
@@ -170,17 +243,14 @@ const styles = StyleSheet.create({
     feedCell: {
         padding: 15,
         paddingBottom: 0,
+        overflow: 'hidden',
     },
 
     feedImage: {
         height: 185,
         width: Common.window.width - 15 * 2,
-        shadowColor: 'gray',
-        shadowOffset: {x: 1.5, y: 1},
-        shadowOpacity: 0.5,
-        borderRadius: 2,
         paddingLeft: 15,
-        paddingTop: 40,
+        paddingTop: 30,
     },
 
     plainFeed: {
@@ -188,8 +258,8 @@ const styles = StyleSheet.create({
         shadowColor: 'gray',
         shadowOffset: {x: 1.5, y: 1},
         shadowOpacity: 0.5,
-        borderRadius: 2,
         backgroundColor: 'white',
+        marginBottom: 3,
     },
 
     plainTitleContainer: {
@@ -208,6 +278,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         fontWeight: 'bold',
         fontSize: 15,
+        marginRight: 15,
     },
 
     plainPVFont: {
