@@ -46,6 +46,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 0.5,
     },
 
     searchInput: {

@@ -7,7 +7,6 @@ import store from './store/store';
 
 import App from './containers/app';
 
-
 export default class Root extends React.Component {
     render() {
         return (

@@ -3,8 +3,6 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as foodsActions from '../actions/foodsActions';
 import Foods from '../pages/Foods';
 
 class FoodsContainer extends React.Component {
@@ -15,10 +13,9 @@ class FoodsContainer extends React.Component {
     }
 }
 
-export default connect((state) => ({
-        state: state.Foods
-    }),
-    (dispatch) => ({
-        actions: bindActionCreators(foodsActions, dispatch)
-    })
-)(FoodsContainer);
+export default connect((state) => {
+    const {Foods} = state;
+    return {
+        Foods
+    }
+})(FoodsContainer);

@@ -14,6 +14,7 @@ export let fetchBanners = ()=> {
         return Util.get(URL, (response) => {
             dispatch(receiveBannerList(response.banners))
         }, (error) => {
+            console.log('Fetch banner list error: ' + error);
             dispatch(receiveBannerList([]));
         });
     }

@@ -3,8 +3,6 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as strollingActions from '../actions/strollingActions';
 import Strolling from '../pages/Strolling';
 
 class StrollingContainer extends React.Component {
