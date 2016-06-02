@@ -29,6 +29,5 @@ let receiveCategoryList = (categoryList)=> {
     return {
         type: types.RECEIVE_CATEGORY_LIST,
         categoryList: categoryList,
-        isLoaded: true,
     }
 }

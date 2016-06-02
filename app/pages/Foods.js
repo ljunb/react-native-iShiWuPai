@@ -10,11 +10,12 @@ import {
     Image,
     InteractionManager,
     TouchableOpacity,
-    ActivityIndicatorIOS
 } from 'react-native';
 import Common from '../common/constants';
 import {fetchCategories} from '../actions/foodsActions';
 import SearchHeader from '../components/SearchHeader';
+import Loading from '../components/Loading';
+import FoodsListContainer from '../containers/FoodsListContainer';
 
 export default class Foods extends React.Component {
 
@@ -40,7 +41,6 @@ export default class Foods extends React.Component {
         const {Foods} = this.props;
         let categoryData = Foods.categoryList;
 
-
         return (
             <View style={{flex: 1}}>
                 <SearchHeader
@@ -48,18 +48,20 @@ export default class Foods extends React.Component {
                     scanAction={()=>alert('scan')}
                 />
                 <CompareCell />
-                <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(categoryData)}
-                    renderRow={this._renderRow}
-                    enableEmptySections={true}
-                    bounces={false}
-                    showsVerticalScrollIndicator={false}
-                    style={styles.listView}
-                />
+                {Foods.isLoading ?
+                    <Loading /> :
+                    <ListView
+                        dataSource={this.state.dataSource.cloneWithRows(categoryData)}
+                        renderRow={this._renderRow.bind(this)}
+                        enableEmptySections={true}
+                        bounces={false}
+                        showsVerticalScrollIndicator={false}
+                        style={styles.listView}
+                    />
+                }
             </View>
         )
     }
-
 
     _renderRow(group) {
 
@@ -80,7 +82,22 @@ export default class Foods extends React.Component {
                     {
                         group.categories.map((category) => {
                             return (
-                                <TouchableOpacity key={category.id} style={styles.category}>
+                                <TouchableOpacity
+                                    key={category.id}
+                                    style={styles.category}
+                                    onPress={()=>{
+                                        InteractionManager.runAfterInteractions(() => {
+                                            this.props.navigator.push({
+                                                name: 'FoodsListContainer',
+                                                component: FoodsListContainer,
+                                                passProps: {
+                                                    kind: group.kind,
+                                                    category: category,
+                                                }
+                                            })
+                                        })
+                                    }}
+                                >
                                     <Image
                                         style={styles.categoryIcon}
                                         source={{uri: category.image_url}}
@@ -95,14 +112,6 @@ export default class Foods extends React.Component {
         )
     }
 
-    _renderLoading() {
-        return (
-            <View style={styles.loading}>
-                <ActivityIndicatorIOS color="white"/>
-                <Text style={styles.loadingTitle}>加载中……</Text>
-            </View>
-        )
-    }
 }
 
 class CompareCell extends React.Component {
@@ -129,6 +138,7 @@ const styles = StyleSheet.create({
 
     listView: {
         flex: 1,
+        marginBottom: 49,
     },
 
     compareCell: {
@@ -206,22 +216,4 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 5,
     },
-
-    loading: {
-        marginTop: Common.window.height * 0.5 - 140,
-        backgroundColor: 'gray',
-        height: 100,
-        width: 120,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center'
-    },
-
-    loadingTitle: {
-        marginTop: 10,
-        fontSize: 14,
-        color: 'white'
-    }
-
 })

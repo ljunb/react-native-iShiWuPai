@@ -1,23 +1,23 @@
 /**
- * Created by ljunb on 16/5/26.
+ * Created by ljunb on 16/6/2.
  */
 import * as types from '../actions/actionTypes';
 
 const initialState = {
-    categoryList: [],
+    foodsList: [],
     isLoading: true,
 }
 
-let foodsReducer = (state = initialState, action)=>{
+let foodsListReducer = (state = initialState, action)=> {
     
     switch (action.type) {
-        case types.FETCH_CATEGORY_LIST:
+        case types.FETCH_FOODS_LIST:
             return Object.assign({}, state, {
                 ...state,
             })
-        case types.RECEIVE_CATEGORY_LIST:
+        case types.RECEIVE_FOODS_LIST: 
             return Object.assign({}, state, {
-                categoryList: action.categoryList,
+                foodsList: action.foodsList,
                 isLoading: false,
             })
         default:
@@ -25,4 +25,4 @@ let foodsReducer = (state = initialState, action)=>{
     }
 }
 
-export default foodsReducer;
+export default foodsListReducer;

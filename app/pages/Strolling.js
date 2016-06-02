@@ -19,10 +19,12 @@ import Common from '../common/constants';
 import SearchHeader from '../components/SearchHeader';
 import LoadMoreFooter from '../components/LoadMoreFooter';
 import FeedDetail from '../pages/FeedDetail';
+import Loading from '../components/Loading';
 
 let page = 1;
 let canLoadMore = false;
 let isRefreshing = false;
+let isLoading = true;
 
 export default class Main extends React.Component {
 
@@ -49,12 +51,12 @@ export default class Main extends React.Component {
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
             dispatch(fetchBanners());
-            dispatch(fetchFeeds(page, canLoadMore, isRefreshing));
+            dispatch(fetchFeeds(page, canLoadMore, isRefreshing, isLoading));
         });
     }
 
     render() {
-
+        
         const {Strolling} = this.props;
 
         let bannerList = Strolling.bannerList;
@@ -76,25 +78,28 @@ export default class Main extends React.Component {
                     searchAction={()=>alert('search')}
                     scanAction={()=>alert('scan')}
                 />
-                <ListView
-                    dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIDs)}
-                    renderRow={this._renderRow}
-                    initialListSize={1}
-                    enableEmptySections={true}
-                    onScroll={this._onScroll}
-                    onEndReached={this._onEndReach.bind(this)}
-                    onEndReachedThreshold={10}
-                    renderFooter={this._renderFooter.bind(this)}
-                    style={{height: Common.window.height - 64}}
-                    refreshControl={
-                        <RefreshControl
-                        refreshing={Strolling.isRefreshing}
-                        onRefresh={this._onRefresh.bind(this)}
-                        title="正在加载中……"
-                        color="#ccc"
-                        />
-                    }
-                />
+                {Strolling.isLoading ?
+                    <Loading /> :
+                    <ListView
+                        dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIDs)}
+                        renderRow={this._renderRow}
+                        initialListSize={1}
+                        enableEmptySections={true}
+                        onScroll={this._onScroll}
+                        onEndReached={this._onEndReach.bind(this)}
+                        onEndReachedThreshold={10}
+                        renderFooter={this._renderFooter.bind(this)}
+                        style={{height: Common.window.height - 64}}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={Strolling.isRefreshing}
+                                onRefresh={this._onRefresh.bind(this)}
+                                title="正在加载中……"
+                                color="#ccc"
+                            />
+                        }
+                    />
+                }
             </View>
         )
     }

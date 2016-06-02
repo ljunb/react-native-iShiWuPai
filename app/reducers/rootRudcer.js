@@ -5,10 +5,12 @@
 import { combineReducers } from 'redux';
 import Strolling from './strollingReducer';
 import Foods from './foodsReducer';
+import FoodsList from './foodsListReducer';
 import User from './userReducer';
 
 export default rootReducer = combineReducers({
     Strolling,
     Foods,
+    FoodsList,
     User,
 })

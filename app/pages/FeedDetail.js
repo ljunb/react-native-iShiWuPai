@@ -17,8 +17,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class FeedDetail extends React.Component {
 
-
-
     render() {
         const {feed} = this.props;
 
@@ -39,6 +37,8 @@ export default class FeedDetail extends React.Component {
             </View>
         )
     }
+
+
 }
 
 class ToolBar extends React.Component {
