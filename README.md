@@ -8,11 +8,13 @@ iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食
 >* 食物百科页面展示
 >* 食物列表页面展示，营养素排序功能及动画，支持上拖加载更多
 
+## 部分功能演示
+![排序](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/sortList.gif)
+
 ## 运行截图
 ![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/strolling.png)
 ![资讯详情](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/feedDetail.png)
 ![食物百科](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/categories.png)
-![食物列表](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/foodsList.png)
 ![排序功能](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/sortTypes.png)
 
 ## TODO
