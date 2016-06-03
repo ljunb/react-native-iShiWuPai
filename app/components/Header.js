@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderBottomColor: '#ccc',
         borderBottomWidth: 0.5,
+        backgroundColor: 'white'
     },
 
     title: {
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
         right: 10,
         height: 44,
         justifyContent: 'center',
+        flexDirection: 'row',
     },
 
     buttonTitleFont: {
