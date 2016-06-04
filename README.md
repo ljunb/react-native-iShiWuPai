@@ -1,5 +1,5 @@
 ## iShiWuPai
-iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食物派》。项目中关于View的state都放在xxxView.js组件（比如ListView的数据源），其他的state数据都迁至对应的reducer中。
+iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食物派》。
 
 ## 完成功能
 目前只针对iOS端，完成功能：
@@ -9,7 +9,7 @@ iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食
 >* 食物列表页面所有功能，包括子类别排序、营养素排序功能及动画，支持上拖加载更多
 
 ## 部分功能演示
-![排序](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/sortList.gif)
+![排序](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/performance.gif)
 
 ## 运行截图
 ![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/strolling.png)
@@ -23,6 +23,53 @@ iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食
 >* 食物详情、对比页面
 >* 我的页面
 >* 分享、收藏
+
+## 心得
+公司项目采用的Flux架构，与视图无关的state数据都保存到了store，参考该做法，iShiWuPai项目中与视图或动画相关的state才放在组件中，而其他state数据则存放在对应reducer中，如：
+```
+// FoodsList.js 
+    ...
+constructor(props) {
+    super(props);
+
+    this.state = {
+        dataSource: new ListView.DataSource({
+            rowHasChanged: (row1, row2) => row1 !== row2,
+        }),
+
+        // 排序视图Y值
+        sortTypeViewY: new Animated.Value(0),
+        // 排序三角角度
+        angleRotation: new Animated.Value(0),
+        // 遮盖层透明度
+        coverViewOpacity: new Animated.Value(0),
+    }
+}
+    ...
+--------------------------------
+
+// foodsListReducer.js
+
+const initialState = {
+    // 食物分类数组
+    foodsList: [],
+    // 营养素数组
+    sortTypesList: [],
+    // 当前营养素
+    currentSortType: null,
+    // 显示营养素视图
+    showSortTypeView: false,
+    // 升降序
+    orderByAsc: false,
+    // 显示子分类视图
+    showSubcategoryView: false,
+    // 当前子分类
+    currentSubcategory: null,
+    isLoading: true,
+    isLoadMore: false,
+}
+    ...
+```
 
 ## 相关依赖
 ```
