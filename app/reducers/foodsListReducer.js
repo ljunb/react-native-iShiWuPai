@@ -4,10 +4,22 @@
 import * as types from '../actions/actionTypes';
 
 const initialState = {
+    // 食物分类数组
     foodsList: [],
+    // 营养素数组
+    sortTypesList: [],
+    // 当前营养素
+    currentSortType: null,
+    // 显示营养素视图
+    showSortTypeView: false,
+    // 升降序
+    orderByAsc: false,
+    // 显示子分类视图
+    showSubcategoryView: false,
+    // 当前子分类
+    currentSubcategory: null,
     isLoading: true,
     isLoadMore: false,
-    sortTypesList: [],
 }
 
 let foodsListReducer = (state = initialState, action)=> {
@@ -30,6 +42,34 @@ let foodsListReducer = (state = initialState, action)=> {
         case types.RECEIVE_SORT_TYPES_LIST: 
             return Object.assign({}, state, {
                 sortTypesList: action.sortTypesList,
+            })
+        case types.SELECT_SORT_TYPE:
+            return Object.assign({}, state, {
+                currentSortType: action.currentSortType,
+            })
+        case types.CHANGE_SORT_VIEW_STATUS:
+            return Object.assign({}, state, {
+                showSortTypeView: !state.showSortTypeView
+            })
+        case types.ORDER_ASC_OR_DESC:
+            return Object.assign({}, state, {
+                orderByAsc: !state.orderByAsc,
+            })
+        case types.CHANGE_SUBCATEGORY_STATUS:
+            return Object.assign({}, state, {
+                showSubcategoryView: !state.showSubcategoryView,
+            })
+        case types.SELECT_SUBCATEGORY:
+            return Object.assign({}, state, {
+                currentSubcategory: action.currentSubcategory,
+                showSubcategoryView: false,
+            })
+        case types.RESET_FOODS_LIST_STATE:
+            return Object.assign({}, state, {
+                currentSortType: null,
+                showSortTypeView: false,
+                orderByAsc: false,
+                currentSubcategory: null,
             })
         default:
             return state

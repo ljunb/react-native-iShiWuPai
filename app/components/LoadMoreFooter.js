@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 
     footerTitle: {
         marginLeft: 10,
-        fontSize: 16,
+        fontSize: 15,
         color: 'gray'
     }
 })

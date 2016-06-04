@@ -1,12 +1,12 @@
 ## iShiWuPai
-iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食物派》。
+iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食物派》。项目中关于View的state都放在xxxView.js组件（比如ListView的数据源），其他的state数据都迁至对应的reducer中。
 
 ## 完成功能
 目前只针对iOS端，完成功能：
->* 逛吃页面展示，支持下拉刷新和上拖加载更多
->* 资讯详情页面展示
->* 食物百科页面展示
->* 食物列表页面展示，营养素排序功能及动画，支持上拖加载更多
+>* 逛吃页面，支持下拉刷新和上拖加载更多
+>* 资讯详情页面
+>* 食物百科页面
+>* 食物列表页面所有功能，包括子类别排序、营养素排序功能及动画，支持上拖加载更多
 
 ## 部分功能演示
 ![排序](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/sortList.gif)
@@ -15,7 +15,8 @@ iShiWuPai是基于React Native和Redux实现的美食类APP，接口来自《食
 ![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/strolling.png)
 ![资讯详情](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/feedDetail.png)
 ![食物百科](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/categories.png)
-![排序功能](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/sortTypes.png)
+![排序功能](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/sortList.png)
+![排序功能](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/subcategory.png)
 
 ## TODO
 >* 搜索页面

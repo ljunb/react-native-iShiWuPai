@@ -76,6 +76,21 @@ export default class Header extends React.Component {
             )
         }
 
+        if (this.props.rightMenu != undefined) {
+            NavigationBar.push(
+                <TouchableOpacity
+                    key={'rightMenu'}
+                    activeOpacity={0.75}
+                    style={styles.rightMenu}
+                    onPress={this.props.rightMenuAction}
+                >
+                    <Text style={{color: 'gray', fontSize: 12}}>{this.props.rightMenu}</Text>
+                    <Image source={{uri: 'ic_food_ordering'}} style={{width: 16, height: 16}}/>
+                </TouchableOpacity>
+            )
+        }
+
+
         return (
             <View style={styles.navigationBarContainer}>
                 {NavigationBar}
@@ -121,5 +136,14 @@ const styles = StyleSheet.create({
     buttonTitleFont: {
         color: 'white',
         fontSize: 15,
-    }
+    },
+
+    rightMenu: {
+        position: 'absolute',
+        right: 10,
+        height: 44,
+        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
 })
