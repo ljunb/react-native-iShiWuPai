@@ -16,6 +16,8 @@ import {fetchCategories} from '../actions/foodsActions';
 import SearchHeader from '../components/SearchHeader';
 import Loading from '../components/Loading';
 import FoodsListContainer from '../containers/FoodsListContainer';
+import FoodCompareContainer from '../containers/FoodCompareContainer';
+import SearchContainer from '../containers/SearchContainer';
 
 export default class Foods extends React.Component {
 
@@ -44,10 +46,24 @@ export default class Foods extends React.Component {
         return (
             <View style={{flex: 1}}>
                 <SearchHeader
-                    searchAction={()=>alert('search')}
+                    searchAction={()=>{
+                        InteractionManager.runAfterInteractions(()=>{
+                            this.props.navigator.push({
+                                name: 'Search',
+                                component: SearchContainer,
+                            })
+                        })
+                    }}
                     scanAction={()=>alert('scan')}
                 />
-                <CompareCell />
+                <CompareCell onPress={()=>{
+                    InteractionManager.runAfterInteractions(()=>{
+                        this.props.navigator.push({
+                            name: 'FoodCompare',
+                            component: FoodCompareContainer,
+                        })
+                    })
+                }}/>
                 {Foods.isLoading ?
                     <Loading /> :
                     <ListView
@@ -120,9 +136,12 @@ class CompareCell extends React.Component {
             <TouchableOpacity
                 activeOpacity={0.75}
                 style={styles.compareCell}
+                {...this.props}
             >
                 <View style={styles.leftContainer}>
-                    <Image style={styles.vsIcon}/>
+                    <View style={styles.vsIcon}>
+                        <Text style={{color: 'white', fontSize: 10, fontWeight: 'bold'}}>VS</Text>
+                    </View>
                     <View style={styles.compareTitleContainer}>
                         <Text>食物对比</Text>
                         <Text style={styles.compareSubTitle}>食物数据大PK</Text>
@@ -159,7 +178,9 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius: 10,
-        backgroundColor: '#ccc',
+        backgroundColor: 'orange',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     compareTitleContainer: {

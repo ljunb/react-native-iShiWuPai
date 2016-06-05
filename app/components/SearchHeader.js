@@ -22,7 +22,7 @@ export default class SearchHeader extends React.Component {
                 >
                     <Image
                         style={styles.searchIcon}
-                        source={{uri: 'ic_homepage_search'}}
+                        source={{uri: 'ic_input_search'}}
                     />
                     <Text style={styles.searchPlaceholder}>请输入食物名称</Text>
                 </TouchableOpacity>
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     },
 
     searchIcon: {
-        width: 15,
-        height: 15,
+        width: 20,
+        height: 20,
     },
 
     scanIcon: {

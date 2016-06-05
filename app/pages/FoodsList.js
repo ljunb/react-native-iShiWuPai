@@ -22,7 +22,7 @@ import {
     changeOrderAscStatus,
     changeSubcategoryViewStatus,
     selectSubcategory,
-} from '../actions/foodsListAction';
+} from '../actions/foodsListActions';
 
 import Header from '../components/Header';
 import Loading from '../components/Loading';

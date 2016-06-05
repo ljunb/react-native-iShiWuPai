@@ -20,6 +20,7 @@ import SearchHeader from '../components/SearchHeader';
 import LoadMoreFooter from '../components/LoadMoreFooter';
 import FeedDetail from '../pages/FeedDetail';
 import Loading from '../components/Loading';
+import SearchContainer from '../containers/SearchContainer';
 
 let page = 1;
 let canLoadMore = false;
@@ -75,7 +76,14 @@ export default class Main extends React.Component {
         return (
             <View>
                 <SearchHeader
-                    searchAction={()=>alert('search')}
+                    searchAction={()=>{
+                        InteractionManager.runAfterInteractions(()=>{
+                            this.props.navigator.push({
+                                name: 'Search',
+                                component: SearchContainer,
+                            })
+                        })
+                    }}
                     scanAction={()=>alert('scan')}
                 />
                 {Strolling.isLoading ?
