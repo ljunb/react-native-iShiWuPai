@@ -239,7 +239,7 @@ export default class FoodsList extends React.Component {
 
 
         return (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: 'white'}}>
                 {FoodsList.isLoading ?
                     <Loading /> :
                     <ListView

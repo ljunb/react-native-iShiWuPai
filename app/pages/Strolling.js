@@ -62,7 +62,7 @@ export default class Main extends React.Component {
 
         let bannerList = Strolling.bannerList;
         let feedList = Strolling.feedList;
-        let sourceData = {'banner': [bannerList], 'feed': feedList}
+        let sourceData = {'banner': [bannerList], 'feed': feedList};
 
         let sectionIDs = ['banner', 'feed'];
         let rowIDs = [[0]];
@@ -71,7 +71,7 @@ export default class Main extends React.Component {
         for (let i = 0; i < feedList.length; i++) {
             row.push(i);
         }
-        rowIDs.push(row)
+        rowIDs.push(row);
 
         return (
             <View>
