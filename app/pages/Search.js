@@ -9,6 +9,7 @@ import {
     TextInput,
     Image,
     ListView,
+    ScrollView,
     TouchableOpacity,
     InteractionManager
 } from 'react-native';
@@ -18,12 +19,14 @@ import {
     selectKeyword,
     resetState,
     setupSearchText,
-    clearHistory
+    clearHistory,
+    fetchSearchResults,
 } from '../actions/searchActions';
 
 import Common from '../common/constants';
-import SearchResultContainer from '../containers/SearchResultContainer';
 import SearchInputBar from '../components/SearchInputBar';
+
+let page = 1;
 
 export default class Search extends React.Component {
 
@@ -43,6 +46,10 @@ export default class Search extends React.Component {
                 },
                 rowHasChanged: (row1, row2) => row1 !== row2,
                 sectionHeaderHasChanged: (section1, section2) => section1 !== section2,
+            }),
+
+            resultDataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2,
             })
         }
     }
@@ -68,7 +75,7 @@ export default class Search extends React.Component {
         let rowIdentifiers = [];
         let sourceData = null;
 
-        if (Search.history.length) {
+        if (Search.history && Search.history.length) {
             sectionIDs.push('history');
 
             let rowID = [];
@@ -80,12 +87,12 @@ export default class Search extends React.Component {
             rowIdentifiers.push(rowID);
         }
 
-        if (Search.keywordsList.length) {
+        if (Search.keywordsList && Search.keywordsList.length) {
             sectionIDs.push('keywordsList');
             rowIdentifiers.push([0]);
         }
 
-        if (Search.history.length) {
+        if (Search.history && Search.history.length) {
             sourceData = {'history': Search.history, 'keywordsList': [Search.keywordsList]};
         } else {
             sourceData = {'keywordsList': [Search.keywordsList]};
@@ -94,22 +101,23 @@ export default class Search extends React.Component {
         return (
             <View style={{flex: 1, backgroundColor: 'white'}}>
                 <SearchInputBar
-                    backAction={()=>{
-                        this.props.navigator.pop();
-                    }}
-                    searchAction={this.pushToResultPage.bind(this, Search.searchText)}
+                    backAction={()=>this.props.navigator.pop()}
+                    searchAction={this.handleSearchText.bind(this, Search.searchText)}
                     value={Search.searchText}
                     onChangeText={(text)=>{
                         dispatch(setupSearchText(text))
                     }}
                 />
-                <ListView
-                    dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIdentifiers)}
-                    renderRow={this.renderRow}
-                    renderSectionHeader={this.renderSectionHeader}
-                    enableEmptySections={true}
-                    bounces={false}
-                />
+                {Search.searchText ?
+                    this.renderResultView() :
+                    <ListView
+                        dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIdentifiers)}
+                        renderRow={this.renderRow}
+                        renderSectionHeader={this.renderSectionHeader}
+                        enableEmptySections={true}
+                        bounces={false}
+                    />
+                }
             </View>
         )
     }
@@ -136,7 +144,7 @@ export default class Search extends React.Component {
                 <TouchableOpacity
                     style={{flexDirection: 'row', alignItems: 'center'}}
                     activeOpacity={0.75}
-                    onPress={this.pushToResultPage.bind(this, keywords)}
+                    onPress={this.handleSearchText.bind(this, keywords)}
                 >
                     <Image source={{uri: 'ic_search_history'}} style={styles.historyIcon}/>
                     <View style={styles.historyTitle}>
@@ -155,7 +163,7 @@ export default class Search extends React.Component {
                                 key={keyword}
                                 style={styles.keyword}
                                 activeOpacity={0.75}
-                                onPress={this.pushToResultPage.bind(this, keyword)}
+                                onPress={this.handleSearchText.bind(this, keyword)}
                             >
                                 <Text>{keyword}</Text>
                             </TouchableOpacity>
@@ -166,7 +174,7 @@ export default class Search extends React.Component {
         )
     }
 
-    pushToResultPage(keyword) {
+    handleSearchText(keyword) {
 
         if (!keyword || !keyword.trim().length) {
             alert('食物名称不能为空!');
@@ -174,17 +182,8 @@ export default class Search extends React.Component {
         }
 
         const {dispatch} = this.props;
-
-        InteractionManager.runAfterInteractions(()=> {
-            this.props.navigator.push({
-                name: 'SearchResultContainer',
-                component: SearchResultContainer,
-                passProps: {
-                    keyword: keyword,
-                }
-            })
-            dispatch(selectKeyword(keyword));
-        })
+        dispatch(selectKeyword(keyword));
+        dispatch(fetchSearchResults(keyword, page))
     }
 
     renderSectionHeader(sectionHeader) {
@@ -194,6 +193,67 @@ export default class Search extends React.Component {
             </View>
         )
     }
+
+    renderResultView() {
+        const {Search} = this.props;
+
+        return (
+            <View style={{backgroundColor: 'white'}}>
+                <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    bounces={false}
+                    contentContainerStyle={{height: 40, alignItems: 'center'}}
+                >
+                    {Search.tags.map((tag)=> {
+                        return (
+                            <TouchableOpacity key={tag.name}>
+                                <Text style={styles.tag}>{tag.name}</Text>
+                            </TouchableOpacity>
+                        )
+                    })}
+                </ScrollView>
+                <View style={styles.sortTypeCell}>
+                    <Text>营养素排序</Text>
+                </View>
+                <ListView
+                    dataSource={this.state.resultDataSource.cloneWithRows(Search.searchResultList)}
+                    renderRow={this.renderResultRow}
+                    enableEmptySections={true}
+                    style={{height: Common.window.height-144}}
+                />
+            </View>
+        )
+    }
+
+    renderResultRow(food) {
+
+        let lightStyle = [styles.healthLight];
+        if (food.health_light == 2) {
+            lightStyle.push({backgroundColor: 'orange'})
+        } else if (food.health_light == 3) {
+            lightStyle.push({backgroundColor: 'red'})
+        }
+
+        return (
+            <TouchableOpacity
+                style={styles.foodsCell}
+            >
+                <View style={{flexDirection: 'row'}}>
+                    <Image style={styles.foodIcon} source={{uri: food.thumb_image_url}}/>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.foodName} numberOfLines={1}>{food.name}</Text>
+                        <Text style={styles.calory}>
+                            {food.calory}
+                            <Text style={styles.unit}> 千卡/{food.weight}克</Text>
+                        </Text>
+                    </View>
+                </View>
+                <View style={lightStyle}/>
+            </TouchableOpacity>
+        )
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -240,5 +300,117 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingLeft: 15,
         backgroundColor: 'rgb(245, 246, 247)'
+    },
+
+    tag: {
+        borderRadius: 10,
+        borderWidth: 0.5,
+        borderColor: '#ccc',
+        textAlign: 'center',
+        padding: 6,
+        marginLeft: 10,
+    },
+
+    sortTypeCell: {
+        flexDirection: 'row',
+        height: 40,
+        width: Common.window.width,
+        borderColor: '#ccc',
+        borderBottomWidth: 0.5,
+        borderTopWidth: 0.5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+
+
+    foodsCell: {
+        flexDirection: 'row',
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 0.5,
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    foodIcon: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+    },
+
+    titleContainer: {
+        height: 40,
+        marginLeft: 15,
+        justifyContent: 'space-between',
+    },
+
+    foodName: {
+        width: Common.window.width - 15 - 15 - 40 - 15 - 10,
+    },
+
+    calory: {
+        fontSize: 13,
+        color: 'red',
+    },
+
+    unit: {
+        fontSize: 13,
+        color: 'black'
+    },
+
+    healthLight: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: 'green',
+        marginRight: 0,
+    },
+
+    sortType: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: (Common.window.width - 4 * 10) / 3,
+        height: 30,
+        borderWidth: 0.5,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginLeft: 10,
+        marginBottom: 10,
+    },
+
+    sortTypesView: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        position: 'absolute',
+        backgroundColor: 'white',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#ccc',
+        width: Common.window.width,
+        paddingTop: 10,
+    },
+
+    subcategoryContainer: {
+        position: 'absolute',
+        top: 30,
+        right: 10,
+        width: 150,
+        backgroundColor: 'white',
+        shadowColor: 'gray',
+        shadowOffset: {x: 1.5, y: 1},
+        shadowOpacity: 0.5,
+    },
+
+    subcategory: {
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#ccc',
+        height: 40,
+        justifyContent: 'center',
+        padding: 15,
     }
 })

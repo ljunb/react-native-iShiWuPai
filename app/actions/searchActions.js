@@ -6,6 +6,7 @@ import Util from '../common/utils';
 import UserDefaults from '../common/UserDefaults';
 import Common from '../common/constants';
 
+// 请求热搜关键词
 export let fetchKeywords = ()=> {
 
     let URL = 'http://food.boohee.com/fb/v1/keywords';
@@ -43,6 +44,37 @@ let receiveKeywordsList = (history, keywords)=> {
     }
 }
 
+// 请求搜索结果
+export let fetchSearchResults = (keyword, page)=> {
+
+    let URL = 'http://food.boohee.com/fb/v1/foods/extra_search?page=' + page + '&order_asc=desc&q=' + keyword;
+
+    return dispatch => {
+        dispatch(fetchSearchResultList());
+
+        Util.get(URL, (response) => {
+            dispatch(receiveSearchResultList(response.tags, response.foods))
+        }, (error) => {
+            console.log('Fetch search result error: ' + error);
+            dispatch(receiveSearchResultList([], []))
+        })
+    }
+}
+
+let fetchSearchResultList = ()=> {
+    return {
+        type: types.FETCH_SEARCH_RESULT_LIST,
+    }
+}
+
+let receiveSearchResultList = (tags, foods)=> {
+    return {
+        type: types.RECEIVE_SEARCH_RESULT_LIST,
+        tags: tags,
+        searchResultList: foods,
+    }
+}
+
 export let selectKeyword = (keyword)=> {
 
     return dispatch => {
@@ -54,6 +86,7 @@ export let selectKeyword = (keyword)=> {
 
                 let history = historyKeywords ? historyKeywords : [];
 
+                // 缓存中已有该搜索记录
                 if (history.indexOf(keyword) != -1) return;
                 
                 history.push(keyword);

@@ -21,7 +21,7 @@ export default class FeedDetail extends React.Component {
         const {feed} = this.props;
 
         return (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: 'white'}}>
                 <Header
                     leftIcon='angle-left'
                     leftIconAction={()=>this.props.navigator.pop()}
@@ -37,8 +37,6 @@ export default class FeedDetail extends React.Component {
             </View>
         )
     }
-
-
 }
 
 class ToolBar extends React.Component {

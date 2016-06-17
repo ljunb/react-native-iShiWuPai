@@ -227,8 +227,8 @@ export default class FoodsList extends React.Component {
         dispatch(fetchFoods(kind, category.id, order_by, page, order_asc, canLoadMore, isLoading, sub_value));
     }
 
-    render() {
 
+    render() {
         const {category, FoodsList, dispatch} = this.props;
         let currentSubcategoryName = FoodsList.currentSubcategory ? FoodsList.currentSubcategory.name : '全部';
 
@@ -236,7 +236,6 @@ export default class FoodsList extends React.Component {
         category.sub_categories.forEach((subcategory)=>{
             subcategories.push(subcategory)
         })
-
 
         return (
             <View style={{flex: 1, backgroundColor: 'white'}}>

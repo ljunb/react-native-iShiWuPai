@@ -23,7 +23,6 @@ export default class Foods extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
@@ -56,6 +55,7 @@ export default class Foods extends React.Component {
                     }}
                     scanAction={()=>alert('scan')}
                 />
+
                 <CompareCell onPress={()=>{
                     InteractionManager.runAfterInteractions(()=>{
                         this.props.navigator.push({

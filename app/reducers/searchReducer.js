@@ -6,8 +6,9 @@ import * as types from '../actions/actionTypes';
 const initialState = {
     history: [],
     keywordsList: [],
-    isShowSearchResult: false,
     searchText: null,
+    tags: [],
+    searchResultList: [],
 }
 
 let searchReducer = (state = initialState, action)=> {
@@ -21,6 +22,15 @@ let searchReducer = (state = initialState, action)=> {
             return Object.assign({}, state, {
                 keywordsList: action.keywordsList,
                 history: action.history,
+            })
+        case types.FETCH_SEARCH_RESULT_LIST:
+            return Object.assign({}, state, {
+                ...state
+            })
+        case types.RECEIVE_SEARCH_RESULT_LIST:
+            return Object.assign({}, state, {
+                tags: action.tags,
+                searchResultList: action.searchResultList,
             })
         case types.SELECT_KEYWORD:
             return Object.assign({}, state, {
@@ -41,9 +51,10 @@ let searchReducer = (state = initialState, action)=> {
         case types.RESET_SEARCH_STATE:
             return Object.assign({}, state, {
                 searchText: null,
+                tags: [],
             })
         default:
-            return state
+            return state;
     }
 }
 

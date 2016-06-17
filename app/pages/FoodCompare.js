@@ -8,30 +8,57 @@ import {
     StyleSheet,
     TouchableOpacity,
     Image,
+    InteractionManager,
     ListView,
 } from 'react-native';
 import Header from '../components/Header';
 import Common from '../common/constants';
+import SearchContainer from '../containers/SearchContainer';
 
 export default class FoodCompare extends React.Component {
+    
     render() {
         return (
-            <View>
+            <View style={{backgroundColor: 'white'}}>
                 <Header
                     leftIcon='angle-left'
                     leftIconAction={()=>this.props.navigator.pop()}
                     title='对比详情'
                 />
                 <View style={styles.compareHeader}>
-                    <Image style={styles.compareFoodDefault} source={{uri: 'img_analyze_bg'}}>
-                        <Image style={styles.addIcon} source={{uri: 'ic_analyze_search_red'}}/>
-                    </Image>
+                    <TouchableOpacity
+                        activeOpacity={0.75}
+                        onPress={()=>{
+                            InteractionManager.runAfterInteractions(()=>{
+                                this.props.navigator.push({
+                                    name: 'SearchContainer',
+                                    component: SearchContainer,
+                                })
+                            })
+                        }}
+                    >
+                        <Image style={styles.compareFoodDefault} source={{uri: 'img_analyze_bg'}}>
+                            <Image style={styles.addIcon} source={{uri: 'ic_analyze_search_red'}}/>
+                        </Image>
+                    </TouchableOpacity>
                     <View style={styles.vsContainer}>
                         <Text style={styles.vsFont}>VS</Text>
                     </View>
-                    <Image style={styles.compareFoodDefault} source={{uri: 'img_analyze_bg'}}>
-                        <Image style={styles.addIcon} source={{uri: 'ic_analyze_search_red'}}/>
-                    </Image>
+                    <TouchableOpacity
+                        activeOpacity={0.75}
+                        onPress={()=>{
+                            InteractionManager.runAfterInteractions(()=>{
+                                this.props.navigator.push({
+                                    name: 'SearchContainer',
+                                    component: SearchContainer,
+                                })
+                            })
+                        }}
+                    >
+                        <Image style={styles.compareFoodDefault} source={{uri: 'img_analyze_bg'}}>
+                            <Image style={styles.addIcon} source={{uri: 'ic_analyze_search_red'}}/>
+                        </Image>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.header}><Text>营养元素</Text></View>
             </View>

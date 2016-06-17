@@ -8,7 +8,6 @@ import Foods from './foodsReducer';
 import FoodsList from './foodsListReducer';
 import FoodCompare from './foodCompareReducer';
 import Search from './searchReducer';
-import SearchResult from './searchResultReducer';
 import User from './userReducer';
 
 export default rootReducer = combineReducers({
@@ -17,6 +16,5 @@ export default rootReducer = combineReducers({
     FoodsList,
     FoodCompare,
     Search,
-    SearchResult,
     User,
 })
