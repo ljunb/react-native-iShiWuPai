@@ -67,10 +67,9 @@ export default class FoodsList extends React.Component {
         const {dispatch} = this.props;
         dispatch(resetState())
     }
-
-
+    
     // 排序View动画
-    _handleSortTypesViewAnimation() {
+    handleSortTypesViewAnimation() {
         const {FoodsList, dispatch} = this.props;
         Animated.sequence([
             Animated.parallel([
@@ -94,12 +93,12 @@ export default class FoodsList extends React.Component {
     }
 
     // 遮盖层
-    _renderCoverView() {
+    renderCoverView() {
         return (
             <TouchableOpacity
                 style={{position: 'absolute',top: 84}}
                 activeOpacity={1}
-                onPress={()=>this._handleSortTypesViewAnimation()}
+                onPress={()=>this.handleSortTypesViewAnimation()}
             >
                 <Animated.View
                     style={{
@@ -114,7 +113,7 @@ export default class FoodsList extends React.Component {
     }
 
     // 所有营养素View
-    _renderSortTypesView() {
+    renderSortTypesView() {
         const {FoodsList, dispatch} = this.props;
         // 这里写死了8行数据
         let height = 8 * (30 + 10) + 10;
@@ -146,14 +145,14 @@ export default class FoodsList extends React.Component {
                             key={i}
                             style={sortTypeStyle}
                             onPress={()=>{
-                                this._handleSortTypesViewAnimation();
+                                this.handleSortTypesViewAnimation();
                                 dispatch(selectSortType(type));
 
                                 InteractionManager.runAfterInteractions(()=> {
                                     page = 1;
                                     isLoading = true;
                                     canLoadMore = false;
-                                    this._fetchData(page, canLoadMore, isLoading);
+                                    this.fetchData(page, canLoadMore, isLoading);
                                 })
                             }}
                         >
@@ -166,7 +165,7 @@ export default class FoodsList extends React.Component {
     }
 
     // 营养素排序Cell
-    _renderSortTypeCell() {
+    renderSortTypeCell() {
         const {FoodsList, dispatch} = this.props;
         let currentTypeName = FoodsList.currentSortType ? FoodsList.currentSortType.name : '营养素排序';
         let orderByAscTitle = FoodsList.orderByAsc ? '由低到高' : '由高到低';
@@ -176,7 +175,7 @@ export default class FoodsList extends React.Component {
                 <TouchableOpacity
                     style={{flexDirection: 'row'}}
                     activeOpacity={0.75}
-                    onPress={()=>{this._handleSortTypesViewAnimation();}}
+                    onPress={()=>{this.handleSortTypesViewAnimation()}}
                 >
                     <Text>{currentTypeName}</Text>
                     <Animated.Image
@@ -203,7 +202,7 @@ export default class FoodsList extends React.Component {
                                 page = 1;
                                 canLoadMore = false;
                                 isLoading = true;
-                                this._fetchData(page, canLoadMore, isLoading);
+                                this.fetchData(page, canLoadMore, isLoading);
                             })
                         }}
                     >
@@ -215,11 +214,11 @@ export default class FoodsList extends React.Component {
         )
     }
 
-    _onScroll() {
+    onScroll() {
         if (!canLoadMore) canLoadMore = true;
     }
 
-    _fetchData(page, canLoadMore, isLoading) {
+    fetchData(page, canLoadMore, isLoading) {
         const {dispatch, kind, category, FoodsList} = this.props;
         let order_by = FoodsList.currentSortType ? FoodsList.currentSortType.index : 1;
         let order_asc = FoodsList.orderByAsc ? 1 : 0;
@@ -244,15 +243,15 @@ export default class FoodsList extends React.Component {
                     <ListView
                         style={{position: 'absolute', top: 84, height: Common.window.height-84}}
                         dataSource={this.state.dataSource.cloneWithRows(FoodsList.foodsList)}
-                        renderRow={this._renderRow}
-                        onScroll={this._onScroll}
-                        onEndReached={this._onEndReach.bind(this)}
+                        renderRow={this.renderRow}
+                        onScroll={this.onScroll}
+                        onEndReached={this.onEndReach.bind(this)}
                         onEndReachedThreshold={10}
-                        renderFooter={this._renderFooter.bind(this)}
+                        renderFooter={this.renderFooter.bind(this)}
                     />
                 }
-                {FoodsList.showSortTypeView ? this._renderCoverView() : null}
-                {this._renderSortTypesView()}
+                {FoodsList.showSortTypeView ? this.renderCoverView() : null}
+                {this.renderSortTypesView()}
                 <View style={{position: 'absolute', top: 0}}>
                     {category.sub_category_count > 0 ?
                         <Header
@@ -268,10 +267,11 @@ export default class FoodsList extends React.Component {
                             title={category.name}
                         />
                     }
-                    {this._renderSortTypeCell()}
+                    {this.renderSortTypeCell()}
                 </View>
                 {FoodsList.showSubcategoryView ?
                     <TouchableOpacity
+                        activeOpacity={1}
                         onPress={()=>dispatch(changeSubcategoryViewStatus())}
                         style={{ height: Common.window.height, width: Common.window.width, top:0}}>
                         <View style={styles.subcategoryContainer}>
@@ -288,7 +288,7 @@ export default class FoodsList extends React.Component {
                                                     page = 1;
                                                     canLoadMore = false;
                                                     isLoading = true;
-                                                    this._fetchData(page, canLoadMore, isLoading);
+                                                    this.fetchData(page, canLoadMore, isLoading);
                                                 })
                                             }}
                                         >
@@ -303,7 +303,7 @@ export default class FoodsList extends React.Component {
         )
     }
 
-    _renderRow(food) {
+    renderRow(food) {
 
         let lightStyle = [styles.healthLight];
         if (food.health_light == 2) {
@@ -332,16 +332,16 @@ export default class FoodsList extends React.Component {
     }
 
     // 上拉加载
-    _onEndReach() {
+    onEndReach() {
         if (canLoadMore) {
             page++;
             isLoading = false;
-            this._fetchData(page, canLoadMore, isLoading);
+            this.fetchData(page, canLoadMore, isLoading);
             canLoadMore = false;
         }
     }
 
-    _renderFooter() {
+    renderFooter() {
         const {FoodsList} = this.props;
         if (FoodsList.isLoadMore) {
             return <LoadMoreFooter />

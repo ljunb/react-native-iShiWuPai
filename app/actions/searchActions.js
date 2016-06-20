@@ -45,15 +45,30 @@ let receiveKeywordsList = (history, keywords)=> {
 }
 
 // 请求搜索结果
-export let fetchSearchResults = (keyword, page)=> {
+export let fetchSearchResults = (keyword, ...params)=> {
 
-    let URL = 'http://food.boohee.com/fb/v1/foods/extra_search?page=' + page + '&order_asc=desc&q=' + keyword;
+    // 请求参数:q、order_asc、page、order_by、health_mode(血糖)、health_light(推荐)、tags
+    // http://food.boohee.com/fb/v1/search?page=1&order_asc=asc&q=&tags=&order_by=calory&health_mode=1
+
+    const [page, order_by, order_asc, tags, health_light, isLoadMore, isLoading, health_mode] = params;
+
+    // let URL = 'http://food.boohee.com/fb/v1/search?page=' + page + '&order_asc=' + order_asc + '&q=' + keyword;
+    let URL = 'http://food.boohee.com/fb/v1/foods/extra_search?page=' + page +
+        '&order_asc=' + order_asc + '&q=' + keyword + '&tags=' + tags;
+
+    // 如无参数则不拼接
+    if (order_by) URL += '&order_by=' + order_by;
+    if (health_light) URL += '&health_light=' + health_light;
+    if (health_mode) URL += '&health_mode=' + health_mode;
+    console.log(URL)
 
     return dispatch => {
-        dispatch(fetchSearchResultList());
+        dispatch(fetchSearchResultList(isLoading, isLoadMore));
 
         Util.get(URL, (response) => {
-            dispatch(receiveSearchResultList(response.tags, response.foods))
+
+            dispatch(receiveSearchResultList(response.tags, response.foods));
+
         }, (error) => {
             console.log('Fetch search result error: ' + error);
             dispatch(receiveSearchResultList([], []))
@@ -61,9 +76,11 @@ export let fetchSearchResults = (keyword, page)=> {
     }
 }
 
-let fetchSearchResultList = ()=> {
+let fetchSearchResultList = (isLoading, isLoadMore)=> {
     return {
         type: types.FETCH_SEARCH_RESULT_LIST,
+        isLoading: isLoading,
+        isLoadMore: isLoadMore
     }
 }
 
@@ -125,5 +142,66 @@ export let clearHistory = ()=> {
     
     return {
         type: types.CLEAR_HISTORY,
+    }
+}
+
+export let changeSortViewStatus = ()=> {
+    return {
+        type: types.CHANGE_SORT_VIEW_STATUS_SEARCH,
+    }
+}
+
+export let changeOrderAscStatus = ()=> {
+    return {
+        type: types.ORDER_ASC_OR_DESC_SEARCH,
+    }
+}
+
+export let changeHealthLight = ()=> {
+    return {
+        type: types.CHANGE_HEALTH_LIGHT_SEARCH,
+    }
+}
+
+export let selectSortType = (type)=> {
+    return {
+        type: types.SELECT_SORT_TYPE_SEARCH,
+        currentSortType: type
+    }
+}
+
+export let selectFoodTag = (tag)=> {
+    return {
+        type: types.SELECT_FOOD_TAG,
+        currentTag: tag,
+    }
+}
+
+
+export let fetchSortTypes = ()=> {
+    let URL = 'http://food.boohee.com/fb/v1/foods/sort_types';
+
+    return dispatch => {
+        dispatch(fetchSortTypesList());
+
+        Util.get(URL, (response) => {
+            dispatch(receiveSortTypesList(response.types));
+        }, (error) => {
+            console.log('Fetch sort types error: ' + error);
+            dispatch(receiveSortTypesList([]))
+        })
+    }
+}
+
+let fetchSortTypesList = ()=> {
+    return {
+        type: types.FETCH_SORT_TYPES_LIST_SEARCH,
+    }
+}
+
+let receiveSortTypesList = (sortTypes)=> {
+    return {
+        type: types.RECEIVE_SORT_TYPES_LIST_SEARCH,
+        sortTypesList: sortTypes,
     }
 }

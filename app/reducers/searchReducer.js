@@ -4,11 +4,19 @@
 import * as types from '../actions/actionTypes';
 
 const initialState = {
-    history: [],
-    keywordsList: [],
-    searchText: null,
-    tags: [],
-    searchResultList: [],
+    history: [],                // 搜索历史
+    keywordsList: [],           // 热搜词
+    searchText: null,           // 搜索文本
+    tags: [],                   // 标签数组
+    searchResultList: [],       // 搜索结果
+    sortTypesList: [],          // 营养素数组
+    currentSortType: null,      // 当前营养素
+    currentTag: null,           // 当前tag
+    showSortTypeView: false,    // 显示营养素视图
+    orderByAsc: false,          // 升降序
+    isHealthLight: false,       // 是否推荐食物
+    isLoading: true,
+    isLoadMore: false,
 }
 
 let searchReducer = (state = initialState, action)=> {
@@ -25,12 +33,15 @@ let searchReducer = (state = initialState, action)=> {
             })
         case types.FETCH_SEARCH_RESULT_LIST:
             return Object.assign({}, state, {
-                ...state
+                tags: [],
+                isLoading: action.isLoading,
+                isLoadMore: action.isLoadMore,
             })
         case types.RECEIVE_SEARCH_RESULT_LIST:
             return Object.assign({}, state, {
                 tags: action.tags,
-                searchResultList: action.searchResultList,
+                searchResultList: state.isLoadMore ? state.searchResultList.concat(action.searchResultList) : action.searchResultList,
+                isLoading: false,
             })
         case types.SELECT_KEYWORD:
             return Object.assign({}, state, {
@@ -48,11 +59,37 @@ let searchReducer = (state = initialState, action)=> {
             return Object.assign({}, state, {
                 history: []
             })
-        case types.RESET_SEARCH_STATE:
+        case types.CHANGE_SORT_VIEW_STATUS_SEARCH:
             return Object.assign({}, state, {
-                searchText: null,
-                tags: [],
+                showSortTypeView: !state.showSortTypeView,
             })
+        case types.RECEIVE_SORT_TYPES_LIST_SEARCH:
+            
+            if (action.sortTypesList.length > 0) {
+                action.sortTypesList.splice(0, 0, {name: '常见'})
+            }
+            
+            return Object.assign({}, state, {
+                sortTypesList: action.sortTypesList
+            })
+        case types.SELECT_SORT_TYPE_SEARCH:
+            return Object.assign({}, state, {
+                currentSortType: action.currentSortType
+            })
+        case types.ORDER_ASC_OR_DESC_SEARCH:
+            return Object.assign({}, state, {
+                orderByAsc: !state.orderByAsc
+            })
+        case types.CHANGE_HEALTH_LIGHT_SEARCH:
+            return Object.assign({}, state, {
+                isHealthLight: !state.isHealthLight
+            })
+        case types.SELECT_FOOD_TAG:
+            return Object.assign({}, state, {
+                currentTag: action.currentTag
+            })
+        case types.RESET_SEARCH_STATE:
+            return initialState
         default:
             return state;
     }

@@ -39,15 +39,15 @@ let receiveFoodsList = (foods)=> {
 
 export let fetchSortTypes = ()=> {
     let URL = 'http://food.boohee.com/fb/v1/foods/sort_types';
-    
+
     return dispatch => {
         dispatch(fetchSortTypesList());
         
         Util.get(URL, (response) => {
-            dispatch(reveiveSortTypesList(response.types));
+            dispatch(receiveSortTypesList(response.types));
         }, (error) => {
             console.log('Fetch sort types error: ' + error);
-            dispatch(reveiveSortTypesList([]))
+            dispatch(receiveSortTypesList([]))
         })
     }
 }
@@ -58,7 +58,7 @@ let fetchSortTypesList = ()=> {
     }
 }
 
-let reveiveSortTypesList = (sortTypes)=> {
+let receiveSortTypesList = (sortTypes)=> {
     return {
         type: types.RECEIVE_SORT_TYPES_LIST,
         sortTypesList: sortTypes,

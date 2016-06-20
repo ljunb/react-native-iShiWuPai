@@ -10,6 +10,7 @@ import {
     Image,
     ListView,
     ScrollView,
+    Animated,
     TouchableOpacity,
     InteractionManager
 } from 'react-native';
@@ -21,12 +22,23 @@ import {
     setupSearchText,
     clearHistory,
     fetchSearchResults,
+    changeSortViewStatus,
+    changeOrderAscStatus,
+    changeHealthLight,
+    selectSortType,
+    selectFoodTag,
+    fetchSortTypes,
 } from '../actions/searchActions';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Common from '../common/constants';
 import SearchInputBar from '../components/SearchInputBar';
+import Loading from '../components/Loading';
+import LoadMoreFooter from '../components/LoadMoreFooter';
 
 let page = 1;
+let canLoadMore = false;
+let isLoading = true;
 
 export default class Search extends React.Component {
 
@@ -34,15 +46,16 @@ export default class Search extends React.Component {
         super(props);
 
         this.renderRow = this.renderRow.bind(this);
+        this.renderResultRow = this.renderResultRow.bind(this);
 
         this.state = {
             dataSource: new ListView.DataSource({
                 getRowData: (data, sectionID, rowID) => {
-                    if (rowID == 'clear') return '清空历史记录';
+                    if (rowID === 'clear') return '清空历史记录';
                     return data[sectionID][rowID];
                 },
                 getSectionHeaderData: (data, sectionID) => {
-                    return sectionID == 'history' ? '最近搜过' : '大家都在搜';
+                    return sectionID === 'history' ? '最近搜过' : '大家都在搜';
                 },
                 rowHasChanged: (row1, row2) => row1 !== row2,
                 sectionHeaderHasChanged: (section1, section2) => section1 !== section2,
@@ -50,7 +63,14 @@ export default class Search extends React.Component {
 
             resultDataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
-            })
+            }),
+
+            // 排序视图Y值
+            sortTypeViewY: new Animated.Value(0),
+            // 排序三角角度
+            angleRotation: new Animated.Value(0),
+            // 遮盖层透明度
+            coverViewOpacity: new Animated.Value(0),
         }
     }
 
@@ -58,6 +78,7 @@ export default class Search extends React.Component {
         const {dispatch} = this.props;
         InteractionManager.runAfterInteractions(()=> {
             dispatch(fetchKeywords());
+            dispatch(fetchSortTypes());
         })
     }
 
@@ -97,9 +118,21 @@ export default class Search extends React.Component {
         } else {
             sourceData = {'keywordsList': [Search.keywordsList]};
         }
-
         return (
             <View style={{flex: 1, backgroundColor: 'white'}}>
+                <View style={{position: 'absolute', top: 44, height: Common.window.height-44-20}}>
+                    {Search.searchText ?
+                        this.renderResultView() :
+                        <ListView
+                            dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIdentifiers)}
+                            renderRow={this.renderRow}
+                            renderSectionHeader={this.renderSectionHeader}
+                            enableEmptySections={true}
+                            bounces={false}
+                            style={{height: Common.window.height-64, width: Common.window.width}}
+                        />
+                    }
+                </View>
                 <SearchInputBar
                     backAction={()=>this.props.navigator.pop()}
                     searchAction={this.handleSearchText.bind(this, Search.searchText)}
@@ -108,16 +141,6 @@ export default class Search extends React.Component {
                         dispatch(setupSearchText(text))
                     }}
                 />
-                {Search.searchText ?
-                    this.renderResultView() :
-                    <ListView
-                        dataSource={this.state.dataSource.cloneWithRowsAndSections(sourceData, sectionIDs, rowIdentifiers)}
-                        renderRow={this.renderRow}
-                        renderSectionHeader={this.renderSectionHeader}
-                        enableEmptySections={true}
-                        bounces={false}
-                    />
-                }
             </View>
         )
     }
@@ -157,11 +180,19 @@ export default class Search extends React.Component {
         return (
             <View style={styles.keywordsContainer}>
                 {
-                    keywords.map((keyword) => {
+                    keywords.map((keyword, i) => {
+                        let keywordStyle = [styles.keyword]
+                        let left = i % 2 === 0 ? 0 : Common.window.width / 2;
+                        let top = Math.floor(i / 2) * 44;
+                        keywordStyle.push({
+                            position: 'absolute',
+                            left: left,
+                            top: top,
+                        })
                         return (
                             <TouchableOpacity
                                 key={keyword}
-                                style={styles.keyword}
+                                style={keywordStyle}
                                 activeOpacity={0.75}
                                 onPress={this.handleSearchText.bind(this, keyword)}
                             >
@@ -183,7 +214,7 @@ export default class Search extends React.Component {
 
         const {dispatch} = this.props;
         dispatch(selectKeyword(keyword));
-        dispatch(fetchSearchResults(keyword, page))
+        this.fetchData(keyword, page, canLoadMore, isLoading);
     }
 
     renderSectionHeader(sectionHeader) {
@@ -195,65 +226,312 @@ export default class Search extends React.Component {
     }
 
     renderResultView() {
-        const {Search} = this.props;
+        const {Search, dispatch} = this.props;
+        let topPosition = Search.tags.length > 0 ? 40 : 0;
 
         return (
             <View style={{backgroundColor: 'white'}}>
+                {Search.isLoading ? <Loading /> :
+                    <ListView
+                        dataSource={this.state.resultDataSource.cloneWithRows(Search.searchResultList)}
+                        renderRow={this.renderResultRow}
+                        enableEmptySections={true}
+                        onScroll={this.onScroll}
+                        onEndReached={this.onEndReach.bind(this)}
+                        onEndReachedThreshold={10}
+                        renderFooter={this.renderFooter.bind(this)}
+                        style={{
+                      position: 'absolute',
+                      top: 40 + topPosition,
+                      height: Common.window.height-64-40-topPosition,
+                      width: Common.window.width
+                    }}
+                    />}
+
+                {Search.showSortTypeView ? this.renderCoverView() : null}
+                {this.renderSortTypesView()}
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     bounces={false}
-                    contentContainerStyle={{height: 40, alignItems: 'center'}}
+                    contentContainerStyle={{height: topPosition, alignItems: 'center'}}
+                    style={{width: Common.window.width, backgroundColor: 'white'}}
                 >
-                    {Search.tags.map((tag)=> {
+                    {Search.tags.map((tag, i)=> {
+
+                        let tagStyle = [styles.tag];
+
+                        if (Search.currentTag && Search.currentTag.name == tag.name) {
+                            tagStyle.push({
+                                borderColor: 'red',
+                                color: 'red'
+                            });
+                        }
                         return (
-                            <TouchableOpacity key={tag.name}>
-                                <Text style={styles.tag}>{tag.name}</Text>
+                            <TouchableOpacity
+                                key={i}
+                                onPress={()=>{
+                                    dispatch(selectFoodTag(tag));
+                                    InteractionManager.runAfterInteractions(()=>{
+                                        page = 1;
+                                        canLoadMore = false;
+                                        isLoading = true;
+                                        this.fetchData(Search.searchText, page, canLoadMore, isLoading);
+                                    })
+                                }}
+                            >
+                                <Text style={tagStyle}>{tag.name}</Text>
                             </TouchableOpacity>
                         )
                     })}
                 </ScrollView>
-                <View style={styles.sortTypeCell}>
-                    <Text>营养素排序</Text>
-                </View>
-                <ListView
-                    dataSource={this.state.resultDataSource.cloneWithRows(Search.searchResultList)}
-                    renderRow={this.renderResultRow}
-                    enableEmptySections={true}
-                    style={{height: Common.window.height-144}}
-                />
+                {this.renderSortTypeCell()}
             </View>
         )
     }
 
+    onScroll() {
+        if (!canLoadMore) canLoadMore = true;
+    }
+
+    // 上拉加载
+    onEndReach() {
+        const {Search} = this.props;
+        if (canLoadMore) {
+            page++;
+            isLoading = false;
+            this.fetchData(Search.searchText, page, canLoadMore, isLoading);
+            canLoadMore = false;
+        }
+    }
+
+    renderFooter() {
+        const {Search} = this.props;
+        if (Search.isLoadMore) {
+            return <LoadMoreFooter />
+        }
+    }
+
     renderResultRow(food) {
+        // type: normal or compare
+        let {type} = this.props;
 
         let lightStyle = [styles.healthLight];
-        if (food.health_light == 2) {
+        if (food.health_light === 2) {
             lightStyle.push({backgroundColor: 'orange'})
-        } else if (food.health_light == 3) {
+        } else if (food.health_light === 3) {
             lightStyle.push({backgroundColor: 'red'})
         }
+
+        let foodNameStyle = type === 'normal' ? {width: Common.window.width - 100} : {};
 
         return (
             <TouchableOpacity
                 style={styles.foodsCell}
+                activeOpacity={0.75}
+                onPress={()=>{
+                    if (type === 'normal') {
+                        alert('normal')
+                    } else {
+                        alert('compare')
+                    }
+                }}
             >
                 <View style={{flexDirection: 'row'}}>
                     <Image style={styles.foodIcon} source={{uri: food.thumb_image_url}}/>
                     <View style={styles.titleContainer}>
-                        <Text style={styles.foodName} numberOfLines={1}>{food.name}</Text>
+                        <Text style={foodNameStyle} numberOfLines={1}>{food.name}</Text>
                         <Text style={styles.calory}>
                             {food.calory}
                             <Text style={styles.unit}> 千卡/{food.weight}克</Text>
                         </Text>
                     </View>
                 </View>
-                <View style={lightStyle}/>
+                {type === 'normal' ?
+                    <View style={lightStyle}/> :
+                    <View style={styles.addCompare}>
+                        <Text style={{color: 'red'}}> + 加入对比</Text>
+                    </View>
+                }
             </TouchableOpacity>
         )
     }
 
+    renderSortTypeCell() {
+
+        const {Search, dispatch} = this.props;
+        let sortTypeName = Search.currentSortType ? Search.currentSortType.name : '营养素排序';
+
+        // 升降序/是否推荐
+        let orderByName;
+        if (Search.currentSortType && Search.currentSortType.name !== '常见') {
+            orderByName = Search.orderByAsc ? '由低到高' : '由高到低';
+        } else {
+            orderByName = '推荐食物';
+        }
+        let orderByAscIconSource = Search.orderByAsc ? {uri: 'ic_food_ordering_up'} : {uri: 'ic_food_ordering_down'};
+        let healthIconName = Search.isHealthLight ? 'check-square' : 'square-o';
+
+        return (
+            <View style={styles.sortTypeCell}>
+                <TouchableOpacity
+                    style={{flexDirection: 'row'}}
+                    activeOpacity={0.75}
+                    onPress={()=>{this.handleSortTypesViewAnimation();}}
+                >
+                    <Text>{sortTypeName}</Text>
+                    <Animated.Image
+                        style={{
+                            width: 16,
+                            height: 16,
+                            transform: [{
+                                rotate: this.state.angleRotation.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: ['0deg', '180deg']
+                                })
+                            }]
+                        }}
+                        source={{uri: 'ic_food_ordering'}}
+                    />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.75}
+                    onPress={()=>{
+                        orderByName === '推荐食物' ? dispatch(changeHealthLight())
+                              : dispatch(changeOrderAscStatus());
+
+                        InteractionManager.runAfterInteractions(()=>{
+                                page = 1;
+                                canLoadMore = false;
+                                isLoading = true;
+                                this.fetchData(Search.searchText, page, canLoadMore, isLoading);
+                            })
+                        }}
+                >
+                    {orderByName === '推荐食物' ?
+                        <View style={{flexDirection: 'row'}}>
+                            <Icon name={healthIconName} size={16} color="red" />
+                            <Text style={{color: 'red', marginLeft: 5}}>{orderByName}</Text>
+                        </View> :
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{color: 'red'}}>{orderByName}</Text>
+                            <Image style={{width: 16, height: 16}} source={orderByAscIconSource}/>
+                        </View>}
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    // 排序View动画
+    handleSortTypesViewAnimation() {
+        const {Search, dispatch} = this.props;
+        Animated.sequence([
+            Animated.parallel([
+
+                Animated.timing(this.state.sortTypeViewY, {
+                    toValue: Search.showSortTypeView ? 0 : 1,
+                    duration: 500,
+                }),
+                Animated.timing(this.state.angleRotation, {
+                    toValue: Search.showSortTypeView ? 0 : 1,
+                    duration: 500,
+                })
+            ]),
+            Animated.timing(this.state.coverViewOpacity, {
+                toValue: Search.showSortTypeView ? 0 : 1,
+                duration: 100,
+            })
+        ]).start();
+        // 改变排序视图状态
+        dispatch(changeSortViewStatus());
+    }
+
+    // 遮盖层
+    renderCoverView() {
+        return (
+            <TouchableOpacity
+                style={{position: 'absolute',top: 80}}
+                activeOpacity={1}
+                onPress={()=>this.handleSortTypesViewAnimation()}
+            >
+                <Animated.View
+                    style={{
+                        width: Common.window.width,
+                        height: Common.window.height - 84,
+                        backgroundColor: 'rgba(131, 131, 131, 0.3)',
+                        opacity: this.state.coverViewOpacity,
+                    }}
+                />
+            </TouchableOpacity>
+        )
+    }
+
+    renderSortTypesView() {
+        const {Search, dispatch} = this.props;
+
+        // 根据是否有tag来决定显示位置
+        let topPosition = Search.tags.length > 0 ? 80 : 40;
+
+        // 这里写死了8行数据
+        let height = 8 * (30 + 10) + 10;
+
+        let typesStyle = [styles.sortTypesView];
+        typesStyle.push({
+            top: this.state.sortTypeViewY.interpolate({
+                inputRange: [0, 1],
+                outputRange: [topPosition - height, topPosition]
+            })
+        })
+
+        return (
+            <Animated.View style={typesStyle}>
+                {Search.sortTypesList.map((type, i) => {
+                    let sortTypeStyle = [styles.sortType];
+                    let titleStyle = [];
+
+                    if ((Search.currentSortType && Search.currentSortType.index == type.index)
+                        || (!Search.currentSortType && i === 0)) {
+                        sortTypeStyle.push({
+                            borderColor: 'red'
+                        });
+                        titleStyle.push({color: 'red'})
+                    }
+
+                    return (
+                        <TouchableOpacity
+                            key={i}
+                            style={sortTypeStyle}
+                            onPress={()=>{
+                                this.handleSortTypesViewAnimation();
+                                dispatch(selectSortType(type));
+
+                                InteractionManager.runAfterInteractions(()=> {
+                                    page = 1;
+                                    isLoading = true;
+                                    canLoadMore = false;
+                                    this.fetchData(Search.searchText, page, canLoadMore, isLoading);
+                                })
+                            }}
+                        >
+                            <Text style={titleStyle}>{type.name}</Text>
+                        </TouchableOpacity>
+                    )
+                })}
+            </Animated.View>
+        )
+    }
+
+    // const [page, order_by, order_asc, tags, health_light, isLoadMore, isLoading, health_mode] = params;
+    fetchData(keyword, page, canLoadMore, isLoading) {
+        const {dispatch, Search} = this.props;
+        //  这两个参数默认不添加,设置null用于判断
+        let order_by = Search.currentSortType ? Search.currentSortType.code : null;
+        let health_light = Search.isHealthLight ? 1 : null;
+        let order_asc = Search.orderByAsc ? 'asc' : 'desc';
+        let tags = Search.currentTag ? Search.currentTag.name : '';
+        dispatch(fetchSearchResults(keyword, page, order_by, order_asc, tags, health_light, canLoadMore, isLoading))
+    }
 }
 
 const styles = StyleSheet.create({
@@ -350,10 +628,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
-    foodName: {
-        width: Common.window.width - 15 - 15 - 40 - 15 - 10,
-    },
-
     calory: {
         fontSize: 13,
         color: 'red',
@@ -412,5 +686,12 @@ const styles = StyleSheet.create({
         height: 40,
         justifyContent: 'center',
         padding: 15,
+    },
+
+    addCompare: {
+        borderWidth: 0.5,
+        borderColor: 'red',
+        padding: 5,
+        paddingLeft: 0,
     }
 })

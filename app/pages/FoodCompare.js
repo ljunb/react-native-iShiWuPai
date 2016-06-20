@@ -33,6 +33,9 @@ export default class FoodCompare extends React.Component {
                                 this.props.navigator.push({
                                     name: 'SearchContainer',
                                     component: SearchContainer,
+                                    passProps: {
+                                        type: 'compare'
+                                    }
                                 })
                             })
                         }}

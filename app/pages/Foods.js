@@ -50,6 +50,9 @@ export default class Foods extends React.Component {
                             this.props.navigator.push({
                                 name: 'Search',
                                 component: SearchContainer,
+                                passProps: {
+                                    type: 'normal'
+                                }
                             })
                         })
                     }}

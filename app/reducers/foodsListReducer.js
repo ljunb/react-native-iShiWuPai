@@ -65,12 +65,7 @@ let foodsListReducer = (state = initialState, action)=> {
                 showSubcategoryView: false,
             })
         case types.RESET_FOODS_LIST_STATE:
-            return Object.assign({}, state, {
-                currentSortType: null,
-                showSortTypeView: false,
-                orderByAsc: false,
-                currentSubcategory: null,
-            })
+            return initialState
         default:
             return state
     }

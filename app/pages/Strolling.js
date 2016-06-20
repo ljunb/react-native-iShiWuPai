@@ -81,6 +81,9 @@ export default class Main extends React.Component {
                             this.props.navigator.push({
                                 name: 'Search',
                                 component: SearchContainer,
+                                passProps: {
+                                    type: 'normal'
+                                }
                             })
                         })
                     }}
