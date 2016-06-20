@@ -28,6 +28,7 @@ iShiWuPai是基于React Native和Redux实现的展示型美食类APP。持续更
 
 ## 心得
 >1、state的拥有权
+
 公司项目采用的Flux架构，与视图无关的state数据都保存到了store，参考该做法，iShiWuPai项目中与视图或动画相关的state才放在组件中，而其他state数据则存放在对应reducer中，如：
 ```
 // FoodsList.js 
