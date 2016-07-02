@@ -6,7 +6,6 @@ import {
     TabBarIOS,
     View,
     Text,
-    StyleSheet,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import StrollingContainer from '../containers/StrollingContainer';
@@ -61,11 +60,3 @@ export default class TabBarView extends React.Component {
         )
     }
 }
-
-let styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-})

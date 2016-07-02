@@ -72,8 +72,8 @@ export default class FoodsList extends React.Component {
     handleSortTypesViewAnimation() {
         const {FoodsList, dispatch} = this.props;
         Animated.sequence([
+            // 1)营养素frameY、箭头角度
             Animated.parallel([
-
                 Animated.timing(this.state.sortTypeViewY, {
                     toValue: FoodsList.showSortTypeView ? 0 : 1,
                     duration: 500,
@@ -83,6 +83,7 @@ export default class FoodsList extends React.Component {
                     duration: 500,
                 })
             ]),
+            // 2)遮盖层透明度
             Animated.timing(this.state.coverViewOpacity, {
                 toValue: FoodsList.showSortTypeView ? 0 : 1,
                 duration: 100,
@@ -225,8 +226,7 @@ export default class FoodsList extends React.Component {
         let sub_value = FoodsList.currentSubcategory ? FoodsList.currentSubcategory.id : '';
         dispatch(fetchFoods(kind, category.id, order_by, page, order_asc, canLoadMore, isLoading, sub_value));
     }
-
-
+    
     render() {
         const {category, FoodsList, dispatch} = this.props;
         let currentSubcategoryName = FoodsList.currentSubcategory ? FoodsList.currentSubcategory.name : '全部';

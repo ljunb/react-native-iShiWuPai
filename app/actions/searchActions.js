@@ -96,7 +96,7 @@ export let selectKeyword = (keyword)=> {
 
     return dispatch => {
         dispatch(setupSearchText(keyword))
-        
+
         // 已缓存的搜索记录
         UserDefaults.cachedObject(Common.storeKeys.SEARCH_HISTORY_KEY)
             .then((historyKeywords)=> {
@@ -105,7 +105,7 @@ export let selectKeyword = (keyword)=> {
 
                 // 缓存中已有该搜索记录
                 if (history.indexOf(keyword) != -1) return;
-                
+
                 history.push(keyword);
 
                 UserDefaults.setObject(Common.storeKeys.SEARCH_HISTORY_KEY, history);
@@ -139,7 +139,7 @@ let cacheHistory = (history)=> {
 // 清除搜索历史
 export let clearHistory = ()=> {
     UserDefaults.clearCachedObject(Common.storeKeys.SEARCH_HISTORY_KEY);
-    
+
     return {
         type: types.CLEAR_HISTORY,
     }
@@ -177,7 +177,6 @@ export let selectFoodTag = (tag)=> {
     }
 }
 
-
 export let fetchSortTypes = ()=> {
     let URL = 'http://food.boohee.com/fb/v1/foods/sort_types';
 
@@ -200,8 +199,56 @@ let fetchSortTypesList = ()=> {
 }
 
 let receiveSortTypesList = (sortTypes)=> {
+
+    if (sortTypes.length > 0) {
+        sortTypes.splice(0, 0, {name: '常见'})
+    }
+
     return {
         type: types.RECEIVE_SORT_TYPES_LIST_SEARCH,
         sortTypesList: sortTypes,
+    }
+}
+
+export let selectCompareFood = (food, position)=> {
+    // 选择对比食物,请求食物营养元素信息
+    let URL = 'http://food.boohee.com/fb/v1/foods/' + food.code + '/brief?';
+
+    return dispatch => {
+        dispatch(selectFood(food, position));
+        dispatch(fetchBrief())
+
+        Util.get(URL, response => {
+            dispatch(receiveBrief(response, position))
+        }, error => {
+            console.log('Fetch food brief error: ' + error);
+            dispatch(receiveBrief({}))
+        })
+    }
+}
+
+let fetchBrief = ()=> {
+    return { type: types.FETCH_FOOD_BRIEF }
+}
+
+let receiveBrief = (brief, position)=> {
+    return {
+        type: types.RECEIVE_FOOD_BRIEF,
+        brief: brief,
+        position: position
+    }
+}
+
+let selectFood = (food, position)=> {
+
+    if (position === 'Left') {
+        return {
+            type: types.SELECT_COMPARE_FOOD,
+            leftFood: food
+        }
+    }
+    return {
+        type: types.SELECT_COMPARE_FOOD,
+        rightFood: food
     }
 }

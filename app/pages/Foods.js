@@ -11,8 +11,9 @@ import {
     InteractionManager,
     TouchableOpacity,
 } from 'react-native';
-import Common from '../common/constants';
+
 import {fetchCategories} from '../actions/foodsActions';
+import Common from '../common/constants';
 import SearchHeader from '../components/SearchHeader';
 import Loading from '../components/Loading';
 import FoodsListContainer from '../containers/FoodsListContainer';

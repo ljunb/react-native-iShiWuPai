@@ -31,6 +31,7 @@ export default class FeedDetail extends React.Component {
                     source={{uri: feed.link}}
                     startInLoadingState={true}
                     bounces={false}
+                    scalesPageToFit={true}
                     style={styles.webView}
                 />
                 <ToolBar style={{position: 'absolute', bottom: 0}}/>

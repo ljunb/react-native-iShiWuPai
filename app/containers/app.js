@@ -3,9 +3,7 @@
  */
 import React from 'react';
 import {
-    StyleSheet,
     Navigator,
-    StatusBar,
     View,
 } from 'react-native';
 
@@ -16,7 +14,7 @@ class App extends React.Component {
     render() {
 
         return (
-            <View style={styles.container}>
+            <View style={{flex: 1}}>
                 <StatusBarIOS barStyle="light-content"/>
                 <Navigator
                     initialRoute={{name: 'TabBarView', component: TabBarView}}
@@ -34,11 +32,5 @@ class App extends React.Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    }
-})
 
 export default App;

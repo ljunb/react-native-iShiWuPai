@@ -28,6 +28,7 @@ import {
     selectSortType,
     selectFoodTag,
     fetchSortTypes,
+    selectCompareFood,
 } from '../actions/searchActions';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -83,7 +84,7 @@ export default class Search extends React.Component {
     }
 
     componentWillUnmount() {
-        const {dispatch} = this.props;
+        const { dispatch } = this.props;
         dispatch(resetState());
     }
 
@@ -187,8 +188,8 @@ export default class Search extends React.Component {
                         keywordStyle.push({
                             position: 'absolute',
                             left: left,
-                            top: top,
-                        })
+                            top: top
+                        });
                         return (
                             <TouchableOpacity
                                 key={keyword}
@@ -314,7 +315,8 @@ export default class Search extends React.Component {
 
     renderResultRow(food) {
         // type: normal or compare
-        let {type} = this.props;
+        // comparePosition: Left or Right
+        let { dispatch, type, comparePosition } = this.props;
 
         let lightStyle = [styles.healthLight];
         if (food.health_light === 2) {
@@ -331,9 +333,11 @@ export default class Search extends React.Component {
                 activeOpacity={0.75}
                 onPress={()=>{
                     if (type === 'normal') {
+                        // TODO: push到食物详情
                         alert('normal')
                     } else {
-                        alert('compare')
+                        dispatch(selectCompareFood(food, comparePosition));
+                        this.props.navigator.pop();
                     }
                 }}
             >
@@ -369,7 +373,7 @@ export default class Search extends React.Component {
         } else {
             orderByName = '推荐食物';
         }
-        let orderByAscIconSource = Search.orderByAsc ? {uri: 'ic_food_ordering_up'} : {uri: 'ic_food_ordering_down'};
+        let orderByAscIconSource= Search.orderByAsc ? {uri: 'ic_food_ordering_up'} : {uri: 'ic_food_ordering_down'};
         let healthIconName = Search.isHealthLight ? 'check-square' : 'square-o';
 
         return (
@@ -490,7 +494,7 @@ export default class Search extends React.Component {
                     let sortTypeStyle = [styles.sortType];
                     let titleStyle = [];
 
-                    if ((Search.currentSortType && Search.currentSortType.index == type.index)
+                    if ((Search.currentSortType && Search.currentSortType.index === type.index)
                         || (!Search.currentSortType && i === 0)) {
                         sortTypeStyle.push({
                             borderColor: 'red'

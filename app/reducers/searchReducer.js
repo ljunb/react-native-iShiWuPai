@@ -64,11 +64,6 @@ let searchReducer = (state = initialState, action)=> {
                 showSortTypeView: !state.showSortTypeView,
             })
         case types.RECEIVE_SORT_TYPES_LIST_SEARCH:
-            
-            if (action.sortTypesList.length > 0) {
-                action.sortTypesList.splice(0, 0, {name: '常见'})
-            }
-            
             return Object.assign({}, state, {
                 sortTypesList: action.sortTypesList
             })
