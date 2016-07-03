@@ -36,6 +36,7 @@ import Common from '../common/constants';
 import SearchInputBar from '../components/SearchInputBar';
 import Loading from '../components/Loading';
 import LoadMoreFooter from '../components/LoadMoreFooter';
+import FoodInfoContainer from '../containers/FoodInfoContainer';
 
 let page = 1;
 let canLoadMore = false;
@@ -333,8 +334,13 @@ export default class Search extends React.Component {
                 activeOpacity={0.75}
                 onPress={()=>{
                     if (type === 'normal') {
-                        // TODO: push到食物详情
-                        alert('normal')
+                        this.props.navigator.push({
+                            name: 'FoodInfoContainer',
+                            component: FoodInfoContainer,
+                            passProps: {
+                                food: food
+                            }
+                        })
                     } else {
                         dispatch(selectCompareFood(food, comparePosition));
                         this.props.navigator.pop();

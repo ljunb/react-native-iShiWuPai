@@ -13,7 +13,7 @@ export let fetchFoodInfo = (foodCode)=> {
         
         Util.get(URL, (response) => {
             dispatch(receiveFood(response));
-        }, (error) => {
+        }, (error) => {alert(error)
             console.log(`Fetch food info error: ${error}`);
             dispatch(receiveFood({}))
         })

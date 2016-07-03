@@ -8,7 +8,8 @@ import {
     Image,
     Text,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    InteractionManager,
 } from 'react-native';
 import {
     fetchFoodInfo,
@@ -19,6 +20,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Loading from '../components/Loading';
 import Common from '../common/constants';
 import Header from '../components/Header';
+import FoodAllIngredient from '../pages/FoodAllIngredient';
+
+// 初始显示5个营养元素
+const ingredientProps = ['calory', 'protein', 'fat', 'carbohydrate', 'fiber_dietary'];
 
 export default class FoodInfo extends React.Component {
 
@@ -28,7 +33,7 @@ export default class FoodInfo extends React.Component {
     }
 
     render() {
-        const { FoodInfo, food, dispatch } = this.props;
+        const {FoodInfo, food, dispatch} = this.props;
         let fetchedFood = FoodInfo.food;
         // 所含热量数组
         let units = [];
@@ -60,6 +65,7 @@ export default class FoodInfo extends React.Component {
                     <Loading /> :
                     <ScrollView
                         bounces={false}
+                        showsVerticalScrollIndicator={false}
                         style={styles.scrollView}
                     >
                         <View style={styles.headerSection}>
@@ -99,7 +105,8 @@ export default class FoodInfo extends React.Component {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.caloryContainer}>
-                                <Text>所含热量:</Text>
+                                {(fetchedFood && (fetchedFood.compare.target_name || units.length)) ?
+                                    <Text>所含热量:</Text> : null}
                                 {fetchedFood && fetchedFood.compare.target_name && <View style={styles.compareCell}>
                                     <Image
                                         style={styles.thumbImage}
@@ -133,14 +140,53 @@ export default class FoodInfo extends React.Component {
                                     style={styles.statusCell}
                                     onPress={()=>dispatch(changeUnitsStatus())}
                                 >
-                                    <Icon name={angleName} color="#ccc" size={15} />
+                                    <Icon name={angleName} color="#ccc" size={15}/>
                                     <Text style={{color: 'gray', fontSize: 13, marginLeft: 10}}>{remindTitle}</Text>
                                 </TouchableOpacity>
                                 }
                             </View>
                         </View>
                         <View style={styles.nutritionsSection}>
+                            <View style={styles.nutritionHeader}>
+                                <Text style={{flex: 2, color:'gray', fontSize: 13}}>营养元素</Text>
+                                <Text style={{flex: 1, color:'gray', fontSize: 13, textAlign: 'right'}}>每100克</Text>
+                                <Text style={{flex: 1, color:'gray', fontSize: 13, textAlign: 'right'}}>备注</Text>
+                            </View>
+                            <View>
+                                {fetchedFood && ingredientProps.map((props, i) => {
+                                    let itemUnit = `${fetchedFood.ingredient[props]} ${Common.ingredientMapper[props].unit}`;
+                                    if (fetchedFood.ingredient[props] === '') {
+                                        itemUnit = '-'
+                                    }
 
+                                    return (
+                                        <View key={i} style={styles.nutritionHeader}>
+                                            <Text
+                                                style={{flex: 2, fontSize: 13}}>{Common.ingredientMapper[props].name}</Text>
+                                            <Text
+                                                style={{flex: 1, fontSize: 13, textAlign: 'right'}}>{itemUnit}</Text>
+                                            <Text style={{flex: 1, fontSize: 13, textAlign: 'right', color: 'red'}}>{fetchedFood.lights[props]}</Text>
+                                        </View>
+                                    )
+                                })}
+                                <TouchableOpacity
+                                    activeOpacity={0.75}
+                                    style={styles.statusCell}
+                                    onPress={()=>{
+                                        InteractionManager.runAfterInteractions(() => {
+                                            this.props.navigator.push({
+                                                name: 'FoodAllIngredient',
+                                                component: FoodAllIngredient,
+                                                passProps: {
+                                                    food: fetchedFood
+                                                }
+                                            })
+                                        })
+                                    }}
+                                >
+                                    <Text style={{fontSize: 13, color: 'gray'}}>更多营养元素</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </ScrollView>
                 }
@@ -161,7 +207,7 @@ const styles = StyleSheet.create({
     scrollView: {
         height: Common.window.height - 64 - 40,
         paddingTop: 25,
-        backgroundColor: 'rgb(241, 241, 241)'
+        backgroundColor: 'rgb(241, 241, 241)',
     },
 
     headerSection: {
@@ -248,7 +294,16 @@ const styles = StyleSheet.create({
     nutritionsSection: {
         backgroundColor: 'white',
         marginTop: 10,
-        height: 200,
+        paddingHorizontal: 15,
+        paddingBottom: 40,
+    },
+
+    nutritionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 40,
+        borderBottomWidth: 0.5,
+        borderColor: '#ccc',
     },
 
     toolBar: {
