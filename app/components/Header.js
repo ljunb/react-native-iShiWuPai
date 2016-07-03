@@ -50,6 +50,7 @@ export default class Header extends React.Component {
 
         // 右边图片按钮
         if (this.props.rightIcon != undefined) {
+
             NavigationBar.push(
                 <TouchableOpacity
                     key={'rightIcon'}
@@ -57,7 +58,7 @@ export default class Header extends React.Component {
                     style={styles.rightIcon}
                     onPress={this.props.rightIconAction}
                 >
-                    <Icon color="white" size={30} name={this.props.rightIcon}/>
+                    <Icon color="gray" size={30} name={this.props.rightIcon}/>
                 </TouchableOpacity>
             )
         }

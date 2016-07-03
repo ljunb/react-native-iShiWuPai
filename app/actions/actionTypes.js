@@ -2,19 +2,19 @@
  * Created by ljunb on 16/5/25.
  * action类型
  */
-// 轮播action
+// 轮播actions
 export const FETCH_BANNER_LIST = 'FETCH_BANNER_LIST';
 export const RECEIVE_BANNER_LIST = 'RECEIVE_BANNER_LIST'
 
-// 逛吃列表action
+// 逛吃列表actions
 export const FETCH_FEED_LIST = 'FETCH_FEEDS_LIST';
 export const RECEIVE_FEED_LIST = 'RECEIVE_FEEDS_LIST';
 
-// 食物百科action
+// 食物百科actions
 export const FETCH_CATEGORY_LIST = 'FETCH_CATEGORY_LIST';
 export const RECEIVE_CATEGORY_LIST = 'RECEIVE_CATEGORY_LIST';
 
-// 食物列表action
+// 食物列表actions
 export const FETCH_FOODS_LIST = 'FETCH_FOODS_LIST';
 export const RECEIVE_FOODS_LIST = 'RECEIVE_FOODS_LIST';
 export const FETCH_SORT_TYPES_LIST = 'FETCH_SORT_TYPES_LIST';
@@ -26,7 +26,7 @@ export const ORDER_ASC_OR_DESC = 'ORDER_ASC_OR_DESC';
 export const CHANGE_SUBCATEGORY_STATUS = 'CHANGE_SUBCATEGORY_STATUS';
 export const SELECT_SUBCATEGORY = 'SELECT_SUBCATEGORY';
 
-// 搜索action
+// 搜索actions
 export const FETCH_KEYWORDS_LIST = 'FETCH_KEYWORDS_LIST';
 export const RECEIVE_KEYWORDS_LIST = 'RECEIVE_KEYWORDS_LIST';
 export const SELECT_KEYWORD = 'SELECT_KEYWORD';
@@ -44,9 +44,14 @@ export const ORDER_ASC_OR_DESC_SEARCH = 'ORDER_ASC_OR_DESC_SEARCH';
 export const CHANGE_HEALTH_LIGHT_SEARCH = 'CHANGE_HEALTH_LIGHT_SEARCH';
 export const SELECT_FOOD_TAG = 'SELECT_FOOD_TAG';
 
-// 食物对比action
+// 食物对比actions
 export const SELECT_COMPARE_FOOD = 'SELECT_COMPARE_FOOD';
 export const CLEAR_COMPARE_FOOD = 'CLEAR_COMPARE_FOOD';
 export const FETCH_FOOD_BRIEF = 'FETCH_FOOD_BRIEF';
 export const RECEIVE_FOOD_BRIEF = 'RECEIVE_FOOD_BRIEF';
 export const FOOD_COMPARE_RESET_STATE = 'FOOD_COMPARE_RESET_STATE';
+
+// 食物详情actions
+export const FOOD_INFO_FETCH_FOOD = 'FOOD_INFO_FETCH_FOOD';
+export const FOOD_INFO_RECEIVE_FOOD = 'FOOD_INFO_RECEIVE_FOOD';
+export const FOOD_INFO_CHANGE_SHOW_UNITS_STATUS = 'FOOD_INFO_CHANGE_SHOW_UNITS_STATUS';

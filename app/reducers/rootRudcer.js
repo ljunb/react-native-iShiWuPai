@@ -7,6 +7,7 @@ import Strolling from './strollingReducer';
 import Foods from './foodsReducer';
 import FoodsList from './foodsListReducer';
 import FoodCompare from './foodCompareReducer';
+import FoodInfo from './foodInfoReducer';
 import Search from './searchReducer';
 import User from './userReducer';
 
@@ -15,6 +16,7 @@ export default rootReducer = combineReducers({
     Foods,
     FoodsList,
     FoodCompare,
+    FoodInfo,
     Search,
     User,
 })

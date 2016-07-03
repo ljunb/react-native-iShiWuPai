@@ -28,6 +28,7 @@ import Header from '../components/Header';
 import Loading from '../components/Loading';
 import LoadMoreFooter from '../components/LoadMoreFooter';
 import Common from '../common/constants';
+import FoodInfoContainer from '../containers/FoodInfoContainer';
 
 let page = 1;
 let order_by = 1;
@@ -39,6 +40,8 @@ export default class FoodsList extends React.Component {
 
     constructor(props) {
         super(props);
+        
+        this.renderRow = this.renderRow.bind(this);
 
         this.state = {
             dataSource: new ListView.DataSource({
@@ -315,6 +318,17 @@ export default class FoodsList extends React.Component {
         return (
             <TouchableOpacity
                 style={styles.foodsCell}
+                onPress={()=>{
+                    InteractionManager.runAfterInteractions(()=>{
+                        this.props.navigator.push({
+                            name: 'FoodInfoContainer',
+                            component: FoodInfoContainer,
+                            passProps: {
+                                food: food
+                            }
+                        })
+                    })
+                }}
             >
                 <View style={{flexDirection: 'row'}}>
                     <Image style={styles.foodIcon} source={{uri: food.thumb_image_url}}/>
