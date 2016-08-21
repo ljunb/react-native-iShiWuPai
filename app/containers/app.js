@@ -5,19 +5,23 @@ import React from 'react';
 import {
     Navigator,
     View,
+    Platform
 } from 'react-native';
 
 import StatusBarIOS from '../components/StatusBarIOS';
 import TabBarView from '../containers/TabBarView';
+import Splash from '../pages/Splash';
 
 class App extends React.Component {
     render() {
+        const initialPage = Platform.OS === 'ios' ? TabBarView : Splash;
+        const initialPageName = Platform.OS === 'ios' ? 'TabBarView' : 'Splash';
 
         return (
             <View style={{flex: 1}}>
                 <StatusBarIOS barStyle="light-content"/>
                 <Navigator
-                    initialRoute={{name: 'TabBarView', component: TabBarView}}
+                    initialRoute={{name: initialPageName, component: initialPage}}
                     configureScene={()=>{
                         return  Navigator.SceneConfigs.PushFromRight;
                     }}

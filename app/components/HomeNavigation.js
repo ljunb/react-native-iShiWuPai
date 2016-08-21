@@ -1,18 +1,17 @@
 /**
- * Created by ljunb on 16/5/8.
- * 导航栏标题
+ * Created by ljunb on 16/8/21.
  */
-import React from 'react';
+import React, { Component } from 'react';
 import {
     StyleSheet,
     View,
     Text,
     Image,
     TouchableOpacity,
+    Platform
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default class Header extends React.Component {
+export default class HomeNavigation extends Component {
 
     render() {
 
@@ -104,11 +103,12 @@ const styles = StyleSheet.create({
 
     navigationBarContainer: {
         flexDirection: 'row',
-        height: 44,
+        height: Platform.OS === 'ios' ? 44 : 50,
         alignItems: 'center',
         borderBottomColor: '#ccc',
         borderBottomWidth: 0.5,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        justifyContent: 'space-between'
     },
 
     title: {
@@ -117,13 +117,17 @@ const styles = StyleSheet.create({
     },
 
     leftIcon: {
-        marginLeft: 15,
+        height: Platform.OS === 'ios' ? 44 : 50,
+        width: Platform.OS === 'ios' ? 44 : 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     rightIcon: {
-        position: 'absolute',
-        right: 10,
-        top: 7
+        height: Platform.OS === 'ios' ? 44 : 50,
+        width: Platform.OS === 'ios' ? 44 : 50,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     rightButton: {
