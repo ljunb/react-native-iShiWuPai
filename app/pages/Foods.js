@@ -85,7 +85,7 @@ export default class Foods extends React.Component {
 
     _renderRow(group) {
 
-        let title = '食物分类'
+        let title = '食物分类';
         if (group.kind == 'brand') {
             title = '热门品牌';
         } else if (group.kind == 'restaurant') {
@@ -93,7 +93,7 @@ export default class Foods extends React.Component {
         }
 
         return (
-            <View style={styles.groupCell}>
+            <View style={[styles.groupCell, group.kind == 'restaurant' && {borderBottomWidth: 10}]}>
                 <View style={styles.sectionHeader}>
                     <Text>{title}</Text>
                     <View style={styles.line}/>
@@ -121,6 +121,7 @@ export default class Foods extends React.Component {
                                     <Image
                                         style={styles.categoryIcon}
                                         source={{uri: category.image_url}}
+                                        resizeMode="contain"
                                     />
                                     <Text style={styles.categoryTitle}>{category.name}</Text>
                                 </TouchableOpacity>
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     },
 
     groupCell: {
-        borderTopColor: 'rgb(241, 241, 241)',
+        borderColor: 'rgb(241, 241, 241)',
         borderTopWidth: 10,
         paddingTop: 10,
     },
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
 
     category: {
         width: Common.window.width / 3,
+        height: 60,
         alignItems: 'center',
         marginBottom: 25,
     },

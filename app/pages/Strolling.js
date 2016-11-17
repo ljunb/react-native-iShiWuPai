@@ -98,7 +98,7 @@ export default class Main extends React.Component {
                         enableEmptySections={true}
                         onScroll={this._onScroll}
                         onEndReached={this._onEndReach.bind(this)}
-                        onEndReachedThreshold={10}
+                        onEndReachedThreshold={20}
                         renderFooter={this._renderFooter.bind(this)}
                         style={{height: Common.window.height - 64}}
                         refreshControl={
