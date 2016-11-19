@@ -7,8 +7,6 @@ import {
     View,
     Platform
 } from 'react-native';
-
-import StatusBarIOS from '../components/StatusBarIOS';
 import TabBarView from '../containers/TabBarView';
 import Splash from '../pages/Splash';
 
@@ -19,7 +17,6 @@ class App extends React.Component {
 
         return (
             <View style={{flex: 1}}>
-                <StatusBarIOS barStyle="light-content"/>
                 <Navigator
                     initialRoute={{name: initialPageName, component: initialPage}}
                     configureScene={()=>{

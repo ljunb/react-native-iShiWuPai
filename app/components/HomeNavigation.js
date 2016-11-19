@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
 
     navigationBarContainer: {
         flexDirection: 'row',
-        height: Platform.OS === 'ios' ? 44 : 50,
+        height: Platform.OS === 'ios' ? 64 : 50,
+        paddingTop: Platform.OS === 'ios' ? 20 : 0,
         alignItems: 'center',
         borderBottomColor: '#ccc',
         borderBottomWidth: 0.5,

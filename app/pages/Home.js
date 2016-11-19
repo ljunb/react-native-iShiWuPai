@@ -21,7 +21,7 @@ export default class Home extends Component {
         super(props);
 
         this.state = {
-            currentTitle: '首页'
+            currentTitle: '逛吃'
         }
     }
 
