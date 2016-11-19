@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Constant from '../common/constants';
 import HomeNavigation from '../components/HomeNavigation';
+import ShareView from '../components/ShareView';
 
 const titles = ['首页', '评测', '知识', '美食'];
 
@@ -37,9 +38,9 @@ export default class Home extends Component {
                         />
                     }
                     leftIcon={require('../resource/ic_feed_search.png')}
-                    leftIconAction={()=>alert('left')}
+                    leftIconAction={()=>this.refs['ShareView'].show()}
                     rightIcon={require('../resource/ic_feed_camera.png')}
-                    rightIconAction={()=>alert('right')}
+                    rightIconAction={()=>this.refs['ShareView'].close()}
                 />
                 <View style={styles.titleContainer}>
                     {titles.map((title, i) => {
@@ -60,6 +61,8 @@ export default class Home extends Component {
                 >
 
                 </ScrollView>
+
+                <ShareView ref="ShareView" />
             </View>
         )
     }
