@@ -2,7 +2,7 @@
  * Created by ljunb on 16/5/25.
  */
 import React from 'react';
-import {NetInfo, Animated, StyleSheet, View, Text} from 'react-native';
+import {NetInfo, Animated, StyleSheet, View, Text, Platform} from 'react-native';
 import {Provider} from 'react-redux';
 import store from './store/store';
 import Constants from './common/constants';
@@ -43,7 +43,7 @@ export default class Root extends React.Component {
     render() {
         let positionY = this.state.promptPosition.interpolate({
             inputRange: [0, 1],
-            outputRange: [-30, 0]
+            outputRange: [-30, Platform.OS === 'ios' ? 20 : 0]
         });
         return (
             <View style={{flex: 1}}>

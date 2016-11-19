@@ -37,12 +37,12 @@ $ react-native run-ios
 ## 相关依赖
 ```
     "dependencies": {
-      "react": "^15.1.0",
-      "react-native": "^0.27.2",
-      "react-native-swiper": "^1.4.4",
-      "react-native-vector-icons": "^2.0.2",
-      "react-redux": "^4.4.5",
-      "redux": "^3.5.2",
-      "redux-thunk": "^2.1.0"
-    },
+        "react": "^15.2.1",
+        "react-native": "^0.37.0",
+        "react-native-scrollable-tab-view": "^0.6.0",
+        "react-native-vector-icons": "^2.0.2",
+        "react-redux": "^4.4.6",
+        "redux": "^3.6.0",
+        "redux-thunk": "^2.1.0"
+    }
 ```

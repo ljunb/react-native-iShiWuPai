@@ -12,7 +12,7 @@ import StrollingContainer from '../containers/StrollingContainer';
 import FoodsContainer from '../containers/FoodsContainer';
 import UserContainer from '../containers/UserContainer';
 import Constants from '../common/constants';
-import Home from '../pages/Home';
+import Home from '../pages/Feed';
 import TabBar from '../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 

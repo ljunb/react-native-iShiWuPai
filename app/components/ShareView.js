@@ -21,14 +21,18 @@ export default class ShareView extends Component {
         this.shareChannelItemOnPress = this.shareChannelItemOnPress.bind(this);
         this.state = {
             isShow: false,
+            shareContent: '',
             coverOpacityValue: new Animated.Value(0),
             coverPositionLeftValue: new Animated.Value(0),
             channelBottomValue: new Animated.Value(0),
         }
     }
 
-    show() {
-        this.setState({isShow: true});
+    share(shareContent) {
+        this.setState({
+            isShow: true,
+            shareContent
+        });
         Animated.parallel([
             Animated.timing(this.state.coverOpacityValue, {
                 toValue: 1,

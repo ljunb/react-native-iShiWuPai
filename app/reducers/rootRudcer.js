@@ -9,7 +9,10 @@ import FoodsList from './foodsListReducer';
 import FoodCompare from './foodCompareReducer';
 import FoodInfo from './foodInfoReducer';
 import Search from './searchReducer';
-import User from './userReducer';
+import feedHome from './feed/feedHomeListReducer';
+import feedDelicacy from './feed/feedDelicacyListReducer';
+import feedEvaluating from './feed/feedEvaluatingListReducer';
+import feedKnowledge from './feed/feedKnowledgeListReducer';
 
 export default rootReducer = combineReducers({
     Strolling,
@@ -18,5 +21,8 @@ export default rootReducer = combineReducers({
     FoodCompare,
     FoodInfo,
     Search,
-    User,
+    feedHome,
+    feedDelicacy,
+    feedEvaluating,
+    feedKnowledge
 })
