@@ -15,7 +15,7 @@ import HomeNavigation from '../components/HomeNavigation';
 import ShareView from '../components/ShareView';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FeedsCategoryBar from '../components/FeedsCategoryBar';
-import FeedList from '../containers/feed/FeedHomeListContainer';
+import FeedHomeListContainer from '../containers/feed/FeedHomeListContainer';
 import FeedEvaluatingListContainer from '../containers/feed/FeedEvaluatingListContainer';
 import FeedKnowledgeListContainer from '../containers/feed/FeedKnowledgeListContainer';
 import FeedDelicacyListContainer from '../containers/feed/FeedDelicacyListContainer';
@@ -52,9 +52,9 @@ export default class Home extends Component {
                     renderTabBar={() => <FeedsCategoryBar tabNames={titles}/>}
                     style={{height: Constant.window.height - 64 - 49, width: Constant.window.width}}
                     tabBarPosition='top'
-                    scrollWithoutAnimation={true}
+                    scrollWithoutAnimation={false}
                 >
-                    <FeedList categoryId={1} key="首页" tabLabel="首页"/>
+                    <FeedHomeListContainer categoryId={1} key="首页" tabLabel="首页"/>
                     <FeedEvaluatingListContainer categoryId={2} key="评测" tabLabel="评测"/>
                     <FeedKnowledgeListContainer categoryId={3} key="知识" tabLabel="知识"/>
                     <FeedDelicacyListContainer categoryId={4} key="美食" tabLabel="美食"/>

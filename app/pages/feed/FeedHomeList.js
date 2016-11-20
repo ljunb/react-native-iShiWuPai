@@ -11,6 +11,8 @@ import {
     Image,
     InteractionManager,
     TouchableOpacity,
+    ScrollView,
+    Platform
 } from 'react-native';
 import {
     fetchFeedList
@@ -30,23 +32,47 @@ export default class FeedList extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, categoryId } = this.props;
-        dispatch(fetchFeedList(categoryId))
-        alert(categoryId)
+        const {dispatch, categoryId} = this.props;
+        dispatch(fetchFeedList(categoryId));
     }
+
     render() {
-        const { feedHome } = this.props;
+        const {feedHome} = this.props;
 
         if (feedHome.isLoading) return <Text>Loading</Text>
 
         return (
-            <View style={{flex: 1}}>
-                {feedHome.feedList.map((feed, i) => {
-                    return <Text key={`${feed.item_id}-${i}`}>{feed.title}</Text>
-                })}
+            <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
+                <ScrollView
+                    style={{
+                        flex:1,
+                        width: Common.window.width,
+                        height: Common.window.height - (Platform.OS === 'ios' ? 64 : 50) - 49 - 44
+                    }}
+                    contentContainerStyle={{flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 49}}
+                >
+                    {feedHome.feedList.map((feed, i) => {
+                        return (
+                            <HomeItem key={`${feed.item_id}-${i}`} feed={feed} i={i} feedHome={feedHome}/>
+                        )
+                    })}
+
+                </ScrollView>
             </View>
         )
     }
+}
+
+const HomeItem = ({feed, i, feedHome}) => {
+
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={{height: feedHome.heightArray[i], width: (Common.window.width - 45) / 2, backgroundColor: '#ccc', marginLeft: 15, marginTop: feedHome.cachedArray[i]}}
+        >
+            <Text>{feedHome[i]}</Text>
+        </TouchableOpacity>
+    )
 }
 
 const styles = StyleSheet.create({

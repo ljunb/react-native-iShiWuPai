@@ -23,16 +23,16 @@ let fetchingFeedList = (category)=> {
     let type;
     switch (category) {
         case 1:
-            type = types.FEED_HOME_LIST_FETCH_LIST
+            type = types.FEED_HOME_LIST_FETCH_LIST;
             break;
         case 2:
-            type = types.FEED_EVALUATING_LIST_FETCH_LIST
+            type = types.FEED_EVALUATING_LIST_FETCH_LIST;
             break;
         case 3:
-            type = types.FEED_KNOWLEDGE_LIST_FETCH_LIST
+            type = types.FEED_KNOWLEDGE_LIST_FETCH_LIST;
             break;
         case 4:
-            type = types.FEED_DELICACY_LIST_FETCH_LIST
+            type = types.FEED_DELICACY_LIST_FETCH_LIST;
             break
     }
     return {type}
@@ -42,16 +42,16 @@ let receiveFeedList = (feedList, category)=> {
     let type;
     switch (category) {
         case 1:
-            type = types.FEED_HOME_LIST_RECEIVE_LIST
+            type = types.FEED_HOME_LIST_RECEIVE_LIST;
             break;
         case 2:
-            type = types.FEED_EVALUATING_LIST_RECEIVE_LIST
+            type = types.FEED_EVALUATING_LIST_RECEIVE_LIST;
             break;
         case 3:
-            type = types.FEED_KNOWLEDGE_LIST_RECEIVE_LIST
+            type = types.FEED_KNOWLEDGE_LIST_RECEIVE_LIST;
             break;
         case 4:
-            type = types.FEED_DELICACY_LIST_RECEIVE_LIST
+            type = types.FEED_DELICACY_LIST_RECEIVE_LIST;
             break
     }
     return {
