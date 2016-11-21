@@ -50,7 +50,6 @@ export default class Home extends Component {
                 />
                 <ScrollableTabView
                     renderTabBar={() => <FeedsCategoryBar tabNames={titles}/>}
-                    style={{height: Constant.window.height - 64 - 49, width: Constant.window.width}}
                     tabBarPosition='top'
                     scrollWithoutAnimation={false}
                 >
