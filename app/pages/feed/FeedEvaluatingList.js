@@ -60,7 +60,7 @@ const EvaluatingItem = ({
             onPress={onPress}
         >
             <Image
-                style={{width: Common.window.width - 15*2, height: Common.window.height * 0.3, paddingVertical: 20, alignItems:'center', justifyContent: 'space-between'}}
+                style={{width: Common.window.width - 15*2, height: Common.window.height * 0.3, paddingVertical: 20, alignItems:'center', justifyContent: 'space-between', backgroundColor: '#ccc'}}
                 source={{uri: feed.background}}
             >
                 <Text style={{color: '#fff', fontSize: 13, backgroundColor: 'rgba(1,1,1,0)'}}>{feed.source}</Text>

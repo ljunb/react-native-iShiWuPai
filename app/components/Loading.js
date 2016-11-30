@@ -6,23 +6,34 @@ import {
     StyleSheet,
     View,
     Text,
-    ActivityIndicator,
+    ActivityIndicator
 } from 'react-native';
-
-import Common from '../common/constants';
 
 export default class Loading extends React.Component {
     render() {
+        if (!this.props.isShow) return null;
+
         return (
-            <View style={styles.loading}>
-                <ActivityIndicator color="white"/>
-                <Text style={styles.loadingTitle}>加载中……</Text>
+            <View style={styles.container}>
+                <View style={styles.loading}>
+                    <ActivityIndicator color="white"/>
+                    <Text style={styles.loadingTitle}>加载中……</Text>
+                </View>
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     loading: {
         backgroundColor: 'gray',
         height: 80,
@@ -30,11 +41,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute',
-        top: (Common.window.height-80)/2,
-        left: (Common.window.width-100)/2,
     },
-
     loadingTitle: {
         marginTop: 10,
         fontSize: 14,

@@ -80,6 +80,7 @@ const KnowledgeSingleImageItem = ({
             <Image
                 style={{height: 80, width: (Common.window.width - 15*2 - 10*2) / 3}}
                 source={{uri: feed.images[0]}}
+                defaultSource={require('../../resource/img_news_default.png')}
             />
         </TouchableOpacity>
     )
@@ -103,6 +104,7 @@ const KnowledgeMultiImageItem = ({
                             key={`${img}-${i}`}
                             style={{height: 80, width: (Common.window.width - 15*2 - 10*2) / 3}}
                             source={{uri: img}}
+                            defaultSource={require('../../resource/img_news_default.png')}
                         />
                     )
                 })}

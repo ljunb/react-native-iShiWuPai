@@ -7,12 +7,12 @@ import {
     StyleSheet,
     View,
     Text,
-    ListView,
     Image,
     InteractionManager,
     TouchableOpacity,
     ScrollView,
     Platform,
+    ActivityIndicator
 } from 'react-native';
 import {
     fetchFeedList
@@ -27,7 +27,7 @@ export default class FeedList extends React.Component {
 
     constructor(props) {
         super(props);
-        this._onScrollEndDrag = this._onScrollEndDrag.bind(this);
+        this._onMomentumScrollEnd = this._onMomentumScrollEnd.bind(this);
     }
 
     componentDidMount() {
@@ -37,76 +37,73 @@ export default class FeedList extends React.Component {
         });
     }
 
-    _onScrollEndDrag(event) {
+    _onMomentumScrollEnd(event) {
         const {dispatch, categoryId} = this.props;
         const {contentOffset, layoutMeasurement, contentSize} = event.nativeEvent;
 
         let contentSizeH = contentSize.height;
         let viewBottomY = contentOffset.y + layoutMeasurement.height;
 
-        canLoadMore = viewBottomY > contentSizeH;
-        // 上拖加载更多
-        if (viewBottomY - contentSizeH >= 20 && canLoadMore) {
+        canLoadMore = viewBottomY >= contentSizeH;
+
+        if (Math.abs(viewBottomY - contentSizeH) <= 40 && canLoadMore) {
             page++;
             dispatch(fetchFeedList(categoryId, page));
-
             canLoadMore = false;
-            console.log(page)
         }
-
-        console.log(contentSizeH + ' : ' + viewBottomY + ' : ' + contentOffset.y)
     }
-
 
     render() {
         const {feedHome} = this.props;
-
-        if (feedHome.isLoading) return <Text>Loading</Text>
 
         let scrollViewH = Common.window.height - (Platform.OS === 'ios' ? 64 : 50) - 44 - 49;
 
         return (
             <View style={{backgroundColor: '#f5f5f5', flex: 1}}>
+                {!feedHome.isLoading &&
                 <ScrollView
                     ref={scrollView => this.scrollView = scrollView}
                     style={{width: Common.window.width, height: scrollViewH}}
-                    contentContainerStyle={{paddingBottom: 0}}
                     automaticallyAdjustContentInsets={false}
                     removeClippedSubviews={true}
                     scrollEventThrottle={16}
-                    onScrollEndDrag={this._onScrollEndDrag}
+                    onMomentumScrollEnd={this._onMomentumScrollEnd}
                     bounces={true}
                 >
-                    <View style={{
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        height: feedHome.maxHeight,
-                        overflow: 'hidden'
-                    }}>
+                    <View style={[styles.contentContainer, {height: feedHome.maxHeight + 40}]}>
                         {feedHome.feedList.map((feed, i) => {
                             return (
                                 <HomeItem
                                     key={`${feed.item_id}-${i}`}
-                                    feed={feed} i={i}
+                                    feed={feed}
                                     feedHome={feedHome}
                                     data={feedHome.cachedArray[i]}
                                 />
                             )
                         })}
+                        <View style={[styles.loadingContainer, {top: feedHome.maxHeight}]}>
+                            <ActivityIndicator />
+                            <Text style={{fontSize: 14, marginLeft: 5}}>正在加载更多的数据...</Text>
+                        </View>
                     </View>
-
                 </ScrollView>
+                }
+                <Loading
+                    ref={loadingView => this.loadingView = loadingView}
+                    isShow={feedHome.isLoading}
+                />
             </View>
         )
     }
 }
 
-const HomeItem = ({feed, i, feedHome, data}) => {
+const HomeItem = ({feed, feedHome, data}) => {
 
-    const {cachedArray} = feedHome;
     let screenW = Common.window.width;
     let width = (screenW - 15 * 2 - 10) / 2;
     let imageH = feed.content_type != 5 ? width + 50 : width;
+
+    // 返回的数据中，头像出现null的情况，所以source仍然做个判断
     let publisherAvatar = feed.publisher_avatar ? {uri: feed.publisher_avatar} : require('../../resource/img_default_avatar.png')
 
     return (
@@ -122,7 +119,11 @@ const HomeItem = ({feed, i, feedHome, data}) => {
                 flex: 1
             }}
         >
-            <Image style={{width: width, height: imageH}} source={{uri: feed.card_image.split('?')[0]}}/>
+            <Image
+                style={{width: width, height: imageH}}
+                source={{uri: feed.card_image.split('?')[0]}}
+                defaultSource={require('../../resource/img_horizontal_default.png')}
+            />
             {feed.content_type == 5 &&
             <View style={{
                 height: data.titleHeight,
@@ -137,7 +138,7 @@ const HomeItem = ({feed, i, feedHome, data}) => {
                     borderBottomWidth: Common.window.onePR,
                     borderColor: '#ccc'
                 }}>
-                    <Text style={{fontSize: 14, color: 'black'}}>{feed.title}</Text>
+                    <Text style={{fontSize: 14, color: 'black'}} numberOfLines={1}>{feed.title}</Text>
                     {feed.description != '' &&
                     <Text style={{color: 'gray', fontSize: 13}} numberOfLines={2}>{feed.description}</Text>
                     }
@@ -153,8 +154,17 @@ const HomeItem = ({feed, i, feedHome, data}) => {
                 paddingHorizontal: 4
             }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image style={{height: 30, width: 30, borderRadius: 15}} source={publisherAvatar}/>
-                    <Text style={{fontSize: 11, color: 'gray', marginLeft: 8}}>{feed.publisher}</Text>
+                    <Image
+                        style={{height: 30, width: 30, borderRadius: 15}}
+                        source={publisherAvatar}
+                        defaultSource={require('../../resource/img_default_avatar.png')}
+                    />
+                    <Text
+                        style={{fontSize: 11, color: 'gray', marginLeft: 8, width: width * 0.4}}
+                        numberOfLines={1}
+                    >
+                        {feed.publisher}
+                    </Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image style={{height: 12, width: 12}} source={require('../../resource/ic_feed_like.png')}/>
@@ -167,8 +177,18 @@ const HomeItem = ({feed, i, feedHome, data}) => {
 }
 
 const styles = StyleSheet.create({
-
-    listView: {
-        flex: 1,
+    contentContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        overflow: 'hidden'
+    },
+    loadingContainer: {
+        height: 40,
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
     }
 })
