@@ -3,14 +3,12 @@
  */
 import React, {Component} from 'react';
 import {
-    StyleSheet,
     View,
     Text,
     Image,
     TouchableOpacity,
     ScrollView,
 } from 'react-native';
-import Constant from '../common/constants';
 import HomeNavigation from '../components/HomeNavigation';
 import ShareView from '../components/ShareView';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -63,20 +61,3 @@ export default class Home extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-
-    titleContainer: {
-        height: 40,
-        flexDirection: 'row',
-        borderBottomWidth: 0.5,
-        borderColor: '#ccc'
-    },
-
-    title: {
-        width: Constant.window.width / 4,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-})

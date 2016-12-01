@@ -6,18 +6,26 @@ import * as types from '../../actions/actionTypes';
 const initialState = {
     feedList: [],
     isLoading: true,
+    isLoadMore: false,
 }
 
 let feedListReducer = (state = initialState, {type, payload})=>{
     
     switch (type) {
         case types.FEED_KNOWLEDGE_LIST_FETCH_LIST:
-            return Object.assign({}, state, {
-                ...state,
-            });
+            if (payload.page == 1) {
+                return Object.assign({}, state, {
+                    ...initialState,
+                })
+            } else {
+                return Object.assign({}, state, {
+                    isLoading: false,
+                    isLoadMore: true
+                })
+            }
         case types.FEED_KNOWLEDGE_LIST_RECEIVE_LIST:
             return Object.assign({}, state, {
-                feedList: payload.feedList,
+                feedList: state.isLoadMore ? state.feedList.concat(payload.feedList) : payload.feedList,
                 isLoading: false,
             })
         default:

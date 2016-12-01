@@ -1,6 +1,6 @@
 /**
  * Created by ljunb on 2016/11/19.
- * 逛吃-美食
+ * 逛吃-知识
  */
 import React from 'react';
 import {
@@ -11,18 +11,29 @@ import {
     Image,
     InteractionManager,
     TouchableOpacity,
+    RefreshControl
 } from 'react-native';
 import {
     fetchFeedList
 } from '../../actions/feedListActions';
-import Common from '../../common/constants';
 import Loading from '../../components/Loading';
+import LoadMoreFooter from '../../components/LoadMoreFooter';
+import FeedSingleImageCell from '../../components/FeedSingleImageCell';
+import FeedMultiImageCell from '../../components/FeedMultiImageCell';
 
+let page = 1;
+let canLoadMore = false;
 
-export default class FeedDelicacyList extends React.Component {
+export default class FeedKnowledgeList extends React.Component {
 
     constructor(props) {
         super(props);
+        this._renderRow = this._renderRow.bind(this);
+        this._onPressCell = this._onPressCell.bind(this);
+        this._onEndReach = this._onEndReach.bind(this);
+        this._onRefresh = this._onRefresh.bind(this);
+        this._onScroll = this._onScroll.bind(this);
+        this._renderFooter = this._renderFooter.bind(this);
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2,
@@ -31,101 +42,86 @@ export default class FeedDelicacyList extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, categoryId } = this.props;
-        dispatch(fetchFeedList(categoryId))
+        const {dispatch, categoryId} = this.props;
+        dispatch(fetchFeedList(categoryId, page))
     }
+
+    _renderRow(feed) {
+        let cellData = {
+            title: feed.title,
+            source: feed.source,
+            viewCount: feed.tail,
+            images: feed.images
+        };
+
+        if (feed.images.length == 1) {
+            return <FeedSingleImageCell {...cellData} onPress={() => alert(feed.title)}/>
+        }
+        return <FeedMultiImageCell {...cellData} onPress={() => alert(feed.title)} />
+    }
+
+    _onPressCell() {
+
+    }
+
+    _onScroll() {
+        if (!canLoadMore) canLoadMore = true;
+    }
+
+    _onRefresh() {
+        const {dispatch, categoryId} = this.props;
+        page = 1;
+        canLoadMore = false;
+        dispatch(fetchFeedList(categoryId, page))
+    }
+
+    _onEndReach() {
+        if (canLoadMore) {
+            const {dispatch, categoryId} = this.props;
+            page++;
+            dispatch(fetchFeedList(categoryId, page));
+            canLoadMore = false;
+        }
+    }
+
+    _renderFooter() {
+        const {feedDelicacy} = this.props;
+
+        if (feedDelicacy.isLoadMore) return <LoadMoreFooter/>
+    }
+
     render() {
-        const { feedDelicacy } = this.props;
+        const {feedDelicacy} = this.props;
         return (
-            <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
+            <View style={styles.listView}>
+                {!feedDelicacy.isLoading &&
                 <ListView
                     dataSource={this.state.dataSource.cloneWithRows(feedDelicacy.feedList)}
-                    renderRow={(feed) => {
-                        if (feed.images.length == 1) {
-                            return <KnowledgeSingleImageItem onPress={()=>alert(feed.title)} feed={feed}/>
-                        }
-                        return <KnowledgeMultiImageItem onPress={()=>alert(feed.title)} feed={feed}/>
-                    }}
+                    renderRow={this._renderRow}
                     enableEmptySections={true}
+                    initialListSize={3}
+                    onScroll={this._onScroll}
+                    onEndReached={this._onEndReach}
+                    onEndReachedThreshold={30}
+                    renderFooter={this._renderFooter}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={feedDelicacy.isLoading}
+                            onRefresh={this._onRefresh}
+                            color={['rgb(217, 51, 58)']}
+                        />
+                    }
                 />
+                }
+                <Loading isShow={feedDelicacy.isLoading}/>
             </View>
         )
     }
 }
 
-
-const KnowledgeSingleImageItem = ({
-    feed,
-    onPress
-}) => {
-    return (
-        <TouchableOpacity
-            activeOpacity={0.75}
-            style={{width: Common.window.width, padding: 15, marginTop: 15, flexDirection:'row', backgroundColor: '#fff', justifyContent: 'space-between'}}
-            onPress={onPress}
-        >
-            <View style={{justifyContent: 'space-between'}}>
-                <Text numberOfLines={2} style={{width: Common.window.width * 0.55, fontSize: 15}}>{feed.title}</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <Text style={{color: 'rgb(150,150,150)', fontSize: 13}}>{feed.source}</Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                        <Image
-                            style={{width: 14, height: 14, marginRight: 3}}
-                            source={require('../../resource/ic_feed_watch.png')}
-                        />
-                        <Text style={{color: 'rgb(150,150,150)', fontSize: 13}}>{feed.tail}</Text>
-                    </View>
-                </View>
-            </View>
-            <Image
-                style={{height: 80, width: (Common.window.width - 15*2 - 10*2) / 3}}
-                source={{uri: feed.images[0]}}
-                defaultSource={require('../../resource/img_news_default.png')}
-            />
-        </TouchableOpacity>
-    )
-}
-
-const KnowledgeMultiImageItem = ({
-    feed,
-    onPress
-}) => {
-    return (
-        <TouchableOpacity
-            activeOpacity={0.75}
-            style={{width: Common.window.width, padding: 15, marginTop: 15, backgroundColor: '#fff'}}
-            onPress={onPress}
-        >
-            <Text numberOfLines={1} style={{width: Common.window.width - 15*2, fontSize: 15}}>{feed.title}</Text>
-            <View style={{flexDirection: 'row', marginTop: 10, justifyContent: 'space-between'}}>
-                {feed.images.map((img, i) => {
-                    return (
-                        <Image
-                            key={`${img}-${i}`}
-                            style={{height: 80, width: (Common.window.width - 15*2 - 10*2) / 3}}
-                            source={{uri: img}}
-                            defaultSource={require('../../resource/img_news_default.png')}
-                        />
-                    )
-                })}
-            </View>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
-                <Text style={{color: 'rgb(150,150,150)', fontSize: 13}}>{feed.source}</Text>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 20}}>
-                    <Image
-                        style={{width: 14, height: 14, marginRight: 3}}
-                        source={require('../../resource/ic_feed_watch.png')}
-                    />
-                    <Text style={{color: 'rgb(150,150,150)', fontSize: 13}}>{feed.tail}</Text>
-                </View>
-            </View>
-        </TouchableOpacity>
-    )
-}
-
 const styles = StyleSheet.create({
-
     listView: {
         flex: 1,
+        backgroundColor: '#f5f5f5'
     }
 })

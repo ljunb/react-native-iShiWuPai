@@ -18,7 +18,10 @@ let feedListReducer = (state = initialState, {type, payload}) => {
     switch (type) {
         case types.FEED_HOME_LIST_FETCH_LIST:
             if (payload.page == 1) {
-                return initialState
+                return Object.assign({}, state, {
+                    ...initialState,
+                    cachedHeights: []
+                })
             } else {
                 return Object.assign({}, state, {
                     isLoading: false,

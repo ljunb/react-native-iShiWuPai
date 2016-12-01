@@ -12,7 +12,8 @@ import {
     TouchableOpacity,
     ScrollView,
     Platform,
-    ActivityIndicator
+    ActivityIndicator,
+    RefreshControl
 } from 'react-native';
 import {
     fetchFeedList
@@ -28,6 +29,7 @@ export default class FeedList extends React.Component {
     constructor(props) {
         super(props);
         this._onMomentumScrollEnd = this._onMomentumScrollEnd.bind(this);
+        this._onRefresh = this._onRefresh.bind(this);
     }
 
     componentDidMount() {
@@ -53,6 +55,13 @@ export default class FeedList extends React.Component {
         }
     }
 
+    _onRefresh() {
+        const { dispatch, categoryId } = this.props;
+        page = 1;
+        canLoadMore = false;
+        dispatch(fetchFeedList(categoryId, page))
+    }
+
     render() {
         const {feedHome} = this.props;
 
@@ -69,6 +78,13 @@ export default class FeedList extends React.Component {
                     scrollEventThrottle={16}
                     onMomentumScrollEnd={this._onMomentumScrollEnd}
                     bounces={true}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={feedHome.isLoading}
+                            onRefresh={this._onRefresh}
+                            colors={['rgb(217, 51, 58)']}
+                        />
+                    }
                 >
                     <View style={[styles.contentContainer, {height: feedHome.maxHeight + 40}]}>
                         {feedHome.feedList.map((feed, i) => {
@@ -88,10 +104,7 @@ export default class FeedList extends React.Component {
                     </View>
                 </ScrollView>
                 }
-                <Loading
-                    ref={loadingView => this.loadingView = loadingView}
-                    isShow={feedHome.isLoading}
-                />
+                <Loading isShow={feedHome.isLoading}/>
             </View>
         )
     }
