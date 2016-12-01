@@ -9,8 +9,8 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    Platform
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class Header extends React.Component {
 

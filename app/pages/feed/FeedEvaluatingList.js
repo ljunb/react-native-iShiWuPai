@@ -67,7 +67,7 @@ export default class FeedEvaluatingList extends React.Component {
     _renderFooter() {
         const {feedEvaluating} = this.props;
 
-        if (feedEvaluating.isLoadMore) return <LoadMoreFooter/>;
+        if (feedEvaluating.isLoadMore || page == 1) return <LoadMoreFooter/>;
     }
 
     render() {

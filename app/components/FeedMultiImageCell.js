@@ -7,9 +7,10 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Image
+    Image,
+    Dimensions
 } from 'react-native';
-import Common from '../common/constants';
+const screenW = Dimensions.get('window').width;
 
 const FeedMultiImageCell = ({
     title,
@@ -21,16 +22,16 @@ const FeedMultiImageCell = ({
     return (
         <TouchableOpacity
             activeOpacity={0.75}
-            style={{width: Common.window.width, padding: 15, marginTop: 15, backgroundColor: '#fff'}}
+            style={{width: screenW, padding: 15, marginTop: 15, backgroundColor: '#fff'}}
             onPress={onPress}
         >
-            <Text numberOfLines={1} style={{width: Common.window.width - 15 * 2, fontSize: 15}}>{title}</Text>
+            <Text numberOfLines={1} style={{width: screenW - 15 * 2, fontSize: 15}}>{title}</Text>
             <View style={{flexDirection: 'row', marginTop: 10, justifyContent: 'space-between'}}>
                 {images.map((img, i) => {
                     return (
                         <Image
                             key={`${img}-${i}`}
-                            style={{height: 80, width: (Common.window.width - 15 * 2 - 10 * 2) / 3}}
+                            style={{height: 80, width: (screenW - 15 * 2 - 10 * 2) / 3}}
                             source={{uri: img}}
                             defaultSource={require('../resource/img_news_default.png')}
                         />

@@ -2,7 +2,7 @@
  * Created by ljunb on 2016/11/19.
  * 逛吃-首页
  */
-import React from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     View,
@@ -20,11 +20,12 @@ import {
 } from '../../actions/feedListActions';
 import Common from '../../common/constants';
 import Loading from '../../components/Loading';
+import FeedDetail from './FeedDetail';
 
 let canLoadMore = false;
 let page = 1;
 
-export default class FeedList extends React.Component {
+export default class FeedList extends Component {
 
     constructor(props) {
         super(props);
@@ -56,10 +57,17 @@ export default class FeedList extends React.Component {
     }
 
     _onRefresh() {
-        const { dispatch, categoryId } = this.props;
+        const {dispatch, categoryId} = this.props;
         page = 1;
         canLoadMore = false;
         dispatch(fetchFeedList(categoryId, page))
+    }
+
+    _onPressCell(feed) {
+        this.props.navigator.push({
+            component: FeedDetail,
+            passProps: {feed}
+        })
     }
 
     render() {
@@ -92,8 +100,8 @@ export default class FeedList extends React.Component {
                                 <HomeItem
                                     key={`${feed.item_id}-${i}`}
                                     feed={feed}
-                                    feedHome={feedHome}
                                     data={feedHome.cachedArray[i]}
+                                    onPress={()=>this._onPressCell(feed)}
                                 />
                             )
                         })}
@@ -110,14 +118,18 @@ export default class FeedList extends React.Component {
     }
 }
 
-const HomeItem = ({feed, feedHome, data}) => {
+const HomeItem = ({
+    feed,
+    data,
+    onPress
+}) => {
 
     let screenW = Common.window.width;
     let width = (screenW - 15 * 2 - 10) / 2;
     let imageH = feed.content_type != 5 ? width + 50 : width;
 
     // 返回的数据中，头像出现null的情况，所以source仍然做个判断
-    let publisherAvatar = feed.publisher_avatar ? {uri: feed.publisher_avatar} : require('../../resource/img_default_avatar.png')
+    let publisherAvatar = feed.publisher_avatar ? {uri: feed.publisher_avatar} : require('../../resource/img_default_avatar.png');
 
     return (
         <TouchableOpacity
@@ -131,6 +143,7 @@ const HomeItem = ({feed, feedHome, data}) => {
                 position: 'absolute',
                 flex: 1
             }}
+            onPress={onPress}
         >
             <Image
                 style={{width: width, height: imageH}}

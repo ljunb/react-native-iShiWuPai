@@ -26,7 +26,7 @@ export default class HomeNavigation extends Component {
                     style={styles.leftIcon}
                     onPress={this.props.leftIconAction}
                 >
-                    <Image style={{height: 20, width: 20}} source={this.props.leftIcon}/>
+                    <Image style={{height: this.props.leftIconSize || 20, width: this.props.leftIconSize || 20}} source={this.props.leftIcon} resizeMode={'contain'}/>
                 </TouchableOpacity>
             )
         }
@@ -57,7 +57,7 @@ export default class HomeNavigation extends Component {
                     style={styles.rightIcon}
                     onPress={this.props.rightIconAction}
                 >
-                    <Image style={{height: 20, width: 20}} source={this.props.rightIcon} />
+                    <Image style={{height: this.props.rightIconSize || 20, width: this.props.rightIconSize || 20}} source={this.props.rightIcon} resizeMode={'contain'}/>
                 </TouchableOpacity>
             )
         }
@@ -75,21 +75,6 @@ export default class HomeNavigation extends Component {
                 </TouchableOpacity>
             )
         }
-
-        if (this.props.rightMenu != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightMenu'}
-                    activeOpacity={0.75}
-                    style={styles.rightMenu}
-                    onPress={this.props.rightMenuAction}
-                >
-                    <Text style={{color: 'gray', fontSize: 12}}>{this.props.rightMenu}</Text>
-                    <Image source={{uri: 'ic_food_ordering'}} style={{width: 16, height: 16}}/>
-                </TouchableOpacity>
-            )
-        }
-
 
         return (
             <View style={styles.navigationBarContainer}>
@@ -109,12 +94,13 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         borderBottomWidth: 0.5,
         backgroundColor: 'white',
-        justifyContent: 'space-between'
+        justifyContent: 'center'
     },
 
     title: {
-        fontSize: 15,
+        fontSize: 16,
         marginLeft: 15,
+        color: 'black'
     },
 
     leftIcon: {
@@ -122,6 +108,9 @@ const styles = StyleSheet.create({
         width: Platform.OS === 'ios' ? 44 : 50,
         justifyContent: 'center',
         alignItems: 'center',
+        position: 'absolute',
+        top: Platform.OS === 'ios' ? 20 : 0,
+        left: 0
     },
 
     rightIcon: {
@@ -129,6 +118,9 @@ const styles = StyleSheet.create({
         width: Platform.OS === 'ios' ? 44 : 50,
         justifyContent: 'center',
         alignItems: 'center',
+        position: 'absolute',
+        top: Platform.OS === 'ios' ? 20 : 0,
+        right: 0
     },
 
     rightButton: {
@@ -142,14 +134,5 @@ const styles = StyleSheet.create({
     buttonTitleFont: {
         color: 'white',
         fontSize: 15,
-    },
-
-    rightMenu: {
-        position: 'absolute',
-        right: 10,
-        height: 44,
-        justifyContent: 'center',
-        flexDirection: 'row',
-        alignItems: 'center'
     },
 })

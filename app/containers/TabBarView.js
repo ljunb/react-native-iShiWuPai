@@ -7,12 +7,7 @@ import {
     View,
     Text,
 } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import StrollingContainer from '../containers/StrollingContainer';
-import FoodsContainer from '../containers/FoodsContainer';
-import UserContainer from '../containers/UserContainer';
-import Constants from '../common/constants';
-import Home from '../pages/Feed';
+import Home from '../pages/feed/Feed';
 import TabBar from '../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 
@@ -43,9 +38,9 @@ export default class TabBarView extends React.Component {
                 locked={true}
                 scrollWithoutAnimation={true}
             >
-                <Home tabLabel="Home" />
-                <Text tabLabel="Search">食物百</Text>
-                <Text tabLabel="My">我的</Text>
+                <Home tabLabel="Home" navigator={this.props.navigator}/>
+                <Text tabLabel="Search" navigator={this.props.navigator}>食物百</Text>
+                <Text tabLabel="My" navigator={this.props.navigator}>我的</Text>
             </ScrollableTabView>
         )
     }

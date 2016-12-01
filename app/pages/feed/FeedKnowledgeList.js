@@ -88,7 +88,7 @@ export default class FeedKnowledgeList extends React.Component {
     _renderFooter() {
         const {feedKnowledge} = this.props;
 
-        if (feedKnowledge.isLoadMore) return <LoadMoreFooter/>;
+        if (feedKnowledge.isLoadMore || page == 1) return <LoadMoreFooter/>;
     }
 
     render() {

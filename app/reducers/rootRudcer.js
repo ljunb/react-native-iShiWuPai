@@ -3,7 +3,6 @@
  * 根reducer
  */
 import { combineReducers } from 'redux';
-import Strolling from './strollingReducer';
 import Foods from './foodsReducer';
 import FoodsList from './foodsListReducer';
 import FoodCompare from './foodCompareReducer';
@@ -15,7 +14,6 @@ import feedEvaluating from './feed/feedEvaluatingListReducer';
 import feedKnowledge from './feed/feedKnowledgeListReducer';
 
 export default rootReducer = combineReducers({
-    Strolling,
     Foods,
     FoodsList,
     FoodCompare,
