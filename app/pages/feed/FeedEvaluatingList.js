@@ -18,6 +18,7 @@ import {
 import Common from '../../common/constants';
 import Loading from '../../components/Loading';
 import LoadMoreFooter from '../../components/LoadMoreFooter';
+import FeedDetail from './FeedDetail';
 
 let page = 1;
 let canLoadMore = false;
@@ -70,6 +71,13 @@ export default class FeedEvaluatingList extends React.Component {
         if (feedEvaluating.isLoadMore || page == 1) return <LoadMoreFooter/>;
     }
 
+    _onPressCell(feed) {
+        this.props.navigator.push({
+            component: FeedDetail,
+            passProps: {feed}
+        })
+    }
+
     render() {
         const {feedEvaluating} = this.props;
         return (
@@ -77,7 +85,7 @@ export default class FeedEvaluatingList extends React.Component {
                 {!feedEvaluating.isLoading &&
                 <ListView
                     dataSource={this.state.dataSource.cloneWithRows(feedEvaluating.feedList)}
-                    renderRow={(feed) => <EvaluatingItem onPress={() => alert(feed.title)} feed={feed}/>}
+                    renderRow={(feed) => <EvaluatingItem onPress={()=>this._onPressCell(feed)} feed={feed}/>}
                     enableEmptySections={true}
                     initialListSize={2}
                     onScroll={this._onScroll}

@@ -34,10 +34,10 @@ export default class FeedList extends Component {
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions(() => {
+        // InteractionManager.runAfterInteractions(() => {
             const {dispatch, categoryId} = this.props;
             dispatch(fetchFeedList(categoryId, page));
-        });
+        // });
     }
 
     _onMomentumScrollEnd(event) {

@@ -22,18 +22,25 @@ export default class FeedDetail extends Component {
         const {feed} = this.props;
 
         return (
-            feed.link ?
+            (feed.link && feed.content_type == 6) ?
                 <WebViewComponent
                     popAction={() => this.props.navigator.pop()}
                     uri={feed.link}
                 /> :
-                <View>
-                    <CardImageComponent
-                        popAction={() => this.props.navigator.pop()}
-                        shareAction={() => this.shareView.share()}
-                        collectAction={() => alert('collect')}
-                        feed={feed}
-                    />
+                <View style={{flex: 1}}>
+                    {feed.type === 'food_card' ?
+                        <FoodCardComponent
+                            popAction={() => this.props.navigator.pop()}
+                            shareAction={() => this.shareView.share()}
+                            collectAction={() => alert('collect')}
+                            feed={feed}
+                        />
+                        :
+                        <FoodNewsComponent
+                            popAction={() => this.props.navigator.pop()}
+                            uri={feed.link}
+                        />
+                    }
                     <ShareView ref={shareView => this.shareView = shareView}/>
                 </View>
         )
@@ -62,7 +69,7 @@ const WebViewComponent = ({
     )
 };
 
-const CardImageComponent = ({
+const FoodCardComponent = ({
     popAction,
     shareAction,
     collectAction,
@@ -143,6 +150,61 @@ const CardImageComponent = ({
     )
 };
 
+const FoodNewsComponent = ({
+    popAction,
+    uri
+}) => {
+    return (
+        <View style={{flex: 1, backgroundColor: 'white'}}>
+            <Header
+                leftIconAction={popAction}
+                title='资讯详情'
+                leftIcon={require('../../resource/ic_back_dark.png')}
+            />
+            <WebView
+                source={{uri}}
+                startInLoadingState={true}
+                bounces={false}
+                scalesPageToFit={true}
+                style={[styles.webView, {height: Common.window.height - 44 - Platform.OS === 'ios' ? 64 : 50}]}
+                automaticallyAdjustContentInsets={false}
+            />
+            <View style={{
+                flexDirection: 'row',
+                height: 44,
+                backgroundColor: '#fff',
+                borderTopWidth: 1,
+                borderColor: '#d9d9d9',
+                alignItems: 'center'
+            }}>
+                <TouchableOpacity
+                    activeOpacity={0.75}
+                    style={{flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
+                    onPress={() => alert('share')}
+                >
+                    <Image style={{width: 14, height: 14}}
+                           source={require('../../resource/ic_share_black.png')}
+                           resizeMode="contain"
+                    />
+                    <Text style={{marginLeft: 5}}>分享</Text>
+                </TouchableOpacity>
+                <View style={[styles.line]}/>
+                <TouchableOpacity
+                    activeOpacity={0.75}
+                    style={{flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
+                    onPress={() => alert('share')}
+                >
+                    <Image style={{width: 18, height: 18}}
+                           source={require('../../resource/ic_article_collect.png')}
+                           resizeMode="contain"
+                    />
+                    <Text style={{marginLeft: 5}}>收藏</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+}
+
 const styles = StyleSheet.create({
     webView: {
         width: Common.window.width,
@@ -162,5 +224,10 @@ const styles = StyleSheet.create({
         height: Common.window.height - (Platform.OS === 'ios' ? 64 : 50) - 44,
         width: Common.window.width,
         backgroundColor: '#f5f5f5'
+    },
+    line: {
+        height: 30,
+        width: 0.5,
+        backgroundColor: '#ccc'
     }
 })

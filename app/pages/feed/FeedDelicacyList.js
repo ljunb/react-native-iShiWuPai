@@ -20,6 +20,7 @@ import Loading from '../../components/Loading';
 import LoadMoreFooter from '../../components/LoadMoreFooter';
 import FeedSingleImageCell from '../../components/FeedSingleImageCell';
 import FeedMultiImageCell from '../../components/FeedMultiImageCell';
+import FeedDetail from './FeedDetail';
 
 let page = 1;
 let canLoadMore = false;
@@ -55,13 +56,9 @@ export default class FeedKnowledgeList extends React.Component {
         };
 
         if (feed.images.length == 1) {
-            return <FeedSingleImageCell {...cellData} onPress={() => alert(feed.title)}/>
+            return <FeedSingleImageCell {...cellData} onPress={() => this._onPressCell(feed)}/>
         }
-        return <FeedMultiImageCell {...cellData} onPress={() => alert(feed.title)} />
-    }
-
-    _onPressCell() {
-
+        return <FeedMultiImageCell {...cellData} onPress={() => this._onPressCell(feed)} />
     }
 
     _onScroll() {
@@ -88,6 +85,13 @@ export default class FeedKnowledgeList extends React.Component {
         const {feedDelicacy} = this.props;
 
         if (feedDelicacy.isLoadMore || page == 1) return <LoadMoreFooter/>
+    }
+
+    _onPressCell(feed) {
+        this.props.navigator.push({
+            component: FeedDetail,
+            passProps: {feed}
+        })
     }
 
     render() {
