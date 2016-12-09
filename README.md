@@ -2,10 +2,10 @@
 iShiWuPai是基于React Native和Redux实现的展示型美食类APP。该分支针对原生新版食物派开发，只为练习，不做商业用途。目前已适配iOS和Android两端，这里给出简单截图，欢迎提PR！
 
 ## 运行截图
-![食物百科](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/food.png)
-![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/feed.png)
-![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/feed4.png)
-![我的](https://github.com/ljunb/react-native-iShiWuPai/blob/master/screenshot/profile.png)
+![食物百科](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/food.png)
+![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/feed.png)
+![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/feed4.png)
+![我的](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/profile.png)
 
 ## 运行
 ```
