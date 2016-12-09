@@ -113,7 +113,7 @@ export default class FeedKnowledgeList extends React.Component {
                         <RefreshControl
                             refreshing={feedKnowledge.isLoading}
                             onRefresh={this._onRefresh}
-                            color={['rgb(217, 51, 58)']}
+                            colors={['rgb(217, 51, 58)']}
                         />
                     }
                 />

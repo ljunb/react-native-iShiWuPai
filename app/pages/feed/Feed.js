@@ -39,9 +39,6 @@ export default class Home extends Component {
                             resizeMode="contain"
                         />
                     }
-                    leftIcon={require('../../resource/ic_feed_search.png')}
-                    leftIconAction={() => {
-                    }}
                     rightIcon={require('../../resource/ic_feed_camera.png')}
                     rightIconAction={() => {
                     }}

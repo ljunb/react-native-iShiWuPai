@@ -7,7 +7,7 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Image
+    Image,
 } from 'react-native';
 
 export default class TabBar extends Component {
@@ -30,7 +30,7 @@ export default class TabBar extends Component {
 
     render() {
         return (
-            <View style={styles.tabs}>
+            <View style={[styles.tabs, {borderTopWidth: Common.window.onePR}]}>
                 {this.props.tabs.map((tab, i) => {
                     let color = this.props.activeTab === i ? 'red' : 'gray';
                     let icon = this.props.activeTab == i ? this.props.selectedTabIconNames[i] : this.props.tabIconNames[i];
@@ -62,8 +62,7 @@ const styles = StyleSheet.create({
     tabs: {
         flexDirection: 'row',
         height: 49,
-        borderTopColor: 'rgb(242, 242, 242)',
-        borderTopWidth: 0.5,
+        borderTopColor: '#d9d9d9',
     },
 
     tab: {

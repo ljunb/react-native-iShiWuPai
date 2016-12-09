@@ -97,6 +97,8 @@ const FoodCardComponent = ({
             />
             <View style={[styles.cardImageContent]}>
                 <ScrollView
+                    bounces={false}
+                    showsVerticalScrollIndicator={false}
                     removeClippedSubviews={true}
                     contentContainerStyle={{backgroundColor: 'white'}}
                 >
@@ -140,7 +142,7 @@ const FoodCardComponent = ({
             </View>
             <TouchableOpacity
                 activeOpacity={0.75}
-                style={styles.bottomToolBar}
+                style={[styles.bottomToolBar, {borderTopWidth: Common.window.onePR}]}
                 onPress={collectAction}
             >
                 <Image style={{width: 18, height: 18}} source={require('../../resource/ic_feed_like.png')}/>
@@ -173,7 +175,7 @@ const FoodNewsComponent = ({
                 flexDirection: 'row',
                 height: 44,
                 backgroundColor: '#fff',
-                borderTopWidth: 1,
+                borderTopWidth: Common.window.onePR,
                 borderColor: '#d9d9d9',
                 alignItems: 'center'
             }}>
@@ -217,17 +219,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderTopColor: '#ccc',
-        borderTopWidth: 0.5,
         position: 'absolute',
+        bottom: 0,
+        backgroundColor: 'white'
     },
     cardImageContent: {
         height: Common.window.height - (Platform.OS === 'ios' ? 64 : 50) - 44,
         width: Common.window.width,
-        backgroundColor: '#f5f5f5'
+        backgroundColor: '#f5f5f5',
+        top: Platform.OS === 'ios' ? 64 : 50,
+        bottom: 44,
+        position: 'absolute'
     },
     line: {
         height: 30,
-        width: 0.5,
+        width: Common.window.onePR,
         backgroundColor: '#ccc'
     }
 })

@@ -9,6 +9,8 @@ import Constants from './common/constants';
 
 import App from './containers/app';
 
+global.Common = Constants;
+
 export default class Root extends React.Component {
     constructor(props) {
         super(props);

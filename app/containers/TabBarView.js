@@ -3,11 +3,12 @@
  */
 import React from 'react';
 import {
-    TabBarIOS,
     View,
     Text,
 } from 'react-native';
-import Home from '../pages/feed/Feed';
+import Feed from '../pages/feed/Feed';
+import FoodEncyclopedia from '../pages/FoodEncyclopedia';
+import Profile from '../pages/Profile';
 import TabBar from '../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 
@@ -38,9 +39,9 @@ export default class TabBarView extends React.Component {
                 locked={true}
                 scrollWithoutAnimation={true}
             >
-                <Text tabLabel="Search" navigator={this.props.navigator}>食物百</Text>
-                <Home tabLabel="Home" navigator={this.props.navigator}/>
-                <Text tabLabel="My" navigator={this.props.navigator}>我的</Text>
+                <FoodEncyclopedia tabLabel="Food" navigator={this.props.navigator}/>
+                <Feed tabLabel="Home" navigator={this.props.navigator}/>
+                <Profile tabLabel="Profile" navigator={this.props.navigator}/>
             </ScrollableTabView>
         )
     }

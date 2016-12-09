@@ -96,7 +96,7 @@ export default class FeedEvaluatingList extends React.Component {
                         <RefreshControl
                             refreshing={feedEvaluating.isLoading}
                             onRefresh={this._onRefresh}
-                            color={['rgb(217, 51, 58)']}
+                            colors={['rgb(217, 51, 58)']}
                         />
                     }
                 />
