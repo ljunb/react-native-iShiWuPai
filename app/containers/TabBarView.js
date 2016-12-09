@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Feed from '../pages/feed/Feed';
 import FoodEncyclopedia from '../pages/FoodEncyclopedia';
-import Profile from '../pages/Profile';
+import Profile from '../pages/profile/Profile';
 import TabBar from '../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 

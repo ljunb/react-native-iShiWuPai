@@ -43,18 +43,18 @@ export default class Profile extends Component {
                     <ProfileStaticCell
                         title="我的照片"
                         style={{borderBottomWidth: Common.window.onePR}}
-                        imageName={require('../resource/ic_my_photos.png')}
+                        imageName={require('../../resource/ic_my_photos.png')}
                         onPress={this._onPressStaticCell}
                     />
                     <ProfileStaticCell
                         title="我的收藏"
                         style={{borderBottomWidth: Common.window.onePR}}
-                        imageName={require('../resource/ic_my_collect.png')}
+                        imageName={require('../../resource/ic_my_collect.png')}
                         onPress={this._onPressStaticCell}
                     />
                     <ProfileStaticCell
                         title="上传食物数据"
-                        imageName={require('../resource/ic_my_upload.png')}
+                        imageName={require('../../resource/ic_my_upload.png')}
                         onPress={this._onPressStaticCell}
                     />
                 </View>
@@ -67,7 +67,7 @@ const HeaderView = ({settingAction, loginAction}) => {
     return (
         <Image
             style={{width: Common.window.width, height: 230, alignItems: 'center', backgroundColor: 'rgba(1,1,1,0)'}}
-            source={require('../resource/img_my_head.png')}
+            source={require('../../resource/img_my_head.png')}
         >
             <View style={[styles.header, {width: Common.window.width}]}>
                 <Text style={{color: 'white', fontSize: 16}}>我的</Text>
@@ -78,7 +78,7 @@ const HeaderView = ({settingAction, loginAction}) => {
                 >
                     <Image
                         style={{width: 20, height: 20}}
-                        source={require('../resource/ic_my_setting.png')}
+                        source={require('../../resource/ic_my_setting.png')}
                     />
                 </TouchableOpacity>
             </View>
@@ -89,7 +89,7 @@ const HeaderView = ({settingAction, loginAction}) => {
                 <View style={styles.avatarContainer}>
                     <Image
                         style={{width: 80, height: 80}}
-                        source={require('../resource/img_default_avatar.png')}
+                        source={require('../../resource/img_default_avatar.png')}
                     />
                 </View>
                 <TouchableOpacity
@@ -119,7 +119,7 @@ const ProfileStaticCell = ({
             <Image style={{width: 20, height: 20, marginHorizontal: 15}} source={imageName}/>
             <View style={[styles.cellStyle, style || style]}>
                 <Text style={{color: 'gray'}}>{title}</Text>
-                <Image style={{width: 20, height: 20}} source={require('../resource/ic_my_right.png')}/>
+                <Image style={{width: 20, height: 20}} source={require('../../resource/ic_my_right.png')}/>
             </View>
 
         </TouchableOpacity>

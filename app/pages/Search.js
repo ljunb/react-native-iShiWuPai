@@ -12,7 +12,8 @@ import {
     ScrollView,
     Animated,
     TouchableOpacity,
-    InteractionManager
+    InteractionManager,
+    Platform
 } from 'react-native';
 
 import {
@@ -31,7 +32,6 @@ import {
     selectCompareFood,
 } from '../actions/searchActions';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Common from '../common/constants';
 import SearchInputBar from '../components/SearchInputBar';
 import Loading from '../components/Loading';
@@ -78,14 +78,14 @@ export default class Search extends React.Component {
 
     componentDidMount() {
         const {dispatch} = this.props;
-        InteractionManager.runAfterInteractions(()=> {
+        InteractionManager.runAfterInteractions(() => {
             dispatch(fetchKeywords());
             dispatch(fetchSortTypes());
         })
     }
 
     componentWillUnmount() {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
         dispatch(resetState());
     }
 
@@ -120,9 +120,12 @@ export default class Search extends React.Component {
         } else {
             sourceData = {'keywordsList': [Search.keywordsList]};
         }
+
+        let platformTop = Platform.OS === 'ios' ? 64 : 50;
+
         return (
             <View style={{flex: 1, backgroundColor: 'white'}}>
-                <View style={{position: 'absolute', top: 44, height: Common.window.height-44-20}}>
+                <View style={{position: 'absolute', top: platformTop, height: Common.window.height - 44 - 20}}>
                     {Search.searchText ?
                         this.renderResultView() :
                         <ListView
@@ -131,15 +134,15 @@ export default class Search extends React.Component {
                             renderSectionHeader={this.renderSectionHeader}
                             enableEmptySections={true}
                             bounces={false}
-                            style={{height: Common.window.height-64, width: Common.window.width}}
+                            style={{height: Common.window.height - 64, width: Common.window.width}}
                         />
                     }
                 </View>
                 <SearchInputBar
-                    backAction={()=>this.props.navigator.pop()}
+                    backAction={() => this.props.navigator.pop()}
                     searchAction={this.handleSearchText.bind(this, Search.searchText)}
                     value={Search.searchText}
-                    onChangeText={(text)=>{
+                    onChangeText={(text) => {
                         dispatch(setupSearchText(text))
                     }}
                 />
@@ -156,9 +159,10 @@ export default class Search extends React.Component {
                 return (
                     <TouchableOpacity
                         style={styles.clearHistoryRow}
-                        onPress={()=>dispatch(clearHistory())}
+                        onPress={() => dispatch(clearHistory())}
                     >
-                        <Image source={{uri: 'ic_trash'}} style={{height: 20, width: 20, marginRight: 10}}/>
+                        <Image source={require('../resource/ic_trash.png')}
+                               style={{height: 20, width: 20, marginRight: 10}}/>
                         <Text style={{color: 'gray'}}>{keywords}</Text>
                     </TouchableOpacity>
                 )
@@ -171,7 +175,7 @@ export default class Search extends React.Component {
                     activeOpacity={0.75}
                     onPress={this.handleSearchText.bind(this, keywords)}
                 >
-                    <Image source={{uri: 'ic_search_history'}} style={styles.historyIcon}/>
+                    <Image source={require('../resource/ic_search_history.png')} style={styles.historyIcon}/>
                     <View style={styles.historyTitle}>
                         <Text>{keywords}</Text>
                     </View>
@@ -243,11 +247,11 @@ export default class Search extends React.Component {
                         onEndReachedThreshold={10}
                         renderFooter={this.renderFooter.bind(this)}
                         style={{
-                      position: 'absolute',
-                      top: 40 + topPosition,
-                      height: Common.window.height-64-40-topPosition,
-                      width: Common.window.width
-                    }}
+                            position: 'absolute',
+                            top: 40 + topPosition,
+                            height: Common.window.height - 64 - 40 - topPosition,
+                            width: Common.window.width
+                        }}
                     />}
 
                 {Search.showSortTypeView ? this.renderCoverView() : null}
@@ -259,7 +263,7 @@ export default class Search extends React.Component {
                     contentContainerStyle={{height: topPosition, alignItems: 'center'}}
                     style={{width: Common.window.width, backgroundColor: 'white'}}
                 >
-                    {Search.tags.map((tag, i)=> {
+                    {Search.tags.map((tag, i) => {
 
                         let tagStyle = [styles.tag];
 
@@ -272,9 +276,9 @@ export default class Search extends React.Component {
                         return (
                             <TouchableOpacity
                                 key={i}
-                                onPress={()=>{
+                                onPress={() => {
                                     dispatch(selectFoodTag(tag));
-                                    InteractionManager.runAfterInteractions(()=>{
+                                    InteractionManager.runAfterInteractions(() => {
                                         page = 1;
                                         canLoadMore = false;
                                         isLoading = true;
@@ -317,7 +321,7 @@ export default class Search extends React.Component {
     renderResultRow(food) {
         // type: normal or compare
         // comparePosition: Left or Right
-        let { dispatch, type, comparePosition } = this.props;
+        let {dispatch, type, comparePosition} = this.props;
 
         let lightStyle = [styles.healthLight];
         if (food.health_light === 2) {
@@ -332,7 +336,7 @@ export default class Search extends React.Component {
             <TouchableOpacity
                 style={styles.foodsCell}
                 activeOpacity={0.75}
-                onPress={()=>{
+                onPress={() => {
                     if (type === 'normal') {
                         this.props.navigator.push({
                             name: 'FoodInfoContainer',
@@ -379,15 +383,17 @@ export default class Search extends React.Component {
         } else {
             orderByName = '推荐食物';
         }
-        let orderByAscIconSource= Search.orderByAsc ? {uri: 'ic_food_ordering_up'} : {uri: 'ic_food_ordering_down'};
-        let healthIconName = Search.isHealthLight ? 'check-square' : 'square-o';
+        let orderByAscIconSource = Search.orderByAsc ? {uri: 'ic_food_ordering_up'} : {uri: 'ic_food_ordering_down'};
+        let healthIconName = Search.isHealthLight ? require('../resource/ic_food_check_default.png') : require('../resource/ic_food_check_selected.png');
 
         return (
             <View style={styles.sortTypeCell}>
                 <TouchableOpacity
                     style={{flexDirection: 'row'}}
                     activeOpacity={0.75}
-                    onPress={()=>{this.handleSortTypesViewAnimation();}}
+                    onPress={() => {
+                        this.handleSortTypesViewAnimation();
+                    }}
                 >
                     <Text>{sortTypeName}</Text>
                     <Animated.Image
@@ -407,21 +413,21 @@ export default class Search extends React.Component {
 
                 <TouchableOpacity
                     activeOpacity={0.75}
-                    onPress={()=>{
+                    onPress={() => {
                         orderByName === '推荐食物' ? dispatch(changeHealthLight())
-                              : dispatch(changeOrderAscStatus());
+                            : dispatch(changeOrderAscStatus());
 
-                        InteractionManager.runAfterInteractions(()=>{
-                                page = 1;
-                                canLoadMore = false;
-                                isLoading = true;
-                                this.fetchData(Search.searchText, page, canLoadMore, isLoading);
-                            })
-                        }}
+                        InteractionManager.runAfterInteractions(() => {
+                            page = 1;
+                            canLoadMore = false;
+                            isLoading = true;
+                            this.fetchData(Search.searchText, page, canLoadMore, isLoading);
+                        })
+                    }}
                 >
                     {orderByName === '推荐食物' ?
-                        <View style={{flexDirection: 'row'}}>
-                            <Icon name={healthIconName} size={16} color="red" />
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Image style={{width: 20, height: 20, marginTop: 2}} source={healthIconName}/>
                             <Text style={{color: 'red', marginLeft: 5}}>{orderByName}</Text>
                         </View> :
                         <View style={{flexDirection: 'row'}}>
@@ -438,7 +444,6 @@ export default class Search extends React.Component {
         const {Search, dispatch} = this.props;
         Animated.sequence([
             Animated.parallel([
-
                 Animated.timing(this.state.sortTypeViewY, {
                     toValue: Search.showSortTypeView ? 0 : 1,
                     duration: 500,
@@ -459,18 +464,21 @@ export default class Search extends React.Component {
 
     // 遮盖层
     renderCoverView() {
+        let backgroundColor = this.state.coverViewOpacity.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['rgba(1, 1, 1, 0)', 'rgba(1, 1, 1, 0.3)']
+        })
         return (
             <TouchableOpacity
-                style={{position: 'absolute',top: 80}}
+                style={{position: 'absolute', top: 80}}
                 activeOpacity={1}
-                onPress={()=>this.handleSortTypesViewAnimation()}
+                onPress={() => this.handleSortTypesViewAnimation()}
             >
                 <Animated.View
                     style={{
                         width: Common.window.width,
                         height: Common.window.height - 84,
-                        backgroundColor: 'rgba(131, 131, 131, 0.3)',
-                        opacity: this.state.coverViewOpacity,
+                        backgroundColor: backgroundColor,
                     }}
                 />
             </TouchableOpacity>
@@ -512,11 +520,11 @@ export default class Search extends React.Component {
                         <TouchableOpacity
                             key={i}
                             style={sortTypeStyle}
-                            onPress={()=>{
+                            onPress={() => {
                                 this.handleSortTypesViewAnimation();
                                 dispatch(selectSortType(type));
 
-                                InteractionManager.runAfterInteractions(()=> {
+                                InteractionManager.runAfterInteractions(() => {
                                     page = 1;
                                     isLoading = true;
                                     canLoadMore = false;

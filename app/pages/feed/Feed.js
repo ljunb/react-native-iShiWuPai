@@ -7,9 +7,9 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    ScrollView,
+    Platform,
+    StyleSheet
 } from 'react-native';
-import HomeNavigation from '../../components/HomeNavigation';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FeedsCategoryBar from '../../components/FeedsCategoryBar';
 import FeedHomeListContainer from '../../containers/feed/FeedHomeListContainer';
@@ -26,23 +26,15 @@ const controllers = [
 ]
 
 export default class Home extends Component {
+    _pictureAction() {
+        alert('Tack a picture')
+    }
     render() {
         const {navigator} = this.props;
 
         return (
             <View style={{flex: 1}}>
-                <HomeNavigation
-                    titleView={() =>
-                        <Image
-                            style={{width: 60, height: 30}}
-                            source={require('../../resource/ic_feed_nav.png')}
-                            resizeMode="contain"
-                        />
-                    }
-                    rightIcon={require('../../resource/ic_feed_camera.png')}
-                    rightIconAction={() => {
-                    }}
-                />
+                <HeaderView pictureAction={this._pictureAction}/>
                 <ScrollableTabView
                     renderTabBar={() => <FeedsCategoryBar tabNames={titles}/>}
                     tabBarPosition='top'
@@ -64,3 +56,47 @@ export default class Home extends Component {
         )
     }
 }
+
+const HeaderView = ({pictureAction}) => {
+    return (
+        <View style={[styles.header, {borderBottomWidth: Common.window.onePR}]}>
+            <Image
+                style={{width: 60, height: 30}}
+                source={require('../../resource/ic_feed_nav.png')}
+                resizeMode="contain"
+            />
+            <TouchableOpacity
+                activeOpacity={0.75}
+                style={styles.photo}
+                onPress={pictureAction}
+            >
+                <Image
+                    style={{width: 20, height: 20}}
+                    source={require('../../resource/ic_feed_camera.png')}
+                    resizeMode="contain"
+                />
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    header: {
+        flexDirection: 'row',
+        height: Platform.OS === 'ios' ? 64 : 50,
+        paddingTop: Platform.OS === 'ios' ? 20 : 0,
+        alignItems: 'center',
+        borderBottomColor: '#d9d9d9',
+        backgroundColor: 'white',
+        justifyContent: 'center'
+    },
+    photo: {
+        width: Platform.OS === 'ios' ? 44 : 50,
+        height: Platform.OS === 'ios' ? 44 : 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        right: 0,
+        top: Platform.OS === 'ios' ? 20 : 0
+    }
+})
