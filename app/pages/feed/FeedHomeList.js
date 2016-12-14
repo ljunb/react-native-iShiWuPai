@@ -3,6 +3,7 @@
  * 逛吃-首页
  */
 import React, {Component} from 'react';
+import { observer } from 'mobx-react/native'
 import {
     StyleSheet,
     View,
@@ -21,6 +22,7 @@ import {
 import Common from '../../common/constants';
 import Loading from '../../components/Loading';
 import FeedDetail from './FeedDetail';
+import FeedStore from '../../mobx/feedStore';
 
 let canLoadMore = false;
 let page = 1;
@@ -37,7 +39,9 @@ export default class FeedList extends Component {
         // InteractionManager.runAfterInteractions(() => {
             const {dispatch, categoryId} = this.props;
             dispatch(fetchFeedList(categoryId, page));
-        // });
+        // // });
+        // const { categoryId } = this.props;
+        // FeedStore.fetchFeedList()
     }
 
     _onMomentumScrollEnd(event) {
