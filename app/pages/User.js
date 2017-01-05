@@ -9,6 +9,7 @@ import {
     Image,
     Switch,
     TouchableOpacity,
+    PixelRatio
 } from 'react-native';
 import Common from '../common/constants';
 
@@ -18,8 +19,9 @@ export default class User extends React.Component {
         let titles = ['清除缓存', '关于我', '将iShiWuPai分享给朋友'];
 
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <View style={styles.header}>
+                    <View style={styles.statusBar}/>
                     <Text style={{fontSize: 17}}>我的</Text>
                 </View>
                 <HeadView />
@@ -35,20 +37,17 @@ export default class User extends React.Component {
                         // thumbTintColor="white"
                     />
                 </View>
-                {
-                    titles.map((title) => {
-                        return (
-                            <TouchableOpacity
-                                key={title}
-                                style={styles.cell}
-                            >
-                                <Text>{title}</Text>
-                                <Image style={styles.rightIcon} source={{uri: 'ic_my_right'}}/>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
-
+                {titles.map((title) => {
+                    return (
+                        <TouchableOpacity
+                            key={title}
+                            style={styles.cell}
+                        >
+                            <Text>{title}</Text>
+                            <Image style={styles.rightIcon} source={{uri: 'ic_my_right'}}/>
+                        </TouchableOpacity>
+                    )
+                })}
             </View>
         )
     }
@@ -58,14 +57,12 @@ class HeadView extends React.Component {
     render() {
 
         return (
-            <View>
-                <Image style={styles.myBgImage} source={{uri: 'img_my_bg'}}>
-                    <Image style={styles.headIcon} source={{uri: 'img_default_head'}}/>
-                    <TouchableOpacity style={styles.login}>
-                        <Text style={{color: 'white'}}>点击登录</Text>
-                    </TouchableOpacity>
-                </Image>
-            </View>
+            <Image style={styles.myBgImage} source={{uri: 'img_my_bg'}}>
+                <Image style={styles.headIcon} source={{uri: 'img_default_head'}}/>
+                <TouchableOpacity style={styles.login}>
+                    <Text style={{color: 'white'}}>点击登录</Text>
+                </TouchableOpacity>
+            </Image>
         )
     }
 }
@@ -97,15 +94,24 @@ class JurisdictionView extends React.Component {
 
 const styles = StyleSheet.create({
     header: {
+        paddingTop: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        height: 44,
+        height: 64,
         borderBottomColor: '#ccc',
-        borderBottomWidth: 0.5
+        borderBottomWidth: 1/PixelRatio.get()
+    },
+
+    statusBar: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: 20,
+        width: Common.window.width,
+        backgroundColor: Common.colors.themeColor
     },
 
     myBgImage: {
-        flex: 1,
         height: 160,
         justifyContent: 'center',
         alignItems: 'center',

@@ -8,46 +8,65 @@ import {
     Text,
     TouchableOpacity,
     Image,
+    PixelRatio
 } from 'react-native';
 import Common from '../common/constants';
 
 export default class SearchHeader extends React.Component {
     render() {
+        const {searchAction, scanAction} = this.props
+
         return (
-            <View style={styles.header}>
-                <TouchableOpacity
-                    activeOpacity={0.75}
-                    style={styles.searchInput}
-                    onPress={this.props.searchAction}
-                >
-                    <Image
-                        style={styles.searchIcon}
-                        source={{uri: 'ic_input_search'}}
-                    />
-                    <Text style={styles.searchPlaceholder}>请输入食物名称</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.75}
-                    onPress={this.props.scanAction}
-                >
-                    <Image
-                        style={styles.scanIcon}
-                        source={{uri: 'ic_homepage_scan'}}
-                    />
-                </TouchableOpacity>
+            <View style={styles.navigationBar}>
+                <View style={styles.statusBar}/>
+                <View style={styles.header}>
+                    <TouchableOpacity
+                        activeOpacity={0.75}
+                        style={styles.searchInput}
+                        onPress={searchAction}
+                    >
+                        <Image
+                            style={styles.searchIcon}
+                            source={{uri: 'ic_input_search'}}
+                        />
+                        <Text style={styles.searchPlaceholder}>请输入食物名称</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.75}
+                        onPress={scanAction}
+                    >
+                        <Image
+                            style={styles.scanIcon}
+                            source={{uri: 'ic_homepage_scan'}}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
+    navigationBar: {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
         borderBottomColor: '#ccc',
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        height: 64
+    },
+
+    statusBar: {
+        height: 20,
+        width: Common.window.width,
+        backgroundColor: Common.colors.themeColor
+    },
+
+    header: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        flexDirection: 'row'
     },
 
     searchInput: {

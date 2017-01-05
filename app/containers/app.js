@@ -5,17 +5,16 @@ import React from 'react';
 import {
     Navigator,
     View,
+    StatusBar
 } from 'react-native';
 
-import StatusBarIOS from '../components/StatusBarIOS';
 import TabBarView from '../containers/TabBarView';
 
 class App extends React.Component {
     render() {
-
         return (
             <View style={{flex: 1}}>
-                <StatusBarIOS barStyle="light-content"/>
+                <StatusBar barStyle="light-content"/>
                 <Navigator
                     initialRoute={{name: 'TabBarView', component: TabBarView}}
                     configureScene={()=>{

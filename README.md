@@ -1,5 +1,5 @@
 ## iShiWuPai
-iShiWuPai是基于React Native和Redux实现的展示型美食类APP。该分支目前已不再更新，如有兴趣可移步[新的分支](https://github.com/ljunb/react-native-iShiWuPai/tree/alpha)，新分支正在重构中，已适配iOS和Android两端。
+iShiWuPai是基于React Native实现的展示型美食类APP。主分支采用了Redux数据流管理模式，基本为UI展示型APP，未涉及深入内容，方便新人入门和学习。另因个人学习Mobx，新的分支不定时更新中，如有兴趣可移步[alpha分支](https://github.com/ljunb/react-native-iShiWuPai/tree/alpha)，已适配iOS和Android两端。
 
 ## 完成功能
 主分支只针对iOS端，完成功能：
@@ -26,7 +26,7 @@ iShiWuPai是基于React Native和Redux实现的展示型美食类APP。该分支
 ```
 $ git clone https://github.com/ljunb/react-native-iShiWuPai.git
 $ cd react-native-iShiWuPai 
-$ npm install
+$ npm install & react-native link
 $ react-native run-ios
 ```
 
@@ -34,11 +34,11 @@ $ react-native run-ios
 ```
     "dependencies": {
       "react": "^15.3.1",
-      "react-native": "^0.33.1",
-      "react-native-swiper": "^1.4.4",
-      "react-native-vector-icons": "^2.0.2",
-      "react-redux": "^4.4.5",
-      "redux": "^3.5.2",
+      "react-native": "^0.39.2",
+      "react-native-swiper": "^1.5.4",
+      "react-native-vector-icons": "^3.0.0",
+      "react-redux": "^5.0.1",
+      "redux": "^3.6.0",
       "redux-thunk": "^2.1.0"
     },
 ```

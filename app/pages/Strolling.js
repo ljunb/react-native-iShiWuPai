@@ -74,7 +74,7 @@ export default class Main extends React.Component {
         rowIDs.push(row);
 
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <SearchHeader
                     searchAction={()=>{
                         InteractionManager.runAfterInteractions(()=>{

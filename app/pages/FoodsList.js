@@ -100,14 +100,14 @@ export default class FoodsList extends React.Component {
     renderCoverView() {
         return (
             <TouchableOpacity
-                style={{position: 'absolute',top: 84}}
+                style={{position: 'absolute',top: 84+20}}
                 activeOpacity={1}
                 onPress={()=>this.handleSortTypesViewAnimation()}
             >
                 <Animated.View
                     style={{
                         width: Common.window.width,
-                        height: Common.window.height - 84,
+                        height: Common.window.height - 84-20,
                         backgroundColor: 'rgba(131, 131, 131, 0.3)',
                         opacity: this.state.coverViewOpacity,
                     }}
@@ -126,7 +126,7 @@ export default class FoodsList extends React.Component {
         typesStyle.push({
             top: this.state.sortTypeViewY.interpolate({
                 inputRange: [0, 1],
-                outputRange: [84 - height, 84]
+                outputRange: [84+20 - height, 84+20]
             })
         })
 
@@ -244,7 +244,7 @@ export default class FoodsList extends React.Component {
                 {FoodsList.isLoading ?
                     <Loading /> :
                     <ListView
-                        style={{position: 'absolute', top: 84, height: Common.window.height-84}}
+                        style={{position: 'absolute', top: 20+84, height: Common.window.height-84-20}}
                         dataSource={this.state.dataSource.cloneWithRows(FoodsList.foodsList)}
                         renderRow={this.renderRow}
                         onScroll={this.onScroll}
@@ -440,7 +440,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         position: 'absolute',
         backgroundColor: 'white',
-        borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
         width: Common.window.width,
         paddingTop: 10,

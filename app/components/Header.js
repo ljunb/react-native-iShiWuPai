@@ -9,129 +9,127 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    PixelRatio,
+    Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Common from '../common/constants'
+
+const NavigationBarItem = ({icon, onPress, type}) => {
+    const style = type == 'left' ? styles.leftIcon : styles.rightIcon
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={style}
+            onPress={onPress}
+        >
+            <Icon color="black" size={30} name={icon}/>
+        </TouchableOpacity>
+    )
+}
+
+const TitleBarItem = ({title, onPress}) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.rightButton}
+            onPress={onPress}
+        >
+            <Text style={styles.buttonTitleFont}>{title}</Text>
+        </TouchableOpacity>
+    )
+}
+
+const MenuItem = ({title, onPress}) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.rightMenu}
+            onPress={onPress}
+        >
+            <Text style={{color: 'gray', fontSize: 12}}>{title}</Text>
+            <Image source={{uri: 'ic_food_ordering'}} style={{width: 16, height: 16}}/>
+        </TouchableOpacity>
+    )
+}
 
 export default class Header extends React.Component {
 
     render() {
+        const {
+            title, titleView,
+            leftIcon, leftIconAction,
+            rightIcon, rightIconAction,
+            rightButton, rightButtonAction,
+            rightMenu, rightMenuAction
+        } = this.props
 
-        let NavigationBar = [];
-
-        // 左边图片按钮
-        if (this.props.leftIcon != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'leftIcon'}
-                    activeOpacity={0.75}
-                    style={styles.leftIcon}
-                    onPress={this.props.leftIconAction}
-                >
-                    <Icon color="black" size={30} name={this.props.leftIcon}/>
-                </TouchableOpacity>
-            )
-        }
-
-        // 标题
-        if (this.props.title != undefined) {
-            NavigationBar.push(
-                <Text key={'title'} style={styles.title}>{this.props.title}</Text>
-            )
-        }
-
-        // 自定义标题View
-        if (this.props.titleView != undefined) {
-            let Component = this.props.titleView;
-
-            NavigationBar.push(
-                <Component key={'titleView'}/>
-            )
-        }
-
-        // 右边图片按钮
-        if (this.props.rightIcon != undefined) {
-
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightIcon'}
-                    activeOpacity={0.75}
-                    style={styles.rightIcon}
-                    onPress={this.props.rightIconAction}
-                >
-                    <Icon color="gray" size={30} name={this.props.rightIcon}/>
-                </TouchableOpacity>
-            )
-        }
-
-        // 右边文字按钮
-        if (this.props.rightButton != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightButton'}
-                    activeOpacity={0.75}
-                    style={styles.rightButton}
-                    onPress={this.props.rightButtonAction}
-                >
-                    <Text style={styles.buttonTitleFont}>{this.props.rightButton}</Text>
-                </TouchableOpacity>
-            )
-        }
-
-        if (this.props.rightMenu != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightMenu'}
-                    activeOpacity={0.75}
-                    style={styles.rightMenu}
-                    onPress={this.props.rightMenuAction}
-                >
-                    <Text style={{color: 'gray', fontSize: 12}}>{this.props.rightMenu}</Text>
-                    <Image source={{uri: 'ic_food_ordering'}} style={{width: 16, height: 16}}/>
-                </TouchableOpacity>
-            )
-        }
-
+        const TitleView = titleView
 
         return (
             <View style={styles.navigationBarContainer}>
-                {NavigationBar}
+                <View style={styles.statusBar}/>
+                {leftIcon && <NavigationBarItem icon={leftIcon} onPress={leftIconAction} type="left"/>}
+                {title && <Text style={styles.title}>{title}</Text>}
+                {titleView && <TitleView/>}
+                {rightIcon && <NavigationBarItem icon={rightIcon} onPress={rightIconAction} type="right"/>}
+                {rightButton && <TitleBarItem title={rightButton} onPress={rightButtonAction}/>}
+                {rightMenu && <MenuItem title={rightMenu} onPress={rightMenuAction}/>}
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-
     navigationBarContainer: {
-        flexDirection: 'row',
-        height: 44,
+        height: 64,
+        paddingTop: 20,
+        justifyContent: 'center',
         alignItems: 'center',
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 0.5,
-        backgroundColor: 'white'
+        borderBottomColor: '#e9e9e9',
+        borderBottomWidth: 1 / PixelRatio.get(),
+        backgroundColor: 'white',
+    },
+
+    statusBar: {
+        position: 'absolute',
+        top: 0,
+        height: 20,
+        width: Common.window.width,
+        backgroundColor: Common.colors.themeColor
     },
 
     title: {
         fontSize: 15,
-        marginLeft: 15,
     },
 
     leftIcon: {
-        marginLeft: 15,
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 44,
+        height: 44,
+        left: 0,
+        top: 20
     },
 
     rightIcon: {
         position: 'absolute',
-        right: 10,
-        top: 7
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 44,
+        height: 44,
+        right: 0,
+        top: 20
     },
 
     rightButton: {
         position: 'absolute',
-        right: 10,
+        right: 0,
+        width: 44,
         height: 44,
         justifyContent: 'center',
-        flexDirection: 'row',
+        alignItems: 'center'
     },
 
     buttonTitleFont: {
@@ -141,9 +139,10 @@ const styles = StyleSheet.create({
 
     rightMenu: {
         position: 'absolute',
-        right: 10,
+        right: 15,
+        top: 20,
         height: 44,
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         flexDirection: 'row',
         alignItems: 'center'
     },

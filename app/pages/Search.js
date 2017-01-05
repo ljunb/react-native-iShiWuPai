@@ -122,7 +122,7 @@ export default class Search extends React.Component {
         }
         return (
             <View style={{flex: 1, backgroundColor: 'white'}}>
-                <View style={{position: 'absolute', top: 44, height: Common.window.height-44-20}}>
+                <View style={{position: 'absolute', top: 44+20, height: Common.window.height-44-20}}>
                     {Search.searchText ?
                         this.renderResultView() :
                         <ListView
@@ -673,7 +673,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         position: 'absolute',
         backgroundColor: 'white',
-        borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
         width: Common.window.width,
         paddingTop: 10,
