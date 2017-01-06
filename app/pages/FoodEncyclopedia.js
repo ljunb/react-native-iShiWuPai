@@ -14,35 +14,24 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react/native'
 import Constants from '../common/constants';
-import Util from '../common/utils';
 import Loading from '../components/Loading';
 import SearchContainer from '../containers/SearchContainer';
 import FoodEncyclopediaStore from '../mobx/foodEncyclopediaStore'
 
 @observer
 export default class FoodEncyclopedia extends Component {
-    constructor(props) {
-        super(props);
-        this._searchAction = this._searchAction.bind(this);
-        this._foodHandleAction = this._foodHandleAction.bind(this);
-        this._onPressCategoryItem = this._onPressCategoryItem.bind(this);
-        this.state = {
-            foodCategories: [],
-            isFetchingFoodCategories: true
-        }
-    }
 
     componentDidMount() {
-        FoodEncyclopediaStore.fetchCategories()
+        FoodEncyclopediaStore.fetchCategoryList()
     }
 
-    _searchAction() {
+    _searchAction = () => {
         this.props.navigator.push({
             component: SearchContainer
         })
     }
 
-    _foodHandleAction(handleTitle) {
+    _foodHandleAction = (handleTitle) => {
         let nextComponent;
         switch (handleTitle) {
             case '饮食分析':
@@ -57,12 +46,12 @@ export default class FoodEncyclopedia extends Component {
         }
     }
 
-    _onPressCategoryItem(category) {
+    _onPressCategoryItem = (category) => {
         alert(category.name)
     }
 
     render() {
-        const {foodCategories, isFetchingFoodCategories} = FoodEncyclopediaStore;
+        const {foodCategoryList, isFetchingCategory} = FoodEncyclopediaStore;
 
         return (
             <View style={{flex: 1}}>
@@ -77,7 +66,7 @@ export default class FoodEncyclopedia extends Component {
                     <HeaderView searchAction={this._searchAction}/>
                     <FoodHandleView handleAction={this._foodHandleAction}/>
                     <View>
-                        {foodCategories.map(foodCategory => {
+                        {foodCategoryList.map(foodCategory => {
                             return (
                                 <FoodCategoryView
                                     key={`FoodCategory-${foodCategory.kind}`}
@@ -88,7 +77,7 @@ export default class FoodEncyclopedia extends Component {
                         })}
                     </View>
                 </ScrollView>
-                <Loading isShow={isFetchingFoodCategories}/>
+                <Loading isShow={isFetchingCategory}/>
             </View>
         )
     }
