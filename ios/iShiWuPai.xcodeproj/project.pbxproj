@@ -18,7 +18,6 @@
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
@@ -31,6 +30,7 @@
 		94A878ED2FA6450483D5CED9 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 13E98AFC33A9479B9BD01418 /* Entypo.ttf */; };
 		A32E1E359858408AA47FAE06 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D7F21F6A54C485C8FCFCB7A /* EvilIcons.ttf */; };
 		B2EE6F4ADBDB46C78212591C /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C7852F293784CAD9B5BB852 /* Ionicons.ttf */; };
+		EC0D42A41E1FE607008881AE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EC0D42A21E1FE607008881AE /* LaunchScreen.xib */; };
 		EEC1B9F7E364456085BC3163 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F309242C7D55418EAC6CE01A /* SimpleLineIcons.ttf */; };
 		EF95F4A421C94F9AB6622769 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A989F40972D94575817A917A /* Foundation.ttf */; };
 		F6A9CB085EBF43AFB4BAA2DF /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC5806B73A314FBB9C0E607D /* FontAwesome.ttf */; };
@@ -203,7 +203,6 @@
 		13B07F961A680F5B00A75B9A /* iShiWuPai.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iShiWuPai.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = iShiWuPai/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = iShiWuPai/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iShiWuPai/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = iShiWuPai/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = iShiWuPai/main.m; sourceTree = "<group>"; };
@@ -218,6 +217,7 @@
 		A989F40972D94575817A917A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		B28585121B754E98A3C78617 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		B74D8E70D2484B8D8D35A3C4 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		EC0D42A31E1FE607008881AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = iShiWuPai/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		F309242C7D55418EAC6CE01A /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		FC5806B73A314FBB9C0E607D /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -338,8 +338,8 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				EC0D42A21E1FE607008881AE /* LaunchScreen.xib */,
 			);
 			name = iShiWuPai;
 			sourceTree = "<group>";
@@ -724,7 +724,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				94A878ED2FA6450483D5CED9 /* Entypo.ttf in Resources */,
 				A32E1E359858408AA47FAE06 /* EvilIcons.ttf in Resources */,
 				F6A9CB085EBF43AFB4BAA2DF /* FontAwesome.ttf in Resources */,
@@ -733,6 +732,7 @@
 				15445F2B0C5745AA89F833A6 /* MaterialIcons.ttf in Resources */,
 				7AAF7756DBE84F6AB9965662 /* Octicons.ttf in Resources */,
 				50F6DA7117B44DEBBF4889F0 /* Zocial.ttf in Resources */,
+				EC0D42A41E1FE607008881AE /* LaunchScreen.xib in Resources */,
 				EEC1B9F7E364456085BC3163 /* SimpleLineIcons.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -785,13 +785,12 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
+		EC0D42A21E1FE607008881AE /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				13B07FB21A68108700A75B9A /* Base */,
+				EC0D42A31E1FE607008881AE /* Base */,
 			);
 			name = LaunchScreen.xib;
-			path = iShiWuPai;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
