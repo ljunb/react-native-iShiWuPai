@@ -17,12 +17,24 @@ import Constants from '../common/constants';
 import Loading from '../components/Loading';
 import SearchContainer from '../containers/SearchContainer';
 import FoodEncyclopediaStore from '../mobx/foodEncyclopediaStore'
+import NetInfoDecorator from '../common/NetInfoDecorator'
+import Toast from 'react-native-easy-toast'
 
+@NetInfoDecorator
 @observer
 export default class FoodEncyclopedia extends Component {
 
-    componentDidMount() {
-        FoodEncyclopediaStore.fetchCategoryList()
+    componentWillReact() {
+        const {errorMsg} = FoodEncyclopediaStore
+        errorMsg != '' && this.toast && this.toast.show(errorMsg)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {isConnected} = nextProps
+        const {isNoResult} = FoodEncyclopediaStore
+        if (isConnected && isNoResult) {
+            FoodEncyclopediaStore.fetchCategoryList()
+        }
     }
 
     _searchAction = () => {
@@ -50,8 +62,13 @@ export default class FoodEncyclopedia extends Component {
         alert(category.name)
     }
 
+    _reconnectHandle = () => {
+        FoodEncyclopediaStore.fetchCategoryList()
+    }
+
     render() {
-        const {foodCategoryList, isFetchingCategory} = FoodEncyclopediaStore;
+        const {foodCategoryList, isFetching} = FoodEncyclopediaStore;
+        const {isConnected} = this.props
 
         return (
             <View style={{flex: 1}}>
@@ -65,22 +82,36 @@ export default class FoodEncyclopedia extends Component {
                 >
                     <HeaderView searchAction={this._searchAction}/>
                     <FoodHandleView handleAction={this._foodHandleAction}/>
-                    <View>
-                        {foodCategoryList.map(foodCategory => {
-                            return (
-                                <FoodCategoryView
-                                    key={`FoodCategory-${foodCategory.kind}`}
-                                    foodCategory={foodCategory}
-                                    onPress={this._onPressCategoryItem}
-                                />
-                            )
-                        })}
-                    </View>
+                    {isConnected ?
+                        <View>
+                            {foodCategoryList.map(foodCategory => {
+                                return (
+                                    <FoodCategoryView
+                                        key={`FoodCategory-${foodCategory.kind}`}
+                                        foodCategory={foodCategory}
+                                        onPress={this._onPressCategoryItem}
+                                    />
+                                )
+                            })}
+                        </View> : <ReconnectView onPress={this._reconnectHandle}/>}
                 </ScrollView>
-                <Loading isShow={isFetchingCategory}/>
+                <Loading isShow={isFetching}/>
+                <Toast ref={toast => this.toast = toast}/>
             </View>
         )
     }
+}
+
+const ReconnectView = ({onPress}) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.8}
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+            onPress={onPress}
+        >
+            <Text>网络出错，点击重试~</Text>
+        </TouchableOpacity>
+    )
 }
 
 const HeaderView = ({searchAction}) => {

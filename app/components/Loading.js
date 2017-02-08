@@ -24,6 +24,10 @@ export default class Loading extends React.Component {
     }
 }
 
+Loading.propTypes = {
+    isShow: React.PropTypes.bool
+}
+
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',

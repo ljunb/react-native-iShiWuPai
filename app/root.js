@@ -6,40 +6,36 @@ import {NetInfo, Animated, StyleSheet, View, Text, Platform} from 'react-native'
 import {Provider} from 'react-redux';
 import store from './store/store';
 import Constants from './common/constants';
-
+import NetInfoDecorator from './common/NetInfoDecorator'
 import App from './containers/app';
 
 global.Common = Constants;
 
+@NetInfoDecorator
 export default class Root extends React.Component {
     constructor(props) {
         super(props);
-        this._handleNetworkConnectivityChange = this._handleNetworkConnectivityChange.bind(this);
         this.state = {
             promptPosition: new Animated.Value(0)
         }
     }
 
-    componentDidMount() {
-        NetInfo.isConnected.addEventListener('change', this._handleNetworkConnectivityChange);
-        NetInfo.isConnected.fetch().done(isConnected => this.setState({isConnected}))
-    }
-
-    _handleNetworkConnectivityChange(isConnected) {
-        if (isConnected) return;
-
+    componentWillReceiveProps(nextProps) {
+        const {isConnected} = nextProps
         // 无网络
-        Animated.timing(this.state.promptPosition, {
-            toValue: 1,
-            duration: 200
-        }).start(() => {
-            setTimeout(() => {
-                Animated.timing(this.state.promptPosition, {
-                    toValue: 0,
-                    duration: 200
-                }).start()
-            }, 2000);
-        })
+        if (!isConnected) {
+            Animated.timing(this.state.promptPosition, {
+                toValue: 1,
+                duration: 200
+            }).start(() => {
+                setTimeout(() => {
+                    Animated.timing(this.state.promptPosition, {
+                        toValue: 0,
+                        duration: 200
+                    }).start()
+                }, 2000);
+            })
+        }
     }
 
     render() {
