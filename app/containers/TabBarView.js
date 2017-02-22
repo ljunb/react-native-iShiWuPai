@@ -27,14 +27,7 @@ const tabSelectedIcon = [
 
 export default class TabBarView extends React.Component {
 
-    _onChangeTab = obj => {
-        const {i} = obj
-        if (i == 1) {
-            RootStore.barStyle = 'default'
-        } else {
-            RootStore.barStyle = 'light-content'
-        }
-    }
+    _onChangeTab = ({i}) => RootStore.barStyle = i == 1 ? 'default' : 'light-content'
 
     render() {
         return (

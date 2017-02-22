@@ -10,15 +10,20 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    Platform
+    Platform,
+    Navigator
 } from 'react-native';
 import {observer} from 'mobx-react/native'
-import Constants from '../common/constants';
-import Loading from '../components/Loading';
-import SearchContainer from '../containers/SearchContainer';
 import FoodEncyclopediaStore from '../mobx/foodEncyclopediaStore'
+import RootStore from '../mobx'
+
+import Login from './Login'
+import SearchContainer from '../containers/SearchContainer'
+
 import NetInfoDecorator from '../common/NetInfoDecorator'
 import Toast from 'react-native-easy-toast'
+import Loading from '../components/Loading'
+import Constants from '../common/constants'
 
 @NetInfoDecorator
 @observer
@@ -47,7 +52,16 @@ export default class FoodEncyclopedia extends Component {
         let nextComponent;
         switch (handleTitle) {
             case '饮食分析':
-                alert('饮食分析')
+                const {user: {name}} = RootStore
+                if (name) {
+                    alert(name)
+                } else {
+                    RootStore.barStyle = 'default'
+                    this.props.navigator.push({
+                        component: Login,
+                        sceneConfig: Navigator.SceneConfigs.FloatFromBottom
+                    })
+                }
                 break;
             case '搜索对比':
                 alert('搜索对比')

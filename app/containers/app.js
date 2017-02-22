@@ -24,8 +24,14 @@ class App extends React.Component {
                 <StatusBar barStyle={RootStore.barStyle}/>
                 <Navigator
                     initialRoute={{name: initialPageName, component: initialPage}}
-                    configureScene={()=>{
-                        return  Navigator.SceneConfigs.PushFromRight;
+                    configureScene={(route) => {
+                        if (route.sceneConfig) {
+                            return route.sceneConfig;
+                        }
+                        return {
+                            ...Navigator.SceneConfigs.PushFromRight,
+                            gestures: {}    // 禁用左滑返回手势
+                        }
                     }}
                     renderScene={(route, navigator) => {
                         let Component = route.component;
