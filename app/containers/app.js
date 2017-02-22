@@ -5,11 +5,15 @@ import React from 'react';
 import {
     Navigator,
     View,
-    Platform
+    Platform,
+    StatusBar
 } from 'react-native';
+import {observer} from 'mobx-react/native'
 import TabBarView from '../containers/TabBarView';
 import Splash from '../pages/Splash';
+import RootStore from '../mobx'
 
+@observer
 class App extends React.Component {
     render() {
         const initialPage = Platform.OS === 'ios' ? TabBarView : Splash;
@@ -17,6 +21,7 @@ class App extends React.Component {
 
         return (
             <View style={{flex: 1}}>
+                <StatusBar barStyle={RootStore.barStyle}/>
                 <Navigator
                     initialRoute={{name: initialPageName, component: initialPage}}
                     configureScene={()=>{

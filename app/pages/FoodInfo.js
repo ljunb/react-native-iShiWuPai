@@ -16,10 +16,9 @@ import {
     changeUnitsStatus,
 } from '../actions/foodInfoActions';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Loading from '../components/Loading';
 import Common from '../common/constants';
-import Header from '../components/Header';
+import Header from '../components/HomeNavigation';
 import FoodAllIngredient from '../pages/FoodAllIngredient';
 
 // 初始显示5个营养元素
@@ -50,15 +49,15 @@ export default class FoodInfo extends React.Component {
         }
 
         let remindTitle = FoodInfo.isShowAllUnit ? '收起' : '展开';
-        let angleName = FoodInfo.isShowAllUnit ? 'angle-up' : 'angle-down';
+        let angleName = FoodInfo.isShowAllUnit ? require('../resource/icon_arrowup.png') : require('../resource/icon_arrowdown.png');
 
         return (
             <View style={styles.container}>
                 <Header
-                    leftIcon='angle-left'
-                    leftIconAction={()=>this.props.navigator.pop()}
                     title={food.name}
-                    rightIcon="heart-o"
+                    leftIconAction={popAction}
+                    leftIcon={require('../resource/ic_back_dark.png')}
+                    rightIcon={require('../resource/ic_favorate_unchecked.png')}
                     rightIconAction={()=>alert('like')}
                 />
                 {FoodInfo.isFetchingFood ?
@@ -140,7 +139,7 @@ export default class FoodInfo extends React.Component {
                                     style={styles.statusCell}
                                     onPress={()=>dispatch(changeUnitsStatus())}
                                 >
-                                    <Icon name={angleName} color="#ccc" size={15}/>
+                                    <Image source={angleName} style={{width: 15, height: 15}}/>
                                     <Text style={{color: 'gray', fontSize: 13, marginLeft: 10}}>{remindTitle}</Text>
                                 </TouchableOpacity>
                                 }

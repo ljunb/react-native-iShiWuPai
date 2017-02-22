@@ -13,18 +13,17 @@ import {
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FeedsCategoryBar from '../../components/FeedsCategoryBar';
 import FeedHomeListContainer from '../../containers/feed/FeedHomeListContainer';
-import FeedEvaluatingListContainer from '../../containers/feed/FeedEvaluatingListContainer';
 import FeedKnowledgeListContainer from '../../containers/feed/FeedKnowledgeListContainer';
 import FeedDelicacyListContainer from '../../containers/feed/FeedDelicacyListContainer';
 // import FeedHomeList from '../../pages/feed/FeedHomeList';
-// import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList';
+import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList';
 // import FeedKnowledgeList from '../../pages/feed/FeedKnowledgeList';
 // import FeedDelicacyList from '../../pages/feed/FeedDetail';
 
 const titles = ['首页', '评测', '知识', '美食'];
 const controllers = [
     {categoryId: 1, controller: FeedHomeListContainer},
-    {categoryId: 2, controller: FeedEvaluatingListContainer},
+    {categoryId: 2, controller: FeedEvaluatingList},
     {categoryId: 3, controller: FeedKnowledgeListContainer},
     {categoryId: 4, controller: FeedDelicacyListContainer}
 ]

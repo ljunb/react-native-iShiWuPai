@@ -26,7 +26,7 @@ export default class FoodEncyclopedia extends Component {
 
     componentWillReact() {
         const {errorMsg} = FoodEncyclopediaStore
-        errorMsg != '' && this.toast && this.toast.show(errorMsg)
+        errorMsg && this.toast && this.toast.show(errorMsg)
     }
 
     componentWillReceiveProps(nextProps) {

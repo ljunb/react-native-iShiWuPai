@@ -14,7 +14,6 @@ import {
 export default class HomeNavigation extends Component {
 
     render() {
-
         let NavigationBar = [];
 
         // 左边图片按钮

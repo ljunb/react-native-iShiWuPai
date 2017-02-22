@@ -2,7 +2,7 @@
  * Created by ljunb on 2016/11/19.
  * 逛吃-评测
  */
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {
     StyleSheet,
     View,
@@ -12,148 +12,148 @@ import {
     TouchableOpacity,
     RefreshControl
 } from 'react-native';
-import {
-    fetchFeedList
-} from '../../actions/feedListActions';
+import {observer} from 'mobx-react/native'
 import Common from '../../common/constants';
 import Loading from '../../components/Loading';
 import LoadMoreFooter from '../../components/LoadMoreFooter';
 import FeedDetail from './FeedDetail';
+import FeedEvaluatingListStore from '../../mobx/feedEvaluatingListStore'
+import Toast from 'react-native-easy-toast'
 
-let page = 1;
-let canLoadMore = false;
+@observer
+export default class FeedEvaluatingList extends PureComponent {
 
-export default class FeedEvaluatingList extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this._onEndReach = this._onEndReach.bind(this);
-        this._onRefresh = this._onRefresh.bind(this);
-        this._onScroll = this._onScroll.bind(this);
-        this._renderFooter = this._renderFooter.bind(this);
-        this.state = {
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2,
-            })
-        }
+    state = {
+        dataSource: new ListView.DataSource({
+            rowHasChanged: (row1, row2) => row1 !== row2,
+        })
     }
 
     componentDidMount() {
-        const {dispatch, categoryId} = this.props;
-        dispatch(fetchFeedList(categoryId, page))
+        FeedEvaluatingListStore.fetchEvaluatingList()
     }
 
-    _onScroll() {
-        if (!canLoadMore) canLoadMore = true;
+    componentWillReact() {
+        const {errorMsg} = FeedEvaluatingListStore
+        errorMsg && this.toast.show(errorMsg)
     }
 
-    // 下拉刷新
-    _onRefresh() {
-        const {dispatch, categoryId} = this.props;
-        page = 1;
-        canLoadMore = false;
-        dispatch(fetchFeedList(categoryId, page))
+    _onRefresh = () => {
+        FeedEvaluatingListStore.fetchEvaluatingList(1, true)
     }
 
-    // 上拉加载
-    _onEndReach() {
-        if (canLoadMore) {
-            const {dispatch, categoryId} = this.props;
-            page++;
-            dispatch(fetchFeedList(categoryId, page));
-            canLoadMore = false;
-        }
+    _onEndReach = () => {
+        FeedEvaluatingListStore.fetchEvaluatingList(++FeedEvaluatingListStore.page)
     }
 
-    _renderFooter() {
-        const {feedEvaluating} = this.props;
-
-        if (feedEvaluating.isLoadMore || page == 1) return <LoadMoreFooter/>;
-    }
-
-    _onPressCell(feed) {
+    _onPressCell = feed => {
         this.props.navigator.push({
             component: FeedDetail,
             passProps: {feed}
         })
     }
 
+    _renderRow = feed => {
+        return <EvaluatingItem onPress={this._onPressCell} feed={feed}/>
+    }
+
+    _renderFooter = () => {
+        const {isLoadMore} = FeedEvaluatingListStore
+
+        if (isLoadMore || FeedEvaluatingListStore.page == 1) return <LoadMoreFooter/>
+    }
+
     render() {
-        const {feedEvaluating} = this.props;
+        const {isFetching, isRefreshing, feedEvaluatingList} = FeedEvaluatingListStore
+
         return (
             <View style={styles.listView}>
-                {!feedEvaluating.isLoading &&
+                {!isFetching &&
                 <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(feedEvaluating.feedList)}
-                    renderRow={(feed) => <EvaluatingItem onPress={()=>this._onPressCell(feed)} feed={feed}/>}
+                    dataSource={this.state.dataSource.cloneWithRows(feedEvaluatingList.slice(0))}
+                    renderRow={this._renderRow}
+                    renderFooter={this._renderFooter}
                     enableEmptySections={true}
                     initialListSize={2}
-                    onScroll={this._onScroll}
                     onEndReached={this._onEndReach}
                     onEndReachedThreshold={30}
-                    renderFooter={this._renderFooter}
                     refreshControl={
                         <RefreshControl
-                            refreshing={feedEvaluating.isLoading}
+                            refreshing={isRefreshing}
                             onRefresh={this._onRefresh}
                             colors={['rgb(217, 51, 58)']}
                         />
                     }
                 />
                 }
-                <Loading isShow={feedEvaluating.isLoading}/>
+                <Loading isShow={isFetching}/>
+                <Toast ref={toast => this.toast = toast}/>
             </View>
         )
     }
 }
 
-const EvaluatingItem = ({
-    feed,
-    onPress
-}) => {
-    return (
-        <TouchableOpacity
-            activeOpacity={0.75}
-            style={{width: Common.window.width, paddingHorizontal: 15, marginTop: 15}}
-            onPress={onPress}
-        >
-            <Image
-                style={{
-                    width: Common.window.width - 15 * 2,
-                    height: Common.window.height * 0.3,
-                    paddingVertical: 20,
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    backgroundColor: '#ccc'
-                }}
-                source={{uri: feed.background}}
+class EvaluatingItem extends PureComponent {
+
+    static propTypes = {
+        feed: React.PropTypes.object,
+        onPress: React.PropTypes.func
+    }
+
+    _onPress = () => {
+        const {feed, onPress} = this.props
+        onPress && onPress(feed)
+    }
+
+    render() {
+        const {feed} = this.props
+        return (
+            <TouchableOpacity
+                activeOpacity={0.75}
+                style={{width: Common.window.width, paddingHorizontal: 15, marginTop: 15}}
+                onPress={this._onPress}
             >
-                <Text style={{color: '#fff', fontSize: 13, backgroundColor: 'rgba(1,1,1,0)'}}>{feed.source}</Text>
-                <Text
-                    style={{
-                        color: '#fff',
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        width: Common.window.width * 0.62,
-                        textAlign: 'center',
-                        lineHeight: 20,
-                        backgroundColor: 'rgba(1,1,1,0)'
-                    }}
-                    numberOfLines={2}
-                >{feed.title}</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <Image style={{width: 12, height: 12, marginRight: 3}}
-                           source={require('../../resource/ic_feed_read.png')}/>
-                    <Text style={{color: '#fff', fontSize: 13, backgroundColor: 'rgba(1,1,1,0)'}}>{feed.tail}</Text>
-                </View>
-            </Image>
-        </TouchableOpacity>
-    )
+                <Image style={styles.image} source={{uri: feed.background}}>
+                    <Text style={{color: '#fff', fontSize: 13}}>{feed.source}</Text>
+                    <Text style={styles.feedTitle} numberOfLines={2}>{feed.title}</Text>
+                    <View style={styles.imageContentWrapper}>
+                        <Image
+                            style={{width: 12, height: 12, marginRight: 3}}
+                            source={require('../../resource/ic_feed_read.png')}
+                        />
+                        <Text style={{color: '#fff', fontSize: 13}}>{feed.tail}</Text>
+                    </View>
+                </Image>
+            </TouchableOpacity>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
     listView: {
         flex: 1,
         backgroundColor: '#f5f5f5'
+    },
+    image: {
+        width: Common.window.width - 15 * 2,
+        height: Common.window.height * 0.3,
+        paddingVertical: 20,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'transparent'
+    },
+    feedTitle: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        width: Common.window.width * 0.62,
+        textAlign: 'center',
+        lineHeight: 20,
+        backgroundColor: 'rgba(1,1,1,0)'
+    },
+    imageContentWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })

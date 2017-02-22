@@ -11,6 +11,7 @@ import FoodEncyclopedia from '../pages/FoodEncyclopedia';
 import Profile from '../pages/profile/Profile';
 import TabBar from '../components/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import RootStore from '../mobx'
 
 const tabTitles = ['食物百科', '逛吃', '我的'];
 const tabIcons = [
@@ -25,6 +26,16 @@ const tabSelectedIcon = [
 ];
 
 export default class TabBarView extends React.Component {
+
+    _onChangeTab = obj => {
+        const {i} = obj
+        if (i == 1) {
+            RootStore.barStyle = 'default'
+        } else {
+            RootStore.barStyle = 'light-content'
+        }
+    }
+
     render() {
         return (
             <ScrollableTabView
@@ -36,8 +47,9 @@ export default class TabBarView extends React.Component {
                     />
                 }
                 tabBarPosition='bottom'
-                locked={true}
-                scrollWithoutAnimation={true}
+                locked
+                scrollWithoutAnimation
+                onChangeTab={this._onChangeTab}
             >
                 <FoodEncyclopedia tabLabel="Food" navigator={this.props.navigator}/>
                 <Feed tabLabel="Home" navigator={this.props.navigator}/>
