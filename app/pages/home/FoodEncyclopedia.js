@@ -14,16 +14,16 @@ import {
     Navigator
 } from 'react-native';
 import {observer} from 'mobx-react/native'
-import FoodEncyclopediaStore from '../mobx/foodEncyclopediaStore'
-import RootStore from '../mobx'
+import FoodEncyclopediaStore from '../../mobx/foodEncyclopediaStore'
+import RootStore from '../../mobx'
 
-import Login from './Login'
-import SearchContainer from '../containers/SearchContainer'
+import Login from '../Login'
+import SearchContainer from '../../containers/SearchContainer'
 
-import NetInfoDecorator from '../common/NetInfoDecorator'
+import NetInfoDecorator from '../../common/NetInfoDecorator'
 import Toast from 'react-native-easy-toast'
-import Loading from '../components/Loading'
-import Constants from '../common/constants'
+import Loading from '../../components/Loading'
+import Constants from '../../common/constants'
 
 @NetInfoDecorator
 @observer
@@ -56,7 +56,7 @@ export default class FoodEncyclopedia extends Component {
                 if (name) {
                     alert(name)
                 } else {
-                    RootStore.barStyle = 'default'
+                    RootStore.barStyle = "default"
                     this.props.navigator.push({
                         component: Login,
                         sceneConfig: Navigator.SceneConfigs.FloatFromBottom
@@ -132,11 +132,11 @@ const HeaderView = ({searchAction}) => {
     return (
         <Image
             style={styles.headerContainer}
-            source={require('../resource/img_home_bg.png')}
+            source={require('../../resource/img_home_bg.png')}
         >
             <Image
                 style={styles.headerLogo}
-                source={require('../resource/ic_head_logo.png')}
+                source={require('../../resource/ic_head_logo.png')}
                 resizeMode="contain"
             />
             <View style={{alignItems: 'center'}}>
@@ -148,7 +148,7 @@ const HeaderView = ({searchAction}) => {
                     onPress={searchAction}
                 >
                     <Image style={{width: 20, height: 20, marginHorizontal: 5}}
-                           source={require('../resource/ic_home_search.png')}/>
+                           source={require('../../resource/ic_home_search.png')}/>
                     <Text style={{color: 'rgba(222, 113, 56, 0.8)', fontSize: 15}}>请输入食物名称</Text>
                 </TouchableOpacity>
             </View>
@@ -160,16 +160,16 @@ const FoodHandleView = ({handleAction}) => {
     return (
         <View style={styles.foodHandleContainer}>
             <HandleItem title="饮食分析"
-                        imageName={require('../resource/ic_home_analyse.png')}
+                        imageName={require('../../resource/ic_home_analyse.png')}
                         onPress={() => handleAction('饮食分析')}
             />
             <View style={styles.line}/>
             <HandleItem title="搜索对比"
-                        imageName={require('../resource/ic_search_compare.png')}
+                        imageName={require('../../resource/ic_search_compare.png')}
                         onPress={() => handleAction('搜索对比')}/>
             <View style={styles.line}/>
             <HandleItem title="扫码对比"
-                        imageName={require('../resource/ic_scan_compare.png')}
+                        imageName={require('../../resource/ic_scan_compare.png')}
                         onPress={() => handleAction('扫码对比')}/>
         </View>
     )
@@ -210,7 +210,7 @@ const FoodCategoryView = ({
                 <Text style={{color: 'gray'}}>{title}</Text>
                 <View style={{width: Constants.window.width - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
                     <Image style={{width: Constants.window.width - 16 * 2, height: 14}}
-                           source={require('../resource/img_home_list_bg.png')}
+                           source={require('../../resource/img_home_list_bg.png')}
                     />
                 </View>
             </View>

@@ -23,8 +23,8 @@ export default class Login extends PureComponent {
     ]
 
     _onBack = () => {
-        this.props.navigator.pop()
         RootStore.barStyle = 'light-content'
+        this.props.navigator.pop()
     }
 
     _renderAccountView = (account, key) => {

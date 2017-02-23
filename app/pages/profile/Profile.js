@@ -2,7 +2,7 @@
  * Created by ljunb on 2016/12/9.
  * 我的
  */
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react'
 import {
     StyleSheet,
     View,
@@ -10,25 +10,15 @@ import {
     Text,
     Image,
     Platform
-} from 'react-native';
+} from 'react-native'
 
-export default class Profile extends Component {
-    constructor(props) {
-        super(props);
-        this._settingAction = this._settingAction.bind(this)
-        this._loginAction = this._loginAction.bind(this)
-    }
+export default class Profile extends PureComponent {
 
-    _settingAction() {
-        alert('setting')
-    }
+    _settingAction = () => alert('setting')
 
-    _loginAction() {
-        alert('login')
-    }
-    _onPressStaticCell(title) {
-        alert(title)
-    }
+    _loginAction = () => alert('login')
+
+    _onPressStaticCell = title => alert(title)
 
     render() {
         let cellStyle = {

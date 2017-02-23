@@ -3,14 +3,14 @@
  */
 import {observable, runInAction, computed, action, reaction} from 'mobx'
 
-class FeedEvaluatingListStore {
-    @observable feedEvaluatingList = []
+class FeedKnowledgeListStore {
+    @observable feedKnowledgeList = []
     @observable errorMsg = ''
     @observable page = 1
     @observable isRefreshing = false
 
     @action
-    fetchEvaluatingList = async () => {
+    fetchKnowledgeList = async () => {
         try {
             if (this.isRefreshing) this.page = 1
 
@@ -20,9 +20,9 @@ class FeedEvaluatingListStore {
                 this.errorMsg = ''
 
                 if (this.page == 1) {
-                    this.feedEvaluatingList.replace(result)
+                    this.feedKnowledgeList.replace(result)
                 } else {
-                    this.feedEvaluatingList.splice(this.feedEvaluatingList.length, 0, ...result);
+                    this.feedKnowledgeList.splice(this.feedKnowledgeList.length, 0, ...result);
                 }
             })
         } catch (error) {
@@ -32,12 +32,12 @@ class FeedEvaluatingListStore {
 
     @computed
     get isFetching() {
-        return this.feedEvaluatingList.length == 0 && this.errorMsg == ''
+        return this.feedKnowledgeList.length == 0 && this.errorMsg == ''
     }
 
     @computed
     get isNoResult() {
-        return this.feedEvaluatingList.length == 0
+        return this.feedKnowledgeList.length == 0
     }
 
     @computed
@@ -47,7 +47,7 @@ class FeedEvaluatingListStore {
 
     _fetchDataFromUrl() {
         return new Promise((resolve, reject) => {
-            const URL = `http://food.boohee.com/fb/v1/feeds/category_feed?page=${this.page}&category=2&per=10`
+            const URL = `http://food.boohee.com/fb/v1/feeds/category_feed?page=${this.page}&category=3&per=10`
 
             fetch(URL).then(response => {
                 if (response.status == 200) return response.json()
@@ -65,11 +65,11 @@ class FeedEvaluatingListStore {
         })
     }
 }
-const feedEvaluatingListStore = new FeedEvaluatingListStore()
+const feedKnowledgeListStore = new FeedKnowledgeListStore()
 
 reaction(
-    () => feedEvaluatingListStore.page,
-    () => feedEvaluatingListStore.fetchEvaluatingList()
+    () => feedKnowledgeListStore.page,
+    () => feedKnowledgeListStore.fetchKnowledgeList()
 )
 
-export default feedEvaluatingListStore
+export default feedKnowledgeListStore

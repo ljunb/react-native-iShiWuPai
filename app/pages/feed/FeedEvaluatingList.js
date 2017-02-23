@@ -39,12 +39,11 @@ export default class FeedEvaluatingList extends PureComponent {
     }
 
     _onRefresh = () => {
-        FeedEvaluatingListStore.fetchEvaluatingList(1, true)
+        FeedEvaluatingListStore.isRefreshing = true
+        FeedEvaluatingListStore.fetchEvaluatingList()
     }
 
-    _onEndReach = () => {
-        FeedEvaluatingListStore.fetchEvaluatingList(++FeedEvaluatingListStore.page)
-    }
+    _onEndReach = () => FeedEvaluatingListStore.page ++
 
     _onPressCell = feed => {
         this.props.navigator.push({
@@ -53,15 +52,9 @@ export default class FeedEvaluatingList extends PureComponent {
         })
     }
 
-    _renderRow = feed => {
-        return <EvaluatingItem onPress={this._onPressCell} feed={feed}/>
-    }
+    _renderRow = feed => <EvaluatingItem onPress={this._onPressCell} feed={feed}/>
 
-    _renderFooter = () => {
-        const {isLoadMore} = FeedEvaluatingListStore
-
-        if (isLoadMore || FeedEvaluatingListStore.page == 1) return <LoadMoreFooter/>
-    }
+    _renderFooter = () => <LoadMoreFooter/>
 
     render() {
         const {isFetching, isRefreshing, feedEvaluatingList} = FeedEvaluatingListStore

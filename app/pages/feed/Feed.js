@@ -1,7 +1,7 @@
 /**
  * Created by ljunb on 16/8/21.
  */
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {
     View,
     Text,
@@ -9,29 +9,32 @@ import {
     TouchableOpacity,
     Platform,
     StyleSheet
-} from 'react-native';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
-import FeedsCategoryBar from '../../components/FeedsCategoryBar';
-import FeedHomeListContainer from '../../containers/feed/FeedHomeListContainer';
-import FeedKnowledgeListContainer from '../../containers/feed/FeedKnowledgeListContainer';
-import FeedDelicacyListContainer from '../../containers/feed/FeedDelicacyListContainer';
+} from 'react-native'
+import {observer} from 'mobx-react/native'
+import RootStore from '../../mobx'
+import ScrollableTabView from 'react-native-scrollable-tab-view'
+import FeedsCategoryBar from '../../components/FeedsCategoryBar'
+import FeedHomeListContainer from '../../containers/feed/FeedHomeListContainer'
 // import FeedHomeList from '../../pages/feed/FeedHomeList';
-import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList';
-// import FeedKnowledgeList from '../../pages/feed/FeedKnowledgeList';
-// import FeedDelicacyList from '../../pages/feed/FeedDetail';
+import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList'
+import FeedKnowledgeList from '../../pages/feed/FeedKnowledgeList';
+import FeedDelicacyList from '../../pages/feed/FeedDetail';
 
 const titles = ['首页', '评测', '知识', '美食'];
 const controllers = [
     {categoryId: 1, controller: FeedHomeListContainer},
     {categoryId: 2, controller: FeedEvaluatingList},
-    {categoryId: 3, controller: FeedKnowledgeListContainer},
-    {categoryId: 4, controller: FeedDelicacyListContainer}
+    {categoryId: 3, controller: FeedKnowledgeList},
+    {categoryId: 4, controller: FeedDelicacyList}
 ]
 
-export default class Home extends Component {
-    _pictureAction() {
+@observer
+export default class Home extends PureComponent {
+
+    _pictureAction = () => {
         alert('Tack a picture')
     }
+
     render() {
         const {navigator} = this.props;
 

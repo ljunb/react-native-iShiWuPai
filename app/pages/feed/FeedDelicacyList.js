@@ -2,92 +2,48 @@
  * Created by ljunb on 2016/11/19.
  * 逛吃-知识
  */
-import React from 'react';
+import React, {PureComponent} from 'react'
 import {
     StyleSheet,
     View,
     Text,
     ListView,
-    Image,
-    InteractionManager,
     TouchableOpacity,
     RefreshControl
-} from 'react-native';
-import {
-    fetchFeedList
-} from '../../actions/feedListActions';
-import Loading from '../../components/Loading';
-import LoadMoreFooter from '../../components/LoadMoreFooter';
-import FeedSingleImageCell from '../../components/FeedSingleImageCell';
-import FeedMultiImageCell from '../../components/FeedMultiImageCell';
-import FeedDetail from './FeedDetail';
+} from 'react-native'
+import {observer} from 'mobx-react/native'
+import FeedDelicacyListStore from '../../mobx/feedDelicacyListStore'
+import Loading from '../../components/Loading'
+import LoadMoreFooter from '../../components/LoadMoreFooter'
+import FeedSingleImageCell from '../../components/FeedSingleImageCell'
+import FeedMultiImageCell from '../../components/FeedMultiImageCell'
+import FeedDetail from './FeedDetail'
 
-let page = 1;
-let canLoadMore = false;
+@observer
+export default class FeedDelicacyList extends PureComponent {
 
-export default class FeedKnowledgeList extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this._renderRow = this._renderRow.bind(this);
-        this._onPressCell = this._onPressCell.bind(this);
-        this._onEndReach = this._onEndReach.bind(this);
-        this._onRefresh = this._onRefresh.bind(this);
-        this._onScroll = this._onScroll.bind(this);
-        this._renderFooter = this._renderFooter.bind(this);
-        this.state = {
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2,
-            })
-        }
+    state = {
+        dataSource: new ListView.DataSource({
+            rowHasChanged: (row1, row2) => row1 !== row2,
+        })
     }
 
     componentDidMount() {
-        const {dispatch, categoryId} = this.props;
-        dispatch(fetchFeedList(categoryId, page))
+        FeedDelicacyListStore.fetchDelicacyList()
     }
 
-    _renderRow(feed) {
-        let cellData = {
-            title: feed.title,
-            source: feed.source,
-            viewCount: feed.tail,
-            images: feed.images
-        };
+    _renderRow = feed => <DelicacyItem onPress={this._onPressCell} feed={feed}/>
 
-        if (feed.images.length == 1) {
-            return <FeedSingleImageCell {...cellData} onPress={() => this._onPressCell(feed)}/>
-        }
-        return <FeedMultiImageCell {...cellData} onPress={() => this._onPressCell(feed)} />
+    _onRefresh = () => {
+        FeedDelicacyListStore.isRefreshing = true
+        FeedDelicacyListStore.fetchDelicacyList()
     }
 
-    _onScroll() {
-        if (!canLoadMore) canLoadMore = true;
-    }
+    _onEndReach = () => FeedDelicacyListStore.page ++
 
-    _onRefresh() {
-        const {dispatch, categoryId} = this.props;
-        page = 1;
-        canLoadMore = false;
-        dispatch(fetchFeedList(categoryId, page))
-    }
+    _renderFooter = () => <LoadMoreFooter/>
 
-    _onEndReach() {
-        if (canLoadMore) {
-            const {dispatch, categoryId} = this.props;
-            page++;
-            dispatch(fetchFeedList(categoryId, page));
-            canLoadMore = false;
-        }
-    }
-
-    _renderFooter() {
-        const {feedDelicacy} = this.props;
-
-        if (feedDelicacy.isLoadMore || page == 1) return <LoadMoreFooter/>
-    }
-
-    _onPressCell(feed) {
+    _onPressCell = feed => {
         this.props.navigator.push({
             component: FeedDetail,
             passProps: {feed}
@@ -95,31 +51,54 @@ export default class FeedKnowledgeList extends React.Component {
     }
 
     render() {
-        const {feedDelicacy} = this.props;
+        const {isRefreshing, isFetching, feedDelicacyList} = FeedDelicacyListStore
         return (
             <View style={styles.listView}>
-                {!feedDelicacy.isLoading &&
+                {!isFetching &&
                 <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(feedDelicacy.feedList)}
+                    dataSource={this.state.dataSource.cloneWithRows(feedDelicacyList.slice(0))}
                     renderRow={this._renderRow}
-                    enableEmptySections={true}
+                    renderFooter={this._renderFooter}
+                    enableEmptySections
                     initialListSize={3}
                     onScroll={this._onScroll}
                     onEndReached={this._onEndReach}
                     onEndReachedThreshold={30}
-                    renderFooter={this._renderFooter}
                     refreshControl={
                         <RefreshControl
-                            refreshing={feedDelicacy.isLoading}
+                            refreshing={isRefreshing}
                             onRefresh={this._onRefresh}
                             colors={['rgb(217, 51, 58)']}
                         />
                     }
                 />
                 }
-                <Loading isShow={feedDelicacy.isLoading}/>
+                <Loading isShow={isFetching}/>
             </View>
         )
+    }
+}
+
+class DelicacyItem extends PureComponent {
+
+    static propTypes = {
+        feed: React.PropTypes.object,
+        onPress: React.PropTypes.func
+    }
+
+    _onPress = () => {
+        const {feed, onPress} = this.props
+        onPress && onPress(feed)
+    }
+
+    render() {
+        const {feed: {title, source, tail, images}} = this.props
+        const cellData = {title, source, images, viewCount: tail}
+
+        if (images.length == 1) {
+            return <FeedSingleImageCell {...cellData} onPress={this._onPress}/>
+        }
+        return <FeedMultiImageCell {...cellData} onPress={this._onPress}/>
     }
 }
 

@@ -2,125 +2,110 @@
  * Created by ljunb on 2016/11/19.
  * 逛吃-知识
  */
-import React from 'react';
+import React, {PureComponent} from 'react'
 import {
     StyleSheet,
     View,
     Text,
     ListView,
-    Image,
-    InteractionManager,
     TouchableOpacity,
     RefreshControl,
-    ActivityIndicator
-} from 'react-native';
-import {
-    fetchFeedList
-} from '../../actions/feedListActions';
-import Loading from '../../components/Loading';
-import LoadMoreFooter from '../../components/LoadMoreFooter';
-import FeedSingleImageCell from '../../components/FeedSingleImageCell';
-import FeedMultiImageCell from '../../components/FeedMultiImageCell';
-import FeedDetail from './FeedDetail';
+} from 'react-native'
+import {observer} from 'mobx-react/native'
+import FeedKnowledgeStore from '../../mobx/feedKnowledgeListStore'
+import Loading from '../../components/Loading'
+import LoadMoreFooter from '../../components/LoadMoreFooter'
+import FeedSingleImageCell from '../../components/FeedSingleImageCell'
+import FeedMultiImageCell from '../../components/FeedMultiImageCell'
+import FeedDetail from './FeedDetail'
+import Toast from 'react-native-easy-toast'
 
-let page = 1;
-let canLoadMore = false;
+@observer
+export default class FeedKnowledgeList extends PureComponent {
 
-export default class FeedKnowledgeList extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this._renderRow = this._renderRow.bind(this);
-        this._onPressCell = this._onPressCell.bind(this);
-        this._onEndReach = this._onEndReach.bind(this);
-        this._onRefresh = this._onRefresh.bind(this);
-        this._onScroll = this._onScroll.bind(this);
-        this._renderFooter = this._renderFooter.bind(this);
-        this.state = {
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2,
-            })
-        }
+    state = {
+        dataSource: new ListView.DataSource({
+            rowHasChanged: (row1, row2) => row1 !== row2,
+        })
     }
 
     componentDidMount() {
-        const {dispatch, categoryId} = this.props;
-        dispatch(fetchFeedList(categoryId, page))
+        FeedKnowledgeStore.fetchKnowledgeList()
     }
 
-    _renderRow(feed) {
-        let cellData = {
-            title: feed.title,
-            source: feed.source,
-            viewCount: feed.tail,
-            images: feed.images
-        };
-
-        if (feed.images.length == 1) {
-            return <FeedSingleImageCell {...cellData} onPress={() => this._onPressCell(feed)}/>
-        }
-        return <FeedMultiImageCell {...cellData} onPress={() => this._onPressCell(feed)} />
+    componentWillReact() {
+        const {errorMsg} = FeedKnowledgeStore
+        errorMsg && this.toast.show(errorMsg)
     }
 
-    _onPressCell(feed) {
+    _renderRow = feed => <KnowledgeItem onPress={this._onPressCell} feed={feed}/>
+
+    _onPressCell = feed => {
         this.props.navigator.push({
             component: FeedDetail,
             passProps: {feed}
         })
     }
 
-    _onScroll() {
-        if (!canLoadMore) canLoadMore = true;
+    _onRefresh = () => {
+        FeedKnowledgeStore.isRefreshing = true
+        FeedKnowledgeStore.fetchKnowledgeList()
     }
 
-    _onRefresh() {
-        const {dispatch, categoryId} = this.props;
-        page = 1;
-        canLoadMore = false;
-        dispatch(fetchFeedList(categoryId, page))
-    }
+    _onEndReach = () => FeedKnowledgeStore.page ++
 
-    _onEndReach() {
-        if (canLoadMore) {
-            const {dispatch, categoryId} = this.props;
-            page++;
-            dispatch(fetchFeedList(categoryId, page));
-            canLoadMore = false;
-        }
-    }
-
-    _renderFooter() {
-        const {feedKnowledge} = this.props;
-
-        if (feedKnowledge.isLoadMore || page == 1) return <LoadMoreFooter/>;
-    }
+    _renderFooter = () => <LoadMoreFooter/>
 
     render() {
-        const {feedKnowledge} = this.props;
+        const {feedKnowledgeList, isRefreshing, isFetching} = FeedKnowledgeStore
         return (
             <View style={styles.listView}>
-                {!feedKnowledge.isLoading &&
+                {!isFetching &&
                 <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(feedKnowledge.feedList)}
+                    dataSource={this.state.dataSource.cloneWithRows(feedKnowledgeList.slice(0))}
                     renderRow={this._renderRow}
-                    enableEmptySections={true}
+                    renderFooter={this._renderFooter}
+                    enableEmptySections
                     initialListSize={3}
                     onScroll={this._onScroll}
                     onEndReached={this._onEndReach}
                     onEndReachedThreshold={30}
-                    renderFooter={this._renderFooter}
                     refreshControl={
                         <RefreshControl
-                            refreshing={feedKnowledge.isLoading}
+                            refreshing={isRefreshing}
                             onRefresh={this._onRefresh}
                             colors={['rgb(217, 51, 58)']}
                         />
                     }
                 />
                 }
-                <Loading isShow={feedKnowledge.isLoading}/>
+                <Loading isShow={isFetching}/>
+                <Toast ref={toast => this.toast = toast}/>
             </View>
         )
+    }
+}
+
+class KnowledgeItem extends PureComponent {
+
+    static propTypes = {
+        feed: React.PropTypes.object,
+        onPress: React.PropTypes.func
+    }
+
+    _onPress = () => {
+        const {feed, onPress} = this.props
+        onPress && onPress(feed)
+    }
+
+    render() {
+        const {feed: {title, source, tail, images}} = this.props
+        const cellData = {title, source, images, viewCount: tail}
+
+        if (images.length == 1) {
+            return <FeedSingleImageCell {...cellData} onPress={this._onPress}/>
+        }
+        return <FeedMultiImageCell {...cellData} onPress={this._onPress}/>
     }
 }
 
