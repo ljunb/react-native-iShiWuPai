@@ -8,9 +8,11 @@ import {
     Image,
     TouchableOpacity,
     Platform,
-    StyleSheet
+    StyleSheet,
+    Navigator
 } from 'react-native'
 import {observer} from 'mobx-react/native'
+import Login from '../Login'
 import RootStore from '../../mobx'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import FeedsCategoryBar from '../../components/FeedsCategoryBar'
@@ -18,7 +20,7 @@ import FeedHomeListContainer from '../../containers/feed/FeedHomeListContainer'
 // import FeedHomeList from '../../pages/feed/FeedHomeList';
 import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList'
 import FeedKnowledgeList from '../../pages/feed/FeedKnowledgeList';
-import FeedDelicacyList from '../../pages/feed/FeedDetail';
+import FeedDelicacyList from '../../pages/feed/FeedDelicacyList';
 
 const titles = ['首页', '评测', '知识', '美食'];
 const controllers = [
@@ -32,7 +34,16 @@ const controllers = [
 export default class Home extends PureComponent {
 
     _pictureAction = () => {
-        alert('Tack a picture')
+        const {user: {name}} = RootStore
+        if (name) {
+            alert(name)
+        } else {
+            this.props.navigator.push({
+                component: Login,
+                sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
+                passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
+            })
+        }
     }
 
     render() {
@@ -89,20 +100,20 @@ const HeaderView = ({pictureAction}) => {
 const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
-        height: Platform.OS === 'ios' ? 64 : 50,
-        paddingTop: Platform.OS === 'ios' ? 20 : 0,
+        height: gScreen.navBarHeight,
+        paddingTop: gScreen.navBarPaddingTop,
         alignItems: 'center',
         borderBottomColor: '#d9d9d9',
         backgroundColor: 'white',
         justifyContent: 'center'
     },
     photo: {
-        width: Platform.OS === 'ios' ? 44 : 50,
-        height: Platform.OS === 'ios' ? 44 : 50,
+        width: gScreen.isIOS ? 44 : 50,
+        height: gScreen.isIOS ? 44 : 50,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'absolute',
         right: 0,
-        top: Platform.OS === 'ios' ? 20 : 0
+        top: gScreen.navBarPaddingTop
     }
 })

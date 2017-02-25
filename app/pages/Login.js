@@ -22,9 +22,14 @@ export default class Login extends PureComponent {
         {name: '薄荷', icon: require('../resource/ic_account_boohee.png')}
     ]
 
+    componentWillMount() {
+        if (RootStore.barStyle == 'light-content') RootStore.barStyle = 'default'
+    }
+
     _onBack = () => {
-        RootStore.barStyle = 'light-content'
-        this.props.navigator.pop()
+        const {navigator, onResetBarStyle} = this.props
+        onResetBarStyle && onResetBarStyle()
+        navigator.pop()
     }
 
     _renderAccountView = (account, key) => {

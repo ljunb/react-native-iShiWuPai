@@ -19,6 +19,7 @@ import RootStore from '../../mobx'
 
 import Login from '../Login'
 import SearchContainer from '../../containers/SearchContainer'
+import Scanner from '../../components/Scanner'
 
 import NetInfoDecorator from '../../common/NetInfoDecorator'
 import Toast from 'react-native-easy-toast'
@@ -43,32 +44,46 @@ export default class FoodEncyclopedia extends Component {
     }
 
     _searchAction = () => {
+        RootStore.barStyle = 'default'
         this.props.navigator.push({
-            component: SearchContainer
+            component: SearchContainer,
+            passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
         })
     }
 
     _foodHandleAction = (handleTitle) => {
-        let nextComponent;
+        const {user: {name}} = RootStore
         switch (handleTitle) {
             case '饮食分析':
-                const {user: {name}} = RootStore
                 if (name) {
                     alert(name)
                 } else {
-                    RootStore.barStyle = "default"
                     this.props.navigator.push({
                         component: Login,
-                        sceneConfig: Navigator.SceneConfigs.FloatFromBottom
+                        sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
+                        passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
                     })
                 }
                 break;
             case '搜索对比':
-                alert('搜索对比')
-                break;
+                if (name) {
+                    alert(name)
+                } else {
+                    this.props.navigator.push({
+                        component: Login,
+                        sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
+                        passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
+                    })
+                }
+                break
             case '扫码对比':
-                alert('扫码对比')
-                break;
+                this.props.navigator.push({
+                    component: Scanner,
+                    passProps: {
+                        onBarCodeRead: obj => alert(JSON.stringify(obj))
+                    }
+                })
+                break
         }
     }
 

@@ -13,6 +13,7 @@ iShiWuPai是基于React Native实现的展示型美食类APP。该分支针对�
 $ git clone -b alpha https://github.com/ljunb/react-native-iShiWuPai.git
 $ cd react-native-iShiWuPai 
 $ npm install
+$ react-native link
 $ react-native run-ios/run-android
 ```
 
@@ -23,10 +24,15 @@ $ react-native run-ios/run-android
         "mobx-react": "^4.0.3",
         "react": "^15.4.0",
         "react-native": "^0.39.2",
+        "react-native-camera": "^0.4.1",
         "react-native-easy-toast": "^1.0.5",
         "react-native-scrollable-tab-view": "^0.6.0",
         "react-redux": "^4.4.6",
         "redux": "^3.6.0",
         "redux-thunk": "^2.1.0"
+      },
+      "devDependencies": {
+        "babel-plugin-transform-decorators-legacy": "^1.3.4",
+        "babel-preset-react-native-stage-0": "^1.0.1"
       }
 ```

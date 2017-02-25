@@ -9,36 +9,48 @@ import {
     TouchableOpacity,
     Text,
     Image,
-    Platform
+    Platform,
+    Navigator
 } from 'react-native'
+import {observer} from 'mobx-react/native'
+import RootStore from '../../mobx'
+import Login from '../Login'
 
+@observer
 export default class Profile extends PureComponent {
 
     _settingAction = () => alert('setting')
 
-    _loginAction = () => alert('login')
+    _onLogin = () => {
+        RootStore.barStyle = "default"
+        this.props.navigator.push({
+            component: Login,
+            sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
+            passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
+        })
+    }
 
     _onPressStaticCell = title => alert(title)
 
     render() {
         let cellStyle = {
-            borderTopWidth: Common.window.onePR,
-            borderBottomWidth: Common.window.onePR,
+            borderTopWidth: gScreen.onePix,
+            borderBottomWidth: gScreen.onePix,
         }
 
         return (
             <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
-                <HeaderView settingAction={this._settingAction} loginAction={this._loginAction}/>
+                <HeaderView settingAction={this._settingAction} loginAction={this._onLogin}/>
                 <View style={[styles.cellContainer, cellStyle]}>
                     <ProfileStaticCell
                         title="我的照片"
-                        style={{borderBottomWidth: Common.window.onePR}}
+                        style={{borderBottomWidth: gScreen.onePix}}
                         imageName={require('../../resource/ic_my_photos.png')}
                         onPress={this._onPressStaticCell}
                     />
                     <ProfileStaticCell
                         title="我的收藏"
-                        style={{borderBottomWidth: Common.window.onePR}}
+                        style={{borderBottomWidth: gScreen.onePix}}
                         imageName={require('../../resource/ic_my_collect.png')}
                         onPress={this._onPressStaticCell}
                     />
@@ -56,10 +68,10 @@ export default class Profile extends PureComponent {
 const HeaderView = ({settingAction, loginAction}) => {
     return (
         <Image
-            style={{width: Common.window.width, height: 230, alignItems: 'center', backgroundColor: 'rgba(1,1,1,0)'}}
+            style={{width: gScreen.width, height: 230, alignItems: 'center', backgroundColor: 'transparent'}}
             source={require('../../resource/img_my_head.png')}
         >
-            <View style={[styles.header, {width: Common.window.width}]}>
+            <View style={[styles.header, {width: gScreen.width}]}>
                 <Text style={{color: 'white', fontSize: 16}}>我的</Text>
                 <TouchableOpacity
                     activeOpacity={0.75}
@@ -111,21 +123,20 @@ const ProfileStaticCell = ({
                 <Text style={{color: 'gray'}}>{title}</Text>
                 <Image style={{width: 20, height: 20}} source={require('../../resource/ic_my_right.png')}/>
             </View>
-
         </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
     header: {
-        height: Platform.OS === 'ios' ? 44 : 50,
-        marginTop: Platform.OS === 'ios' ? 20 : 0,
+        height: gScreen.isIOS ? 44 : 50,
+        marginTop: gScreen.isIOS ? 20 : 0,
         alignItems: 'center',
         justifyContent: 'center',
     },
     settingContainer: {
-        height: Platform.OS === 'ios' ? 44 : 50,
-        width: Platform.OS === 'ios' ? 44 : 50,
+        height: gScreen.isIOS ? 44 : 50,
+        width: gScreen.isIOS ? 44 : 50,
         position: 'absolute',
         top: 0,
         right: 0,

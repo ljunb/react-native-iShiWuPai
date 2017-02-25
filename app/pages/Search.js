@@ -89,6 +89,12 @@ export default class Search extends React.Component {
         dispatch(resetState());
     }
 
+    _onBack = () => {
+        const {navigator, onResetBarStyle} = this.props
+        onResetBarStyle && onResetBarStyle()
+        navigator.pop()
+    }
+
     render() {
 
         const {Search, dispatch} = this.props;
@@ -139,7 +145,7 @@ export default class Search extends React.Component {
                     }
                 </View>
                 <SearchInputBar
-                    backAction={() => this.props.navigator.pop()}
+                    backAction={this._onBack}
                     searchAction={this.handleSearchText.bind(this, Search.searchText)}
                     value={Search.searchText}
                     onChangeText={(text) => {
