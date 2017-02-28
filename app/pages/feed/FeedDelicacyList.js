@@ -12,12 +12,16 @@ import {
     RefreshControl
 } from 'react-native'
 import {observer} from 'mobx-react/native'
-import FeedDelicacyListStore from '../../mobx/feedDelicacyListStore'
+import {reaction} from 'mobx'
 import Loading from '../../components/Loading'
 import LoadMoreFooter from '../../components/LoadMoreFooter'
 import FeedSingleImageCell from '../../components/FeedSingleImageCell'
 import FeedMultiImageCell from '../../components/FeedMultiImageCell'
 import FeedDetail from './FeedDetail'
+import Toast from 'react-native-easy-toast'
+import FeedBaseStore from '../../mobx/feedBaseStore'
+
+const DELICACY_ID = 4
 
 @observer
 export default class FeedDelicacyList extends PureComponent {
@@ -28,18 +32,28 @@ export default class FeedDelicacyList extends PureComponent {
         })
     }
 
+    delicacyListStore = new FeedBaseStore(DELICACY_ID)
+
     componentDidMount() {
-        FeedDelicacyListStore.fetchDelicacyList()
+        reaction(
+            () => this.delicacyListStore.page,
+            () => this.delicacyListStore.fetchFeedList()
+        )
+    }
+
+    componentWillReact() {
+        const {errorMsg} = this.delicacyListStore
+        errorMsg && this.toast.show(errorMsg)
     }
 
     _renderRow = feed => <DelicacyItem onPress={this._onPressCell} feed={feed}/>
 
     _onRefresh = () => {
-        FeedDelicacyListStore.isRefreshing = true
-        FeedDelicacyListStore.fetchDelicacyList()
+        this.delicacyListStore.isRefreshing = true
+        this.delicacyListStore.fetchFeedList()
     }
 
-    _onEndReach = () => FeedDelicacyListStore.page ++
+    _onEndReach = () => this.delicacyListStore.page ++
 
     _renderFooter = () => <LoadMoreFooter/>
 
@@ -51,12 +65,12 @@ export default class FeedDelicacyList extends PureComponent {
     }
 
     render() {
-        const {isRefreshing, isFetching, feedDelicacyList} = FeedDelicacyListStore
+        const {isRefreshing, isFetching, feedList} = this.delicacyListStore
         return (
             <View style={styles.listView}>
                 {!isFetching &&
                 <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(feedDelicacyList.slice(0))}
+                    dataSource={this.state.dataSource.cloneWithRows(feedList.slice(0))}
                     renderRow={this._renderRow}
                     renderFooter={this._renderFooter}
                     enableEmptySections
@@ -74,6 +88,7 @@ export default class FeedDelicacyList extends PureComponent {
                 />
                 }
                 <Loading isShow={isFetching}/>
+                <Toast ref={toast => this.toast = toast}/>
             </View>
         )
     }

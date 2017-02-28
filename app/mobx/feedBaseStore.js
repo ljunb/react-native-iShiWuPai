@@ -1,16 +1,21 @@
 /**
- * Created by ljunb on 2017/2/22.
+ * Created by ljunb on 2017/02/28.
  */
-import {observable, runInAction, computed, action, reaction} from 'mobx'
+import {observable, computed, action, runInAction} from 'mobx'
 
-class FeedDelicacyListStore {
-    @observable feedDelicacyList = []
+export default class FeedStore {
+    @observable feedList = []
     @observable errorMsg = ''
     @observable page = 1
     @observable isRefreshing = false
 
+    constructor(categoryId) {
+        this.categoryId = categoryId
+        this.fetchFeedList()
+    }
+
     @action
-    fetchDelicacyList = async () => {
+    fetchFeedList = async () => {
         try {
             if (this.isRefreshing) this.page = 1
 
@@ -20,9 +25,9 @@ class FeedDelicacyListStore {
                 this.errorMsg = ''
 
                 if (this.page == 1) {
-                    this.feedDelicacyList.replace(result)
+                    this.feedList.replace(result)
                 } else {
-                    this.feedDelicacyList.splice(this.feedDelicacyList.length, 0, ...result);
+                    this.feedList.splice(this.feedList.length, 0, ...result);
                 }
             })
         } catch (error) {
@@ -32,12 +37,7 @@ class FeedDelicacyListStore {
 
     @computed
     get isFetching() {
-        return this.feedDelicacyList.length == 0 && this.errorMsg == ''
-    }
-
-    @computed
-    get isNoResult() {
-        return this.feedDelicacyList.length == 0
+        return this.feedList.length == 0 && this.errorMsg == ''
     }
 
     @computed
@@ -47,7 +47,7 @@ class FeedDelicacyListStore {
 
     _fetchDataFromUrl() {
         return new Promise((resolve, reject) => {
-            const URL = `http://food.boohee.com/fb/v1/feeds/category_feed?page=${this.page}&category=4&per=10`
+            const URL = `http://food.boohee.com/fb/v1/feeds/category_feed?page=${this.page}&category=${this.categoryId}&per=10`
 
             fetch(URL).then(response => {
                 if (response.status == 200) return response.json()
@@ -65,11 +65,3 @@ class FeedDelicacyListStore {
         })
     }
 }
-const feedDelicacyListStore = new FeedDelicacyListStore()
-
-reaction(
-    () => feedDelicacyListStore.page,
-    () => feedDelicacyListStore.fetchDelicacyList()
-)
-
-export default feedDelicacyListStore

@@ -12,13 +12,16 @@ import {
     RefreshControl,
 } from 'react-native'
 import {observer} from 'mobx-react/native'
-import FeedKnowledgeStore from '../../mobx/feedKnowledgeListStore'
+import {reaction} from 'mobx'
 import Loading from '../../components/Loading'
 import LoadMoreFooter from '../../components/LoadMoreFooter'
 import FeedSingleImageCell from '../../components/FeedSingleImageCell'
 import FeedMultiImageCell from '../../components/FeedMultiImageCell'
 import FeedDetail from './FeedDetail'
 import Toast from 'react-native-easy-toast'
+import FeedBaseStore from '../../mobx/feedBaseStore'
+
+const KNOWLEDGE_ID = 3
 
 @observer
 export default class FeedKnowledgeList extends PureComponent {
@@ -29,12 +32,17 @@ export default class FeedKnowledgeList extends PureComponent {
         })
     }
 
+    knowledgeListStore = new FeedBaseStore(KNOWLEDGE_ID)
+
     componentDidMount() {
-        FeedKnowledgeStore.fetchKnowledgeList()
+        reaction(
+            () => this.knowledgeListStore.page,
+            () => this.knowledgeListStore.fetchFeedList()
+        )
     }
 
     componentWillReact() {
-        const {errorMsg} = FeedKnowledgeStore
+        const {errorMsg} = this.knowledgeListStore
         errorMsg && this.toast.show(errorMsg)
     }
 
@@ -48,21 +56,21 @@ export default class FeedKnowledgeList extends PureComponent {
     }
 
     _onRefresh = () => {
-        FeedKnowledgeStore.isRefreshing = true
-        FeedKnowledgeStore.fetchKnowledgeList()
+        this.knowledgeListStore.isRefreshing = true
+        this.knowledgeListStore.fetchFeedList()
     }
 
-    _onEndReach = () => FeedKnowledgeStore.page ++
+    _onEndReach = () => this.knowledgeListStore.page ++
 
     _renderFooter = () => <LoadMoreFooter/>
 
     render() {
-        const {feedKnowledgeList, isRefreshing, isFetching} = FeedKnowledgeStore
+        const {feedList, isRefreshing, isFetching} = this.knowledgeListStore
         return (
             <View style={styles.listView}>
                 {!isFetching &&
                 <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(feedKnowledgeList.slice(0))}
+                    dataSource={this.state.dataSource.cloneWithRows(feedList.slice(0))}
                     renderRow={this._renderRow}
                     renderFooter={this._renderFooter}
                     enableEmptySections

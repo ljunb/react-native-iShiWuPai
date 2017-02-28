@@ -13,6 +13,7 @@
     "react-native-camera": "^0.4.1",
     "react-native-easy-toast": "^1.0.5",
     "react-native-scrollable-tab-view": "^0.6.0",
+    "react-navigation": "^1.0.0-beta.5",
     "react-redux": "^4.4.6",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0"

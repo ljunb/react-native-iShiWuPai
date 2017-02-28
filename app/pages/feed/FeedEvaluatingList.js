@@ -13,12 +13,15 @@ import {
     RefreshControl
 } from 'react-native';
 import {observer} from 'mobx-react/native'
+import {reaction} from 'mobx'
 import Common from '../../common/constants';
 import Loading from '../../components/Loading';
 import LoadMoreFooter from '../../components/LoadMoreFooter';
 import FeedDetail from './FeedDetail';
-import FeedEvaluatingListStore from '../../mobx/feedEvaluatingListStore'
 import Toast from 'react-native-easy-toast'
+import FeedBaseStore from '../../mobx/feedBaseStore'
+
+const EVALUATING_ID = 2
 
 @observer
 export default class FeedEvaluatingList extends PureComponent {
@@ -29,21 +32,26 @@ export default class FeedEvaluatingList extends PureComponent {
         })
     }
 
+    evaluatingListStore = new FeedBaseStore(EVALUATING_ID)
+
     componentDidMount() {
-        FeedEvaluatingListStore.fetchEvaluatingList()
+        reaction(
+            () => this.evaluatingListStore.page,
+            () => this.evaluatingListStore.fetchFeedList()
+        )
     }
 
     componentWillReact() {
-        const {errorMsg} = FeedEvaluatingListStore
+        const {errorMsg} = this.evaluatingListStore
         errorMsg && this.toast.show(errorMsg)
     }
 
     _onRefresh = () => {
-        FeedEvaluatingListStore.isRefreshing = true
-        FeedEvaluatingListStore.fetchEvaluatingList()
+        this.evaluatingListStore.isRefreshing = true
+        this.evaluatingListStore.fetchFeedList()
     }
 
-    _onEndReach = () => FeedEvaluatingListStore.page ++
+    _onEndReach = () => this.evaluatingListStore.page ++
 
     _onPressCell = feed => {
         this.props.navigator.push({
@@ -57,13 +65,13 @@ export default class FeedEvaluatingList extends PureComponent {
     _renderFooter = () => <LoadMoreFooter/>
 
     render() {
-        const {isFetching, isRefreshing, feedEvaluatingList} = FeedEvaluatingListStore
+        const {isFetching, isRefreshing, feedList} = this.evaluatingListStore
 
         return (
             <View style={styles.listView}>
                 {!isFetching &&
                 <ListView
-                    dataSource={this.state.dataSource.cloneWithRows(feedEvaluatingList.slice(0))}
+                    dataSource={this.state.dataSource.cloneWithRows(feedList.slice(0))}
                     renderRow={this._renderRow}
                     renderFooter={this._renderFooter}
                     enableEmptySections={true}

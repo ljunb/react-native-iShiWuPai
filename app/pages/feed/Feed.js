@@ -40,8 +40,7 @@ export default class Home extends PureComponent {
         } else {
             this.props.navigator.push({
                 component: Login,
-                sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
-                passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
+                sceneConfig: Navigator.SceneConfigs.FloatFromBottom
             })
         }
     }
