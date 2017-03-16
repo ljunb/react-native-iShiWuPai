@@ -25,6 +25,7 @@ import NetInfoDecorator from '../../common/NetInfoDecorator'
 import Toast from 'react-native-easy-toast'
 import Loading from '../../components/Loading'
 import Constants from '../../common/constants'
+import Foods from './Foods'
 
 @NetInfoDecorator
 @observer
@@ -87,8 +88,15 @@ export default class FoodEncyclopedia extends Component {
         }
     }
 
-    _onPressCategoryItem = (category) => {
-        alert(category.name)
+    _onPressCategoryItem = category => {
+        RootStore.barStyle = 'default'
+        this.props.navigator.push({
+            component: Foods,
+            passProps: {
+                category,
+                onResetBarStyle: ()=>RootStore.barStyle = 'light-content'
+            }
+        })
     }
 
     _reconnectHandle = () => {

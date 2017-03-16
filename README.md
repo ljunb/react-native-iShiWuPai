@@ -6,10 +6,11 @@ iShiWuPai是基于React Native实现的展示型美食类APP。该分支针对�
 ![搜索](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/search.png)
 ![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/feed.png)
 ![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/feed4.png)
+![逛吃](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/foods.png)
 ![我的](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/profile.png)
 
 ## 现有功能点
-1. 食物百科、搜索、二维码扫描、逛吃、逛吃详情、我的和登录等界面的UI搭建
+1. 食物百科、食物列表、搜索、二维码扫描、逛吃、逛吃详情、我的和登录等界面的UI搭建
 2. 引入Mobx，目前食物百科、逛吃分类已使用Mobx管理数据，请求方面分页加载的思路，是采用reaction函数来监听page的变化进行处理（是否合适？）
 3. 二维码扫描成功添加等待提示
 4. 基于Mobx实现状态栏颜色管理

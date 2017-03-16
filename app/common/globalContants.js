@@ -13,7 +13,10 @@ global.gScreen = {
 }
 
 global.gColors = {
-    themColor: 'rgb(217, 51, 58)',
-    bgColor: '#f5f5f5',
-    borderColor: '#d5d5d5'
+    theme: 'rgb(217, 51, 58)',
+    background: '#f5f5f5',
+    border: '#d5d5d5',
+    healthGreen: 'rgb(142, 213, 7)',
+    healthYellow: 'rgb(254, 210, 10)',
+    healthRed: 'rgb(251, 25, 8)'
 }
