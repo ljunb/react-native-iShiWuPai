@@ -88,11 +88,12 @@ export default class FoodEncyclopedia extends Component {
         }
     }
 
-    _onPressCategoryItem = category => {
+    _onPressCategoryItem = (kind, category) => {
         RootStore.barStyle = 'default'
         this.props.navigator.push({
             component: Foods,
             passProps: {
+                kind,
                 category,
                 onResetBarStyle: ()=>RootStore.barStyle = 'light-content'
             }
@@ -244,7 +245,7 @@ const FoodCategoryView = ({
                             key={category.id}
                             activeOpacity={0.75}
                             style={styles.category}
-                            onPress={() => onPress(category)}
+                            onPress={() => onPress(foodCategory.kind, category)}
                         >
                             <Image
                                 style={styles.categoryIcon}

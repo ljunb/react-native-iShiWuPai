@@ -22,53 +22,51 @@ import Loading from '../../components/Loading'
 class FoodsStore {
     @observable foods = []
     @observable page = 1
+    @observable kind=''
     @observable categoryId = 1
     @observable orderBy = 1
     @observable orderAsc = 0
-    @observable isRefreshing = false
+    @observable sub_value = ''
     @observable isFetching = false
+    @observable isNoMore = true
 
-    constructor(categoryId) {
+    constructor(kind, categoryId) {
         this.categoryId = categoryId
+        this.kind = kind
+        this.isFetching = true
         this.fetchFoods()
     }
 
     @action
     fetchFoods = async() => {
         try {
-            if (this.isRefreshing) {
-                this.page = 1
-                this.isFetching = false
-            } else {
-                this.isFetching = true
-            }
-
-            const result = await this._fetchDataFromUrl()
+            const {foods, isNoMore} = await this._fetchDataFromUrl()
             runInAction(() => {
-                this.isRefreshing = false
                 this.isFetching = false
+                this.isNoMore = isNoMore
+
                 if (this.page == 1) {
-                    this.foods.replace(result)
+                    this.foods.replace(foods)
                 } else {
-                    this.foods.splice(this.foods.length, 0, ...result);
+                    this.foods.splice(this.foods.length, 0, ...foods);
                 }
             })
         } catch (error) {
             this.isFetching = false
-            this.isRefreshing = false
         }
     }
 
     _fetchDataFromUrl() {
         return new Promise((resolve, reject) => {
-            const URL = `http://food.boohee.com/fb/v1/foods?kind=group&value=${this.categoryId}&order_by=${this.orderBy}&page=${this.page}&order_asc=${this.orderAsc}`
+            const URL = `http://food.boohee.com/fb/v1/foods?kind=${this.kind}&value=${this.categoryId}&order_by=${this.orderBy}&page=${this.page}&order_asc=${this.orderAsc}&sub_value=${this.sub_value}`
 
             fetch(URL).then(response => {
                 if (response.status == 200) return response.json()
                 return null
             }).then(responseData => {
                 if (responseData) {
-                    resolve(responseData.foods)
+                    const {foods, page, total_pages} = responseData
+                    resolve({foods, isNoMore: page == total_pages})
                 } else {
                     reject('请求出错！')
                 }
@@ -85,10 +83,12 @@ export default class Foods extends Component {
         dataSource: new ListView.DataSource({
             rowHasChanged: (row1, row2) => row1 !== row2,
         }),
-        sortTypes: []
+        sortTypes: [],
+        subCategory: '全部',
+        sortCode: 'calory'
     }
 
-    foodsStore = new FoodsStore(this.props.category.id)
+    foodsStore = new FoodsStore(this.props.kind, this.props.category.id)
 
     componentDidMount() {
         reaction(
@@ -119,6 +119,7 @@ export default class Foods extends Component {
     }
 
     _onSelectSortType = type => {
+        this.setState({sortCode: type.code})
         this.foodsStore.orderBy = type.index
         if (this.foodsStore.page == 1) {
             this.foodsStore.fetchFoods()
@@ -136,29 +137,63 @@ export default class Foods extends Component {
         }
     }
 
-    _onSelectSubCategory = () => {
-        alert('right')
+    _onPressRightItem = () => {
+        this.subCategory.show()
+    }
+
+    _onSelectSubCategory = subCategory => {
+        const {category: {id}} = this.props
+        this.foodsStore.sub_value = subCategory.id == id ? '' : subCategory.id
+        this.setState({subCategory: subCategory.name})
+        if (this.foodsStore.page == 1) {
+            this.foodsStore.fetchFoods()
+        } else {
+            this.foodsStore.page = 1
+        }
+    }
+
+    _onLoadMore = () => {
+        if (!this.foodsStore.isNoMore) {
+            this.foodsStore.page++
+        }
     }
 
     _renderRightItem = () => {
+        const {category: {sub_categories}} = this.props
+        if (sub_categories.length == 0) return null
+
+        const {subCategory} = this.state
         return (
             <TouchableOpacity
                 activeOpacity={0.75}
                 style={{flexDirection: 'row', alignItems: 'center'}}
-                onPress={this._onSelectSubCategory}
+                onPress={this._onPressRightItem}
             >
-                <Text style={{color: 'gray', fontSize: 12, marginRight: 3}}>全部</Text>
-                <Image source={require('../../resource/ic_food_ordering.png')} style={{width: 16, height: 16}}/>
+                <Text style={{color: 'gray', fontSize: 12, marginRight: 3}}>{subCategory}</Text>
+                <Image source={require('../../resource/ic_bullet_down_gray.png')} style={{width: 13, height: 16}}
+                       resizeMode="contain"/>
             </TouchableOpacity>
         )
     }
 
     _renderRow = food => {
-        return <FoodItem food={food} onPress={this._onPressFoodItem}/>
+        const {sortCode} = this.state
+        return <FoodItem food={food} onPress={this._onPressFoodItem} sortCode={sortCode}/>
+    }
+
+    _renderFooter = () => {
+        if (this.foodsStore.isNoMore) return null
+
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator />
+                <Text style={styles.title}>正在加载更多的数据...</Text>
+            </View>
+        )
     }
 
     render() {
-        const {category: {name}} = this.props
+        const {category: {id, name, sub_categories}} = this.props
         const {foods} = this.foodsStore
         const {dataSource, sortTypes} = this.state
 
@@ -167,9 +202,17 @@ export default class Foods extends Component {
                 <Header
                     title={name}
                     backAction={this._onBack}
-                    style={{zIndex: 2}}
+                    style={{zIndex: 3}}
                     renderRightItem={this._renderRightItem}
                 />
+                {sub_categories.length > 0 &&
+                    <FoodSubCategoryHandleView
+                        ref={r => this.subCategory = r}
+                        categoryId={id}
+                        subCategories={sub_categories}
+                        onSelectSubCategory={this._onSelectSubCategory}
+                    />
+                }
                 <FoodSiftHandleView
                     sortTypes={sortTypes}
                     onSelectSortType={this._onSelectSortType}
@@ -178,10 +221,100 @@ export default class Foods extends Component {
                 <ListView
                     style={{backgroundColor: 'rgba(220, 220, 220, 0.2)'}}
                     dataSource={dataSource.cloneWithRows(foods.slice(0))}
-                    renderRow={this._renderRow}
                     enableEmptySections
+                    renderRow={this._renderRow}
+                    renderFooter={this._renderFooter}
+                    onEndReached={this._onLoadMore}
+                    onEndReachedThreshold={30}
                 />
                 <Loading isShow={this.foodsStore.isFetching}/>
+            </View>
+        )
+    }
+}
+
+class FoodSubCategoryHandleView extends Component {
+    static propTypes = {
+        subCategories: React.PropTypes.object,
+        categoryId: React.PropTypes.number,
+        onSelectSubCategory: React.PropTypes.func
+    }
+
+    heightValue = new Animated.Value(0)
+    state = {
+        isShow: false,
+        subCategories: []
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {subCategories, categoryId} = nextProps
+        this.setState({subCategories: [{id: categoryId, name: '全部'}, ...subCategories]})
+    }
+
+    show = () => {
+        this.setState({isShow: true}, () => {
+            Animated.spring(this.heightValue, {
+                toValue: 1,
+                duration: 250,
+            }).start()
+        })
+    }
+
+    _close = () => {
+        Animated.spring(this.heightValue, {
+            toValue: 0,
+            duration: 250,
+        }).start(() => this.setState({isShow: false}))
+    }
+
+    _onPress = subCategory => {
+        const {onSelectSubCategory} = this.props
+        Animated.spring(this.heightValue, {
+            toValue: 0,
+            duration: 250,
+        }).start(() => {
+            onSelectSubCategory && onSelectSubCategory(subCategory)
+            this.setState({isShow: false})
+        })
+    }
+
+    _renderSubCategory = (subCategory, key) => {
+
+        const {name} = subCategory
+        const {subCategories} = this.state
+        const isLastItem = key == subCategories.length - 1
+
+        return (
+            <TouchableOpacity
+                key={`${name}-${key}`}
+                activeOpacity={0.75}
+                style={[styles.subcategoryItem, isLastItem && {borderBottomWidth: 0}]}
+                onPress={()=>this._onPress(subCategory)}
+            >
+                <Text style={{color: '#fff', fontSize: 13}}>{name}</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    render() {
+        if (!this.state.isShow) return null
+        const {subCategories} = this.state
+        const top = this.heightValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [-34 * subCategories.length, 5]
+        })
+
+        return (
+            <View style={{zIndex: 2, position: 'absolute', top: gScreen.navBarHeight, left: 0}}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={styles.subcategoryWrapper}
+                    onPress={this._close}
+                >
+                    <Animated.View style={[styles.subcategoryAnimatedWrapper, {top}]}>
+                        {subCategories.map(this._renderSubCategory)}
+                    </Animated.View>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -221,7 +354,9 @@ class FoodSiftHandleView extends Component {
     _onChangeOrderAsc = () => {
         const {orderAsc} = this.state
         const {onChangeOrderAsc} = this.props
-        this.setState({orderAsc: orderAsc == 0 ? 1 : 0}, () => onChangeOrderAsc && onChangeOrderAsc(orderAsc))
+        this.setState({orderAsc: orderAsc == 0 ? 1 : 0}, () => {
+            onChangeOrderAsc && onChangeOrderAsc(orderAsc)
+        })
     }
 
     _onPressSortTypeCell = type => {
@@ -268,6 +403,7 @@ class FoodSiftHandleView extends Component {
             outputRange: [-contentHeight, 0]
         })
 
+        const rotate = isShow ? '180deg' : '0deg'
         const orderAscSrc = orderAsc == 1 ? require('../../resource/ic_food_ordering_down.png') : require('../../resource/ic_food_ordering_up.png')
         const orderAscStr = orderAsc == 1 ? '由高到低' : '由低到高'
 
@@ -282,7 +418,7 @@ class FoodSiftHandleView extends Component {
                     >
                         <Text style={styles.orderByFont}>{currentType}</Text>
                         <Image
-                            style={{width: 16, height: 16}}
+                            style={{width: 16, height: 16, transform: [{rotate}]}}
                             source={require('../../resource/ic_food_ordering.png')}
                         />
                     </TouchableOpacity>
@@ -334,7 +470,8 @@ const LoadingProgressView = ({style}) => {
 class FoodItem extends Component {
     static propsTypes = {
         food: React.PropTypes.object,
-        onPress: React.PropTypes.func
+        sortCode: React.PropTypes.string,
+        onPress: React.PropTypes.func,
     }
 
     _onPress = () => {
@@ -343,13 +480,14 @@ class FoodItem extends Component {
     }
 
     render() {
-        const {food} = this.props
+        const {food, sortCode} = this.props
         let lightStyle = [styles.healthLight];
         if (food.health_light == 2) {
             lightStyle.push({backgroundColor: gColors.healthYellow})
         } else if (food.health_light == 3) {
             lightStyle.push({backgroundColor: gColors.healthRed})
         }
+
         return (
             <TouchableOpacity
                 activeOpacity={0.75}
@@ -361,11 +499,13 @@ class FoodItem extends Component {
                     source={{uri: food.thumb_image_url}}
                 />
                 <View style={styles.foodNameWrapper}>
-                    <View style={{justifyContent: 'center'}}>
-                        <Text style={{color: '#666', marginBottom: 5}}>{food.name}</Text>
+                    <View style={{justifyContent: 'center', width: gScreen.width - 60 - 30}}>
+                        <Text style={{color: '#666', marginBottom: 5}} numberOfLines={1}>
+                            {food.name}
+                        </Text>
                         <Text style={{color: 'red', fontSize: 13}}>
-                            {food.calory}
-                            <Text style={{color: '#666'}}> 千卡/{food.weight}克</Text>
+                            {food[sortCode]}
+                            <Text style={{color: '#666'}}>{` ${gSortTypeUnitMapper[sortCode]}/${food.weight}克`}</Text>
                         </Text>
                     </View>
                     <View style={lightStyle}/>
@@ -390,7 +530,7 @@ const styles = StyleSheet.create({
         borderBottomColor: 'rgb(194,194,198)',
         height: 60,
         width: gScreen.width - 60,
-        paddingRight: 10
+        paddingRight: 10,
     },
     healthLight: {
         width: 10,
@@ -443,5 +583,38 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
+    },
+    subcategoryWrapper: {
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+        width: gScreen.width,
+        height: gScreen.height - gScreen.navBarHeight,
+        justifyContent: 'flex-end',
+        zIndex: 1
+    },
+    subcategoryAnimatedWrapper: {
+        backgroundColor: 'rgba(83, 83, 83, 0.85)',
+        position: 'absolute',
+        right: 10,
+        borderRadius: 4
+    },
+    subcategoryItem: {
+        height: 34,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomColor: 'rgba(255,255,255,0.6)',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        paddingHorizontal: 20,
+    },
+    loadingContainer: {
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    title: {
+        fontSize: 13,
+        marginLeft: 8,
+        color: '#333'
     }
 })
