@@ -30,15 +30,21 @@ export default class FeedDelicacyList extends PureComponent {
         dataSource: new ListView.DataSource({
             rowHasChanged: (row1, row2) => row1 !== row2,
         })
-    }
+    };
 
-    delicacyListStore = new FeedBaseStore(DELICACY_ID)
+    // 构造
+      constructor(props) {
+        super(props);
+        // 初始状态
+         this.delicacyListStore = new FeedBaseStore(DELICACY_ID)
+      }
+
 
     componentDidMount() {
         reaction(
             () => this.delicacyListStore.page,
             () => this.delicacyListStore.fetchFeedList()
-        )
+        );
     }
 
     componentWillReact() {
@@ -49,13 +55,13 @@ export default class FeedDelicacyList extends PureComponent {
     _renderRow = feed => <DelicacyItem onPress={this._onPressCell} feed={feed}/>
 
     _onRefresh = () => {
-        this.delicacyListStore.isRefreshing = true
+        this.delicacyListStore.isRefreshing = true;
         this.delicacyListStore.fetchFeedList()
-    }
+    };
 
     _onEndReach = () => this.delicacyListStore.page ++
 
-    _renderFooter = () => <LoadMoreFooter/>
+    _renderFooter = () => <LoadMoreFooter flag={this.delicacyListStore.flag}/>
 
     _onPressCell = feed => {
         this.props.navigator.push({

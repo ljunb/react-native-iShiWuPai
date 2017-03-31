@@ -62,7 +62,7 @@ export default class FeedEvaluatingList extends PureComponent {
 
     _renderRow = feed => <EvaluatingItem onPress={this._onPressCell} feed={feed}/>
 
-    _renderFooter = () => <LoadMoreFooter/>
+    _renderFooter = () => <LoadMoreFooter flag={this.evaluatingListStore.flag}/>
 
     render() {
         const {isFetching, isRefreshing, feedList} = this.evaluatingListStore
