@@ -46,7 +46,7 @@ export default class FeedKnowledgeList extends PureComponent {
         errorMsg && this.toast.show(errorMsg)
     }
 
-    _renderRow = feed => <KnowledgeItem onPress={this._onPressCell} feed={feed}/>
+    _renderRow = (feed) => <KnowledgeItem onPress={this._onPressCell} feed={feed}/>
 
     _onPressCell = feed => {
         this.props.navigator.push({
@@ -62,7 +62,7 @@ export default class FeedKnowledgeList extends PureComponent {
 
     _onEndReach = () => this.knowledgeListStore.page ++
 
-    _renderFooter = () => <LoadMoreFooter/>
+    _renderFooter = () => <LoadMoreFooter  flag={this.knowledgeListStore.flag}/>
 
     render() {
         const {feedList, isRefreshing, isFetching} = this.knowledgeListStore
