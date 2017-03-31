@@ -62,7 +62,7 @@ export default class FeedKnowledgeList extends PureComponent {
 
     _onEndReach = () => this.knowledgeListStore.page ++
 
-    _renderFooter = () => <LoadMoreFooter  flag={this.knowledgeListStore.flag}/>
+    _renderFooter = () => <LoadMoreFooter isNoMore={this.knowledgeListStore.isNoMore}/>
 
     render() {
         const {feedList, isRefreshing, isFetching} = this.knowledgeListStore

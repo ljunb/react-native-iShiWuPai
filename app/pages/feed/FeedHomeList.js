@@ -35,12 +35,12 @@ export default class FeedList extends Component {
     }
 
     componentDidMount() {
-        const {dispatch, categoryId} = this.props;
-        dispatch(fetchFeedList(categoryId, page));
+        const {dispatch} = this.props;
+        dispatch(fetchFeedList(page));
     }
 
     _onMomentumScrollEnd(event) {
-        const {dispatch, categoryId} = this.props;
+        const {dispatch} = this.props;
         const {contentOffset, layoutMeasurement, contentSize} = event.nativeEvent;
 
         let contentSizeH = contentSize.height;
@@ -50,16 +50,16 @@ export default class FeedList extends Component {
 
         if (Math.abs(viewBottomY - contentSizeH) <= 40 && canLoadMore) {
             page++;
-            dispatch(fetchFeedList(categoryId, page));
+            dispatch(fetchFeedList(page));
             canLoadMore = false;
         }
     }
 
     _onRefresh() {
-        const {dispatch, categoryId} = this.props;
+        const {dispatch} = this.props;
         page = 1;
         canLoadMore = false;
-        dispatch(fetchFeedList(categoryId, page))
+        dispatch(fetchFeedList(page))
     }
 
     _onPressCell(feed) {

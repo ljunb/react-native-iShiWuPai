@@ -33,12 +33,11 @@ export default class FeedDelicacyList extends PureComponent {
     };
 
     // 构造
-      constructor(props) {
+    constructor(props) {
         super(props);
         // 初始状态
-         this.delicacyListStore = new FeedBaseStore(DELICACY_ID)
-      }
-
+        this.delicacyListStore = new FeedBaseStore(DELICACY_ID)
+    }
 
     componentDidMount() {
         reaction(
@@ -59,9 +58,9 @@ export default class FeedDelicacyList extends PureComponent {
         this.delicacyListStore.fetchFeedList()
     };
 
-    _onEndReach = () => this.delicacyListStore.page ++
+    _onEndReach = () => this.delicacyListStore.page++
 
-    _renderFooter = () => <LoadMoreFooter flag={this.delicacyListStore.flag}/>
+    _renderFooter = () => <LoadMoreFooter isNoMore={this.delicacyListStore.isNoMore}/>
 
     _onPressCell = feed => {
         this.props.navigator.push({

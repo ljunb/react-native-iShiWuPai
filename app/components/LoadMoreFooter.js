@@ -1,7 +1,7 @@
 /**
  * Created by ljunb on 16/12/1.
  */
-import React from 'react';
+import React, { Component } from 'react';
 import {
     ActivityIndicator,
     View,
@@ -9,12 +9,23 @@ import {
     StyleSheet,
 } from 'react-native';
 
-export default class LoadMoreFooter extends React.Component {
+export default class LoadMoreFooter extends Component {
+    static propTypes = {
+        isNoMore: React.PropTypes.bool,
+    }
+
+    static defaultProps = {
+        isNoMore: false
+    }
+
     render() {
+        const {isNoMore} = this.props
+        const title = isNoMore ? '- 没有更多的数据了 -' : '正在加载更多的数据...'
+
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator />
-                <Text style={styles.title}>正在加载更多的数据...</Text>
+                {!isNoMore && <ActivityIndicator />}
+                <Text style={styles.title}>{title}</Text>
             </View>
         )
     }

@@ -18,6 +18,7 @@ import {observer} from 'mobx-react/native'
 import {observable, runInAction, reaction, action, computed} from 'mobx'
 import Header from '../../components/AMHeader'
 import Loading from '../../components/Loading'
+import LoadMoreFooter from "../../components/LoadMoreFooter";
 
 class FoodsStore {
     @observable foods = []
@@ -66,7 +67,7 @@ class FoodsStore {
             }).then(responseData => {
                 if (responseData) {
                     const {foods, page, total_pages} = responseData
-                    resolve({foods, isNoMore: page == total_pages})
+                    resolve({foods, isNoMore: page >= total_pages})
                 } else {
                     reject('请求出错！')
                 }
@@ -182,14 +183,10 @@ export default class Foods extends Component {
     }
 
     _renderFooter = () => {
-        if (this.foodsStore.isNoMore) return null
+        const {foods} = this.foodsStore
+        if (foods.length == 0) return null
 
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator />
-                <Text style={styles.title}>正在加载更多的数据...</Text>
-            </View>
-        )
+        return <LoadMoreFooter isNoMore={this.foodsStore.isNoMore}/>
     }
 
     render() {

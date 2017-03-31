@@ -7,33 +7,28 @@ export default class FeedStore {
     @observable errorMsg = '';
     @observable page = 1;
     @observable isRefreshing = false;
-    @observable flag=true;
+    @observable isNoMore = true;
 
     constructor(categoryId) {
         this.categoryId = categoryId;
         this.fetchFeedList()
     }
 
-
-   @action
+    @action
     fetchFeedList = async () => {
         try {
             if (this.isRefreshing) this.page = 1
 
-            const result = await this._fetchDataFromUrl();
+            const {feeds, isNoMore} = await this._fetchDataFromUrl();
             runInAction(() => {
                 this.isRefreshing = false
                 this.errorMsg = ''
+                this.isNoMore = isNoMore
 
-                if(result.length<10) this.flag=false;
-                else this.flag=true;
-                
                 if (this.page == 1) {
-                    this.feedList.replace(result)
+                    this.feedList.replace(feeds)
                 } else {
-                    this.feedList.splice(this.feedList.length, 0, ...result);
-                    //this.feedList.push(...result);
-                    //this.feedList=this.feedList.concat(result);
+                    this.feedList.splice(this.feedList.length, 0, ...feeds);
                 }
             })
         } catch (error) {
@@ -60,7 +55,8 @@ export default class FeedStore {
                 return null;
             }).then(responseData => {
                 if (responseData) {
-                    resolve(responseData.feeds)
+                    const {feeds, page, total_pages} = responseData
+                    resolve({feeds, isNoMore: page >= total_pages})
                 } else {
                     reject('请求出错！')
                 }
