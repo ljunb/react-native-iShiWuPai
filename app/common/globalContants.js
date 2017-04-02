@@ -44,5 +44,6 @@ global.gSortTypeUnitMapper = {
     'kalium': '毫克',
     'phosphor': '毫克',
     'natrium': '毫克',
-    'selenium': '毫克'
+    'selenium': '毫克',
+    'iodine': '毫克'
 }

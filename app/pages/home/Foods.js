@@ -93,7 +93,12 @@ export default class Foods extends Component {
 
     componentDidMount() {
         reaction(
-            () => this.foodsStore.page,
+            () => [
+                this.foodsStore.page,
+                this.foodsStore.orderBy,
+                this.foodsStore.orderAsc,
+                this.foodsStore.sub_value
+            ],
             () => this.foodsStore.fetchFoods()
         )
         this._fetchSortTypes()
@@ -122,20 +127,10 @@ export default class Foods extends Component {
     _onSelectSortType = type => {
         this.setState({sortCode: type.code})
         this.foodsStore.orderBy = type.index
-        if (this.foodsStore.page == 1) {
-            this.foodsStore.fetchFoods()
-        } else {
-            this.foodsStore.page = 1
-        }
     }
 
     _onChangeOrderAsc = orderAsc => {
         this.foodsStore.orderAsc = orderAsc
-        if (this.foodsStore.page == 1) {
-            this.foodsStore.fetchFoods()
-        } else {
-            this.foodsStore.page = 1
-        }
     }
 
     _onPressRightItem = () => {
@@ -146,11 +141,6 @@ export default class Foods extends Component {
         const {category: {id}} = this.props
         this.foodsStore.sub_value = subCategory.id == id ? '' : subCategory.id
         this.setState({subCategory: subCategory.name})
-        if (this.foodsStore.page == 1) {
-            this.foodsStore.fetchFoods()
-        } else {
-            this.foodsStore.page = 1
-        }
     }
 
     _onLoadMore = () => {
@@ -485,6 +475,9 @@ class FoodItem extends Component {
             lightStyle.push({backgroundColor: gColors.healthRed})
         }
 
+        const defaultImg = require('../../resource/img_default_food_thumbnail.png')
+        const imgSrc = food.thumb_image_url ? {uri: food.thumb_image_url} : defaultImg
+
         return (
             <TouchableOpacity
                 activeOpacity={0.75}
@@ -493,7 +486,8 @@ class FoodItem extends Component {
             >
                 <Image
                     style={{width: 40, height: 40, marginHorizontal: 10, borderRadius: 4}}
-                    source={{uri: food.thumb_image_url}}
+                    source={imgSrc}
+                    defaultSource={defaultImg}
                 />
                 <View style={styles.foodNameWrapper}>
                     <View style={{justifyContent: 'center', width: gScreen.width - 60 - 30}}>

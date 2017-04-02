@@ -1,7 +1,7 @@
 /**
  * Created by ljunb on 2017/2/25.
  */
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import {
     StyleSheet,
     View,
@@ -37,7 +37,7 @@ const ScannerPromptTitle = () => {
     )
 }
 
-export default class Scanner extends PureComponent {
+export default class Scanner extends Component {
 
     state = {
         isBarCodeRead: false
@@ -81,7 +81,7 @@ export default class Scanner extends PureComponent {
     }
 }
 
-class ScannerAnimatedContent extends PureComponent {
+class ScannerAnimatedContent extends Component {
     state = {
         down: true,
         positionAnimatedValue: new Animated.Value(0)
@@ -122,7 +122,7 @@ class ScannerAnimatedContent extends PureComponent {
     }
 }
 
-class ScannerBarCodeReadPrompt extends PureComponent {
+class ScannerBarCodeReadPrompt extends Component {
 
     state = {
         isShow: false
