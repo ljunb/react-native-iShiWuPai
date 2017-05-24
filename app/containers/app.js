@@ -3,11 +3,11 @@
  */
 import React, {PureComponent} from 'react'
 import {
-    Navigator,
     View,
     Platform,
     StatusBar
 } from 'react-native';
+import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer} from 'mobx-react/native'
 import TabBarView from '../containers/TabBarView'
 import Splash from '../pages/Splash'

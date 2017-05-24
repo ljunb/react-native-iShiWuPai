@@ -10,9 +10,9 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    Platform,
-    Navigator
+    Platform
 } from 'react-native';
+import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer} from 'mobx-react/native'
 import FoodEncyclopediaStore from '../../mobx/foodEncyclopediaStore'
 import RootStore from '../../mobx'

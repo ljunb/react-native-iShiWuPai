@@ -9,9 +9,8 @@ import {
     TouchableOpacity,
     Text,
     Image,
-    Platform,
-    Navigator
 } from 'react-native'
+import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer} from 'mobx-react/native'
 import RootStore from '../../mobx'
 import Login from '../Login'

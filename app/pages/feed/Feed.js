@@ -4,13 +4,11 @@
 import React, {PureComponent} from 'react';
 import {
     View,
-    Text,
     Image,
     TouchableOpacity,
-    Platform,
     StyleSheet,
-    Navigator
 } from 'react-native'
+import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer} from 'mobx-react/native'
 import Login from '../Login'
 import RootStore from '../../mobx'
