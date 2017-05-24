@@ -6,9 +6,7 @@ import React, {PureComponent} from 'react'
 import {
     StyleSheet,
     View,
-    Text,
     ListView,
-    TouchableOpacity,
     RefreshControl
 } from 'react-native'
 import {observer} from 'mobx-react/native'

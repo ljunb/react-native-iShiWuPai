@@ -14,15 +14,14 @@ import Login from '../Login'
 import RootStore from '../../mobx'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import FeedsCategoryBar from '../../components/FeedsCategoryBar'
-import FeedHomeListContainer from '../../containers/feed/FeedHomeListContainer'
-// import FeedHomeList from '../../pages/feed/FeedHomeList';
+import FeedHomeList from '../../pages/feed/FeedHomeList.test';
 import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList'
 import FeedKnowledgeList from '../../pages/feed/FeedKnowledgeList';
 import FeedDelicacyList from '../../pages/feed/FeedDelicacyList';
 
 const titles = ['首页', '评测', '知识', '美食'];
 const controllers = [
-    {categoryId: 1, controller: FeedHomeListContainer},
+    {categoryId: 1, controller: FeedHomeList},
     {categoryId: 2, controller: FeedEvaluatingList},
     {categoryId: 3, controller: FeedKnowledgeList},
     {categoryId: 4, controller: FeedDelicacyList}

@@ -3,9 +3,9 @@
  */
 import GlobalContants from './common/globalContants'
 import React from 'react';
-import {NetInfo, Animated, StyleSheet, View, Text, Platform} from 'react-native';
-import {Provider} from 'react-redux';
-import store from './store/store';
+import {Animated, StyleSheet, View, Text, Platform} from 'react-native';
+import {Provider} from 'mobx-react/native'
+import stores from './store'
 import Constants from './common/constants';
 import NetInfoDecorator from './common/NetInfoDecorator'
 import App from './containers/app';
@@ -45,7 +45,7 @@ export default class Root extends React.Component {
         });
         return (
             <View style={{flex: 1}}>
-                <Provider store={store}>
+                <Provider {...stores}>
                     <App />
                 </Provider>
                 <Animated.View style={[styles.netInfoView, {top: positionY}]}>

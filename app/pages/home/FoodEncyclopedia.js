@@ -18,7 +18,6 @@ import FoodEncyclopediaStore from '../../mobx/foodEncyclopediaStore'
 import RootStore from '../../mobx'
 
 import Login from '../Login'
-import SearchContainer from '../../containers/SearchContainer'
 import Scanner from '../../components/Scanner'
 
 import NetInfoDecorator from '../../common/NetInfoDecorator'
@@ -45,11 +44,7 @@ export default class FoodEncyclopedia extends Component {
     }
 
     _searchAction = () => {
-        RootStore.barStyle = 'default'
-        this.props.navigator.push({
-            component: SearchContainer,
-            passProps: {onResetBarStyle: ()=>RootStore.barStyle = 'light-content'}
-        })
+        alert('search')
     }
 
     _foodHandleAction = (handleTitle) => {

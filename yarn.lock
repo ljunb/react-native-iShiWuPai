@@ -137,6 +137,17 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "http://registry.npm.taobao.org/asynckit/download/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
+autoresponsive-common@~1.0.0:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/autoresponsive-common/download/autoresponsive-common-1.0.1.tgz#6213e798a6879e6b6340d6127a6133a369c0cb9d"
+
+autoresponsive-react-native@^1.0.9:
+  version "1.0.9"
+  resolved "http://registry.npm.taobao.org/autoresponsive-react-native/download/autoresponsive-react-native-1.0.9.tgz#11aea77a1e4ceae172257f75b9138f39608a62fb"
+  dependencies:
+    autoresponsive-common "~1.0.0"
+    react-native ">=0.19.0"
+
 aws-sign2@~0.6.0:
   version "0.6.0"
   resolved "http://registry.npm.taobao.org/aws-sign2/download/aws-sign2-0.6.0.tgz#14342dd38dbcc94d0e5b87d763cd63612c0e794f"
@@ -2550,7 +2561,7 @@ react-native-tab-view@^0.0.65:
   dependencies:
     prop-types "^15.5.8"
 
-react-native@0.44.0:
+react-native@0.44.0, react-native@>=0.19.0:
   version "0.44.0"
   resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.44.0.tgz#06427a30053f2d555c60fe0b9afcc6c778db09de"
   dependencies:

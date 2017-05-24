@@ -92,7 +92,7 @@ export default class Foods extends Component {
     foodsStore = new FoodsStore(this.props.kind, this.props.category.id)
 
     componentDidMount() {
-        reaction(
+        this.dispose = reaction(
             () => [
                 this.foodsStore.page,
                 this.foodsStore.orderBy,
@@ -102,6 +102,10 @@ export default class Foods extends Component {
             () => this.foodsStore.fetchFoods()
         )
         this._fetchSortTypes()
+    }
+
+    componentWillUnmount() {
+        this.dispose()
     }
 
     _fetchSortTypes = async() => {
