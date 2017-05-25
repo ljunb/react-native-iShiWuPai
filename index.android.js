@@ -2,8 +2,8 @@
  *  iShiWuPai入口文件
  */
 
-import React from 'react';
-import { AppRegistry } from 'react-native';
-import Root from './app/root';
+global.__IOS__ = false
+global.__ANDROID__ = true
 
-AppRegistry.registerComponent('iShiWuPai', () => Root);
+require('./src/common/globalContants')
+require('./iShiWuPai')
