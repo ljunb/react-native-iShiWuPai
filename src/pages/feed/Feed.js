@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react/native'
-import Login from '../Login'
 import ScrollableTabView from 'react-native-scrollable-tab-view'
 import FeedsCategoryBar from '../../components/FeedsCategoryBar'
 import FeedHomeList from './FeedHomeList';
@@ -36,7 +35,7 @@ export default class Home extends PureComponent {
             alert(name)
         } else {
             this.props.navigator.push({
-                component: Login,
+                id: 'Login',
                 sceneConfig: Navigator.SceneConfigs.FloatFromBottom
             })
         }

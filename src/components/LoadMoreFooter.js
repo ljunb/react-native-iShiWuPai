@@ -1,13 +1,13 @@
 /**
  * Created by ljunb on 16/12/1.
  */
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
     ActivityIndicator,
     View,
     Text,
     StyleSheet,
-} from 'react-native';
+} from 'react-native'
 
 export default class LoadMoreFooter extends Component {
     static propTypes = {

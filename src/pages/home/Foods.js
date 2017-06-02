@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import {observer} from 'mobx-react/native'
 import {observable, runInAction, reaction, action, computed} from 'mobx'
-import Header from '../../components/AMHeader'
+import Header from '../../components/Header'
 import Loading from '../../components/Loading'
 import LoadMoreFooter from "../../components/LoadMoreFooter";
 
@@ -46,7 +46,7 @@ class FoodsStore {
                 this.isFetching = false
                 this.isNoMore = isNoMore
 
-                if (this.page == 1) {
+                if (this.page === 1) {
                     this.foods.replace(foods)
                 } else {
                     this.foods.splice(this.foods.length, 0, ...foods);
@@ -62,7 +62,7 @@ class FoodsStore {
             const URL = `http://food.boohee.com/fb/v1/foods?kind=${this.kind}&value=${this.categoryId}&order_by=${this.orderBy}&page=${this.page}&order_asc=${this.orderAsc}&sub_value=${this.sub_value}`
 
             fetch(URL).then(response => {
-                if (response.status == 200) return response.json()
+                if (response.status === 200) return response.json()
                 return null
             }).then(responseData => {
                 if (responseData) {
@@ -192,7 +192,7 @@ export default class Foods extends Component {
             <View style={{flex: 1, backgroundColor: gColors.background}}>
                 <Header
                     title={name}
-                    backAction={this._onBack}
+                    onBack={this._onBack}
                     style={{zIndex: 3}}
                     renderRightItem={this._renderRightItem}
                 />

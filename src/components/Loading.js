@@ -1,15 +1,19 @@
 /**
  * Created by ljunb on 16/6/2.
  */
-import React from 'react';
+import React, { Component } from 'react'
 import {
     StyleSheet,
     View,
     Text,
     ActivityIndicator
-} from 'react-native';
+} from 'react-native'
 
-export default class Loading extends React.Component {
+export default class Loading extends Component {
+    static propTypes = {
+        isShow: React.PropTypes.bool
+    }
+
     render() {
         if (!this.props.isShow) return null;
 
@@ -22,10 +26,6 @@ export default class Loading extends React.Component {
             </View>
         )
     }
-}
-
-Loading.propTypes = {
-    isShow: React.PropTypes.bool
 }
 
 const styles = StyleSheet.create({

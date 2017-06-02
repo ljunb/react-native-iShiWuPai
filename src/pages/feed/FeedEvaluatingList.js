@@ -14,9 +14,8 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react/native'
 import {reaction} from 'mobx'
-import Loading from '../../components/Loading';
-import LoadMoreFooter from '../../components/LoadMoreFooter';
-import FeedDetail from './FeedDetail';
+import Loading from '../../components/Loading'
+import LoadMoreFooter from '../../components/LoadMoreFooter'
 import Toast from 'react-native-easy-toast'
 import FeedBaseStore from '../../store/feedBaseStore'
 
@@ -54,7 +53,7 @@ export default class FeedEvaluatingList extends PureComponent {
 
     _onPressCell = feed => {
         this.props.navigator.push({
-            component: FeedDetail,
+            id: 'FeedDetail',
             passProps: {feed}
         })
     }

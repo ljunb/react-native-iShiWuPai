@@ -12,16 +12,16 @@ import {
     ScrollView,
     Platform
 } from 'react-native';
-import Header from '../../components/HomeNavigation';
-import ShareView from '../../components/ShareView';
+import Header from '../../components/Header'
+import ShareView from '../../components/ShareView'
 
 export default class FeedDetail extends Component {
 
     render() {
-        const {feed} = this.props;
+        const {feed} = this.props
 
         return (
-            (feed.link && feed.content_type == 6) ?
+            (feed.link && feed.content_type === 6) ?
                 <WebViewComponent
                     popAction={() => this.props.navigator.pop()}
                     uri={feed.link}
@@ -46,16 +46,12 @@ export default class FeedDetail extends Component {
     }
 }
 
-const WebViewComponent = ({
-    popAction,
-    uri
-}) => {
+const WebViewComponent = ({ popAction, uri }) => {
     return (
         <View style={{flex: 1, backgroundColor: 'white'}}>
             <Header
-                leftIconAction={popAction}
                 title='资讯详情'
-                leftIcon={require('../../resource/ic_back_dark.png')}
+                onBack={popAction}
             />
             <WebView
                 source={{uri}}
@@ -66,7 +62,7 @@ const WebViewComponent = ({
             />
         </View>
     )
-};
+}
 
 const FoodCardComponent = ({
     popAction,
@@ -87,18 +83,16 @@ const FoodCardComponent = ({
     return (
         <View style={{flex: 1, backgroundColor: 'white'}}>
             <Header
-                leftIconAction={popAction}
                 title='查看详情'
-                leftIcon={require('../../resource/ic_back_dark.png')}
                 rightIcon={require('../../resource/ic_photo_share.png')}
-                rightIconSize={16}
-                rightIconAction={shareAction}
+                onBack={popAction}
+                onRight={shareAction}
             />
             <View style={[styles.cardImageContent]}>
                 <ScrollView
+                    removeClippedSubviews
                     bounces={false}
                     showsVerticalScrollIndicator={false}
-                    removeClippedSubviews={true}
                     contentContainerStyle={{backgroundColor: 'white'}}
                 >
                     <View style={{
@@ -124,7 +118,7 @@ const FoodCardComponent = ({
                         defaultSource={require('../../resource/img_horizontal_default.png')}
                         resizeMode={'contain'}
                     />
-                    {feed.description != '' &&
+                    {feed.description !== '' &&
                     <View style={{
                         borderColor: '#ccc',
                         borderTopWidth: 0.5,
@@ -149,55 +143,43 @@ const FoodCardComponent = ({
             </TouchableOpacity>
         </View>
     )
-};
+}
 
-const FoodNewsComponent = ({
-    popAction,
-    uri
-}) => {
+const FoodNewsComponent = ({ popAction, uri }) => {
     return (
         <View style={{flex: 1, backgroundColor: 'white'}}>
-            <Header
-                leftIconAction={popAction}
-                title='资讯详情'
-                leftIcon={require('../../resource/ic_back_dark.png')}
-            />
+            <Header title="资讯详情" onBack={popAction}/>
             <WebView
+                scalesPageToFit
+                startInLoadingState
                 source={{uri}}
-                startInLoadingState={true}
                 bounces={false}
-                scalesPageToFit={true}
-                style={[styles.webView, {height: gScreen.height - 44 - gScreen.navBarHeight}]}
                 automaticallyAdjustContentInsets={false}
+                style={[styles.webView, {height: gScreen.height - 44 - gScreen.navBarHeight}]}
             />
-            <View style={{
-                flexDirection: 'row',
-                height: 44,
-                backgroundColor: '#fff',
-                borderTopWidth: gScreen.onePix,
-                borderColor: '#d9d9d9',
-                alignItems: 'center'
-            }}>
+            <View style={styles.bottomWrapper}>
                 <TouchableOpacity
                     activeOpacity={0.75}
-                    style={{flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
+                    style={styles.bottomBtn}
                     onPress={() => alert('share')}
                 >
-                    <Image style={{width: 14, height: 14}}
-                           source={require('../../resource/ic_share_black.png')}
-                           resizeMode="contain"
+                    <Image
+                        style={{width: 14, height: 14}}
+                        source={require('../../resource/ic_share_black.png')}
+                        resizeMode="contain"
                     />
                     <Text style={{marginLeft: 5}}>分享</Text>
                 </TouchableOpacity>
                 <View style={[styles.line]}/>
                 <TouchableOpacity
                     activeOpacity={0.75}
-                    style={{flex: 1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
+                    style={styles.bottomBtn}
                     onPress={() => alert('share')}
                 >
-                    <Image style={{width: 18, height: 18}}
-                           source={require('../../resource/ic_article_collect.png')}
-                           resizeMode="contain"
+                    <Image
+                        style={{width: 18, height: 18}}
+                        source={require('../../resource/ic_article_collect.png')}
+                        resizeMode="contain"
                     />
                     <Text style={{marginLeft: 5}}>收藏</Text>
                 </TouchableOpacity>
@@ -234,5 +216,19 @@ const styles = StyleSheet.create({
         height: 30,
         width: gScreen.onePix,
         backgroundColor: '#ccc'
+    },
+    bottomWrapper: {
+        flexDirection: 'row',
+        height: 44,
+        backgroundColor: '#fff',
+        borderTopWidth: gScreen.onePix,
+        borderColor: '#d9d9d9',
+        alignItems: 'center'
+    },
+    bottomBtn: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
     }
 })

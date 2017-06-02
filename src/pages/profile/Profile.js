@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react/native'
-import Login from '../Login'
 
 @inject('app')
 @observer
@@ -24,7 +23,7 @@ export default class Profile extends PureComponent {
         const {app, navigator} = this.props
         app.updateBarStyle('default')
         navigator.push({
-            component: Login,
+            id: 'Login',
             sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
             passProps: {onResetBarStyle: ()=>app.updateBarStyle('light-content')}
         })

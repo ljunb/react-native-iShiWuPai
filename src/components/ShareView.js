@@ -1,38 +1,32 @@
 /**
  * Created by ljunb on 2016/11/19.
  */
-import React, {Component} from 'react';
+import React, {Component} from 'react'
 import {
     StyleSheet,
-    View,
     Text,
     Animated,
     Dimensions,
     TouchableOpacity
-} from 'react-native';
-const {height, width} = Dimensions.get('window');
-const CHANNEL_HEIGHT = 150;
-const ANIMATION_DURATION = 200;
+} from 'react-native'
+const {height, width} = Dimensions.get('window')
+const CHANNEL_HEIGHT = 150
+const ANIMATION_DURATION = 200
 
 export default class ShareView extends Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
-        this.shareChannelItemOnPress = this.shareChannelItemOnPress.bind(this);
-        this.state = {
-            isShow: false,
-            shareContent: '',
-            coverOpacityValue: new Animated.Value(0),
-            coverPositionLeftValue: new Animated.Value(0),
-            channelBottomValue: new Animated.Value(0),
-        }
+    state = {
+        isShow: false,
+        shareContent: '',
+        coverOpacityValue: new Animated.Value(0),
+        coverPositionLeftValue: new Animated.Value(0),
+        channelBottomValue: new Animated.Value(0),
     }
 
-    share(shareContent) {
+    share = shareContent => {
         this.setState({
             isShow: true,
             shareContent
-        });
+        })
         Animated.parallel([
             Animated.timing(this.state.coverOpacityValue, {
                 toValue: 1,
@@ -42,10 +36,10 @@ export default class ShareView extends Component {
                 toValue: 1,
                 duration: ANIMATION_DURATION
             })
-        ]).start();
+        ]).start()
     }
 
-    close() {
+    close = () => {
         Animated.sequence([
             Animated.timing(this.state.channelBottomValue, {
                 toValue: 0,
@@ -55,19 +49,19 @@ export default class ShareView extends Component {
                 toValue: 1,
                 duration: ANIMATION_DURATION,
             })
-        ]).start(()=>{
+        ]).start(() => {
             this.state.coverPositionLeftValue.setValue(0);
             this.state.coverOpacityValue.setValue(0);
             this.setState({isShow: false})
         });
     }
 
-    shareChannelItemOnPress(channelName) {
+    shareChannelItemOnPress = channelName => {
         alert(channelName)
     }
 
     render() {
-        if (!this.state.isShow) return null;
+        if (!this.state.isShow) return null
 
         let styleProps = {
             coverOpacityValue: this.state.coverOpacityValue,
@@ -79,11 +73,11 @@ export default class ShareView extends Component {
                 inputRange: [0, 1],
                 outputRange: [-CHANNEL_HEIGHT, 0]
             })
-        };
+        }
         let channelProps = {
             shareChannels: ['QQ', '微信', '朋友圈', '新浪微博'],
             channelImages: []
-        };
+        }
 
         return (
             <ChannelContainer
@@ -116,7 +110,7 @@ const ChannelContainer = ({
                     return (
                         <TouchableOpacity
                             key={`${channelName}-${index}`}
-                            onPress={()=>shareChannelItemOnPress(channelName)}
+                            onPress={() => shareChannelItemOnPress(channelName)}
                         >
                             <Text>{channelName}</Text>
                         </TouchableOpacity>

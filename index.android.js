@@ -5,5 +5,5 @@
 global.__IOS__ = false
 global.__ANDROID__ = true
 
-require('./src/common/globalContants')
+require('./src/common/GlobalContants')
 require('./iShiWuPai')

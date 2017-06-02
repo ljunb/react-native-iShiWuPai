@@ -1,14 +1,14 @@
 /**
  * Created by ljunb on 16/8/21.
  */
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
     StyleSheet,
     View,
     Text,
     TouchableOpacity,
     Image,
-} from 'react-native';
+} from 'react-native'
 
 export default class TabBar extends Component {
     static propType = {
@@ -18,37 +18,26 @@ export default class TabBar extends Component {
 
         tabNames    : React.PropTypes.array,
         tabIconNames: React.PropTypes.array
-    };
-
-    componentDidMount() {
-        this.props.scrollValue.addListener(this.setAnimationValue);
-    }
-
-    setAnimationValue({value}) {
-        console.log(value);
     }
 
     render() {
+        const { activeTab, selectedTabIconNames, tabIconNames, tabNames, goToPage } = this.props
+
         return (
             <View style={[styles.tabs, {borderTopWidth: gScreen.onePix}]}>
                 {this.props.tabs.map((tab, i) => {
-                    let color = this.props.activeTab === i ? 'red' : 'gray';
-                    let icon = this.props.activeTab == i ? this.props.selectedTabIconNames[i] : this.props.tabIconNames[i];
+                    let color = activeTab === i ? 'red' : 'gray'
+                    let icon = activeTab === i ? selectedTabIconNames[i] : tabIconNames[i]
                     return (
                         <TouchableOpacity
                             key={i}
                             activeOpacity={0.8}
                             style={styles.tab}
-                            onPress={()=>this.props.goToPage(i)}
+                            onPress={()=>goToPage(i)}
                         >
                             <View style={styles.tabItem}>
-                                <Image
-                                    style={styles.icon}
-                                    source={icon}
-                                />
-                                <Text style={{color: color, fontSize: 12}}>
-                                    {this.props.tabNames[i]}
-                                </Text>
+                                <Image style={styles.icon} source={icon}/>
+                                <Text style={{color: color, fontSize: 12}}>{tabNames[i]}</Text>
                             </View>
                         </TouchableOpacity>
                     )

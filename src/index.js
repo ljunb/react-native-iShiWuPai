@@ -4,19 +4,17 @@
 import React, {PureComponent} from 'react'
 import {
     View,
-    Platform,
     StatusBar
 } from 'react-native';
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react/native'
-import TabBarView from './pages/TabBarView'
-import Splash from './pages/Splash'
+import Router from './common/Routers'
 
 @inject('app')
 @observer
 export default class App extends PureComponent {
 
-    _configureScene = route => {
+    configureScene = route => {
         if (route.sceneConfig) return route.sceneConfig
 
         return {
@@ -25,22 +23,20 @@ export default class App extends PureComponent {
         }
     }
 
-    _renderScene = (route, navigator) => {
-        let Component = route.component
-        return <Component navigator={navigator}{...route.passProps}/>
+    renderScene = (route, navigator) => {
+        let Component = Router[route.id].default
+        return <Component navigator={navigator} {...route.passProps}/>
     }
 
     render() {
-        const initialPage = Platform.OS === 'ios' ? TabBarView : Splash
-        const initialPageName = Platform.OS === 'ios' ? 'TabBarView' : 'Splash'
-
+        const initialPage = __IOS__ ? 'TabBarView' : 'Splash'
         return (
             <View style={{flex: 1}}>
-                <StatusBar barStyle={this.props.app.barStyle} animated/>
+                <StatusBar barStyle={this.props.app.barStyle} animated />
                 <Navigator
-                    initialRoute={{name: initialPageName, component: initialPage}}
-                    configureScene={this._configureScene}
-                    renderScene={this._renderScene}
+                    initialRoute={{id: initialPage}}
+                    configureScene={this.configureScene}
+                    renderScene={this.renderScene}
                 />
             </View>
         )

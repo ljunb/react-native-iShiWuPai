@@ -14,17 +14,15 @@ import {
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react/native'
 import FoodEncyclopediaStore from '../../store/foodEncyclopediaStore'
-import Login from '../Login'
-import Scanner from '../../components/Scanner'
 import NetInfoDecorator from '../../common/NetInfoDecorator'
 import Toast from 'react-native-easy-toast'
 import Loading from '../../components/Loading'
-import Foods from './Foods'
 
 @NetInfoDecorator
 @inject('account', 'app')
 @observer
 export default class FoodEncyclopedia extends Component {
+    foodEncyclopediaStore = new FoodEncyclopediaStore()
 
     componentWillReact() {
         const {errorMsg} = FoodEncyclopediaStore
@@ -33,9 +31,9 @@ export default class FoodEncyclopedia extends Component {
 
     componentWillReceiveProps(nextProps) {
         const {isConnected} = nextProps
-        const {isNoResult} = FoodEncyclopediaStore
+        const {isNoResult} = this.foodEncyclopediaStore
         if (isConnected && isNoResult) {
-            FoodEncyclopediaStore.fetchCategoryList()
+            this.foodEncyclopediaStore.fetchCategoryList()
         }
     }
 
@@ -51,7 +49,7 @@ export default class FoodEncyclopedia extends Component {
                     alert(name)
                 } else {
                     this.props.navigator.push({
-                        component: Login,
+                        id: 'Login',
                         sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
                         passProps: {onResetBarStyle: this.resetBarStyle}
                     })
@@ -62,7 +60,7 @@ export default class FoodEncyclopedia extends Component {
                     alert(name)
                 } else {
                     this.props.navigator.push({
-                        component: Login,
+                        id: 'Login',
                         sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
                         passProps: {onResetBarStyle: this.resetBarStyle}
                     })
@@ -70,7 +68,7 @@ export default class FoodEncyclopedia extends Component {
                 break
             case '扫码对比':
                 this.props.navigator.push({
-                    component: Scanner,
+                    id: 'Scanner',
                     passProps: {
                         onBarCodeRead: obj => alert(JSON.stringify(obj))
                     }
@@ -84,7 +82,7 @@ export default class FoodEncyclopedia extends Component {
         app.updateBarStyle('default')
 
         navigator.push({
-            component: Foods,
+            id: 'Foods',
             passProps: {
                 kind,
                 category,
@@ -94,11 +92,11 @@ export default class FoodEncyclopedia extends Component {
     }
 
     _reconnectHandle = () => {
-        FoodEncyclopediaStore.fetchCategoryList()
+        this.foodEncyclopediaStore.fetchCategoryList()
     }
 
     render() {
-        const {foodCategoryList, isFetching} = FoodEncyclopediaStore;
+        const {foodCategoryList, isFetching} = this.foodEncyclopediaStore
         const {isConnected} = this.props
 
         return (
@@ -215,9 +213,9 @@ const FoodCategoryView = ({
 }) => {
 
     let title = '食物分类';
-    if (foodCategory.kind == 'brand') {
+    if (foodCategory.kind === 'brand') {
         title = '热门品牌';
-    } else if (foodCategory.kind == 'restaurant') {
+    } else if (foodCategory.kind === 'restaurant') {
         title = '连锁餐饮';
     }
 

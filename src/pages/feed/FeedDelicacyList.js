@@ -15,7 +15,6 @@ import Loading from '../../components/Loading'
 import LoadMoreFooter from '../../components/LoadMoreFooter'
 import FeedSingleImageCell from '../../components/FeedSingleImageCell'
 import FeedMultiImageCell from '../../components/FeedMultiImageCell'
-import FeedDetail from './FeedDetail'
 import Toast from 'react-native-easy-toast'
 import FeedBaseStore from '../../store/feedBaseStore'
 
@@ -62,7 +61,7 @@ export default class FeedDelicacyList extends PureComponent {
 
     _onPressCell = feed => {
         this.props.navigator.push({
-            component: FeedDetail,
+            id: 'FeedDetail',
             passProps: {feed}
         })
     }
@@ -113,7 +112,7 @@ class DelicacyItem extends PureComponent {
         const {feed: {title, source, tail, images}} = this.props
         const cellData = {title, source, images, viewCount: tail}
 
-        if (images.length == 1) {
+        if (images.length === 1) {
             return <FeedSingleImageCell {...cellData} onPress={this._onPress}/>
         }
         return <FeedMultiImageCell {...cellData} onPress={this._onPress}/>

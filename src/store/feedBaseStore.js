@@ -2,6 +2,8 @@
  * Created by ljunb on 2017/02/28.
  */
 import {observable, computed, action, runInAction} from 'mobx'
+import {get} from '../common/HttpTool'
+
 export default class FeedStore {
     @observable feedList = [];
     @observable errorMsg = '';
@@ -18,52 +20,42 @@ export default class FeedStore {
     fetchFeedList = async () => {
         try {
             if (this.isRefreshing) this.page = 1
+            const url = 'http://food.boohee.com/fb/v1/feeds/category_feed'
+            const params = {
+                page: this.page,
+                category: this.categoryId,
+                per: 10
+            }
+            const responseData = await get({url, params, timeout: 30}).then(res => res.json())
+            const {feeds, page, total_pages} = responseData
 
-            const {feeds, isNoMore} = await this._fetchDataFromUrl();
             runInAction(() => {
                 this.isRefreshing = false
                 this.errorMsg = ''
-                this.isNoMore = isNoMore
+                this.isNoMore = page >= total_pages
 
-                if (this.page == 1) {
+                if (this.page === 1) {
                     this.feedList.replace(feeds)
                 } else {
                     this.feedList.splice(this.feedList.length, 0, ...feeds);
                 }
             })
         } catch (error) {
-            this.errorMsg = error
+            if (error.msg) {
+                this.errorMsg = error.msg
+            } else {
+                this.errorMsg = error
+            }
         }
     }
 
     @computed
     get isFetching() {
-        return this.feedList.length == 0 && this.errorMsg == ''
+        return this.feedList.length === 0 && this.errorMsg === ''
     }
 
     @computed
     get isLoadMore() {
-        return this.page != 1
-    }
-
-    _fetchDataFromUrl() {
-        return new Promise((resolve, reject) => {
-            const URL = `http://food.boohee.com/fb/v1/feeds/category_feed?page=${this.page}&category=${this.categoryId}&per=10`
-
-            fetch(URL).then(response => {
-                if (response.status == 200) return response.json();
-                return null;
-            }).then(responseData => {
-                if (responseData) {
-                    const {feeds, page, total_pages} = responseData
-                    resolve({feeds, isNoMore: page >= total_pages})
-                } else {
-                    reject('请求出错！')
-                }
-            }).catch(error => {
-                console.log(`Fetch evaluating list error: ${error}`)
-                reject('网络出错！')
-            })
-        })
+        return this.page !== 1
     }
 }

@@ -9,7 +9,7 @@ import {
     Text,
     TouchableOpacity
 } from 'react-native'
-import Header from '../components/HomeNavigation'
+import Header from '../components/Header'
 import {observer, inject} from 'mobx-react/native'
 
 @inject('app')
@@ -28,7 +28,7 @@ export default class Login extends PureComponent {
         app.barStyle === 'light-content' && app.updateBarStyle('default')
     }
 
-    _onBack = () => {
+    onBack = () => {
         const {navigator, onResetBarStyle} = this.props
         onResetBarStyle && onResetBarStyle()
         navigator.pop()
@@ -52,11 +52,7 @@ export default class Login extends PureComponent {
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
-                <Header
-                    title="登录"
-                    leftIconAction={this._onBack}
-                    leftIcon={require('../resource/ic_back_dark.png')}
-                />
+                <Header title="登录" onBack={this.onBack}/>
                 <View style={styles.content}>
                     <Text style={{textAlign: 'center'}}>不用注册，用以下账号直接登录</Text>
                     <View style={styles.accountWrapper}>

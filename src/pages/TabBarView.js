@@ -25,7 +25,7 @@ const tabSelectedIcon = [
 @observer
 export default class TabBarView extends PureComponent {
 
-    _onChangeTab = ({i}) => {
+    onChangeTab = ({i}) => {
         const {app} = this.props
         if (i === 1) {
             app.updateBarStyle('default')
@@ -34,20 +34,24 @@ export default class TabBarView extends PureComponent {
         }
     }
 
+    renderTabBar = () => {
+        return (
+            <TabBar
+                tabNames={tabTitles}
+                tabIconNames={tabIcons}
+                selectedTabIconNames={tabSelectedIcon}
+            />
+        )
+    }
+
     render() {
         return (
             <ScrollableTabView
-                renderTabBar={() =>
-                    <TabBar
-                        tabNames={tabTitles}
-                        tabIconNames={tabIcons}
-                        selectedTabIconNames={tabSelectedIcon}
-                    />
-                }
-                tabBarPosition='bottom'
                 locked
                 scrollWithoutAnimation
-                onChangeTab={this._onChangeTab}
+                renderTabBar={this.renderTabBar}
+                tabBarPosition='bottom'
+                onChangeTab={this.onChangeTab}
             >
                 <FoodEncyclopedia tabLabel="Food" navigator={this.props.navigator}/>
                 <Feed tabLabel="Home" navigator={this.props.navigator}/>

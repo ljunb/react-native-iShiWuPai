@@ -7,18 +7,15 @@ import {observer} from 'mobx-react/native'
 import {
     StyleSheet,
     View,
-    Dimensions,
     ScrollView,
     Text,
     Image,
     TouchableOpacity,
     RefreshControl,
-    Platform,
     ActivityIndicator
 } from 'react-native'
 import {reaction} from 'mobx'
 import Loading from '../../components/Loading'
-import FeedDetail from './FeedDetail'
 import FeedBaseStore from '../../store/feedBaseStore'
 import AutoResponisve from 'autoresponsive-react-native'
 
@@ -108,7 +105,7 @@ export default class FeedDelicacyList extends Component {
 
     onPressCell = feed => {
         this.props.navigator.push({
-            component: FeedDetail,
+            id: 'FeedDetail',
             passProps: {feed}
         })
     }

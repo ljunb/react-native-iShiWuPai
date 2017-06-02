@@ -3,16 +3,12 @@
  */
 import React, { Component } from 'react'
 import { Image } from 'react-native'
-import TabBarView from './TabBarView'
 
 export default class Splash extends Component {
     componentDidMount() {
         const { navigator } = this.props
         this.timer = setTimeout(() => {
-            navigator.resetTo({
-                component: TabBarView,
-                name: 'TabBarView'
-            })
+            navigator.resetTo({id: 'TabBarView'})
         }, 2000)
     }
 

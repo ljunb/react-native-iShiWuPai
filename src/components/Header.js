@@ -1,150 +1,150 @@
 /**
- * Created by ljunb on 16/5/8.
- * 导航栏标题
+ * Created by ljunb on 2017/3/15.
  */
-import React from 'react';
+import React, {Component} from 'react'
 import {
     StyleSheet,
     View,
     Text,
-    Image,
     TouchableOpacity,
-    Platform
-} from 'react-native';
+    Image
+} from 'react-native'
 
-export default class Header extends React.Component {
+
+const LeftItem = ({onPress}) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.leftItem}
+            onPress={onPress}
+        >
+            <Image style={{width: 20, height: 20}}
+                   source={require('../resource/ic_back_dark.png')}
+                   resizeMode={"contain"}
+            />
+        </TouchableOpacity>
+    )
+}
+
+const RightItem = ({onPress, text}) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.rightItem}
+            onPress={onPress}
+        >
+            <Text style={{fontSize: 15, color: '#666666'}}>{text}</Text>
+        </TouchableOpacity>
+    )
+}
+
+const RightIconItem = ({onPress, icon}) => {
+    return (
+        <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.rightIconItem}
+            onPress={onPress}
+        >
+            <Image style={{width: 18, height: 18}} source={icon} resizeMode={"contain"}/>
+        </TouchableOpacity>
+    )
+}
+
+export default class Header extends Component {
+    static propTypes = {
+        style: View.propTypes.style,
+        title: React.PropTypes.string,
+        showGoBack: React.PropTypes.bool,
+        onBack: React.PropTypes.func,
+        titleStyle: React.PropTypes.object,
+        rightTitle: React.PropTypes.string,
+        onRight: React.PropTypes.func,
+        rightIcon: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]),
+        renderRightItem: React.PropTypes.func
+    }
+
+    static defaultProps = {
+        showGoBack: true
+    }
 
     render() {
-
-        let NavigationBar = [];
-
-        // 左边图片按钮
-        if (this.props.leftIcon != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'leftIcon'}
-                    activeOpacity={0.75}
-                    style={styles.leftIcon}
-                    onPress={this.props.leftIconAction}
-                >
-                    <Image style={{height: 20, width: 20}} source={this.props.leftIcon}/>
-                </TouchableOpacity>
-            )
-        }
-
-        // 标题
-        if (this.props.title != undefined) {
-            NavigationBar.push(
-                <Text key={'title'} style={styles.title}>{this.props.title}</Text>
-            )
-        }
-
-        // 自定义标题View
-        if (this.props.titleView != undefined) {
-            let Component = this.props.titleView;
-
-            NavigationBar.push(
-                <Component key={'titleView'}/>
-            )
-        }
-
-        // 右边图片按钮
-        if (this.props.rightIcon != undefined) {
-
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightIcon'}
-                    activeOpacity={0.75}
-                    style={styles.rightIcon}
-                    onPress={this.props.rightIconAction}
-                >
-                    <Image style={{height: 20, width: 20}} source={this.props.rightIcon} />
-                </TouchableOpacity>
-            )
-        }
-
-        // 右边文字按钮
-        if (this.props.rightButton != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightButton'}
-                    activeOpacity={0.75}
-                    style={styles.rightButton}
-                    onPress={this.props.rightButtonAction}
-                >
-                    <Text style={styles.buttonTitleFont}>{this.props.rightButton}</Text>
-                </TouchableOpacity>
-            )
-        }
-
-        if (this.props.rightMenu != undefined) {
-            NavigationBar.push(
-                <TouchableOpacity
-                    key={'rightMenu'}
-                    activeOpacity={0.75}
-                    style={styles.rightMenu}
-                    onPress={this.props.rightMenuAction}
-                >
-                    <Text style={{color: 'gray', fontSize: 12}}>{this.props.rightMenu}</Text>
-                    <Image source={{uri: 'ic_food_ordering'}} style={{width: 16, height: 16}}/>
-                </TouchableOpacity>
-            )
-        }
-
+        const {
+            title, titleStyle,
+            showGoBack, onBack,
+            style, rightTitle, onRight, rightIcon,
+            renderRightItem
+        } = this.props
 
         return (
-            <View style={styles.navigationBarContainer}>
-                {NavigationBar}
+            <View style={[styles.header, style]}>
+                {showGoBack && <LeftItem onPress={onBack}/>}
+                <Text style={[styles.title, titleStyle]}>{title || ''}</Text>
+                {rightTitle && <RightItem text={rightTitle} onPress={onRight}/>}
+                {rightIcon && <RightIconItem icon={rightIcon} onPress={onRight}/>}
+                {renderRightItem &&
+                    <TouchableOpacity
+                        activeOpacity={0.75}
+                        style={styles.renderRight}
+                        onPress={onRight}
+                    >
+                        {renderRightItem()}
+                    </TouchableOpacity>
+                }
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-
-    navigationBarContainer: {
-        flexDirection: 'row',
-        height: 44,
+    header: {
+        height: __ANDROID__ ? 50 : 64,
+        width: gScreen.width,
+        paddingTop: __ANDROID__ ? 0 : 20,
+        justifyContent: 'center',
         alignItems: 'center',
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 0.5,
-        backgroundColor: 'white'
+        borderColor: gColors.border,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        backgroundColor: '#fff'
     },
-
     title: {
-        fontSize: 15,
-        marginLeft: 15,
+        textAlign: 'center',
+        color: '#666',
+        fontSize: 18,
     },
-
-    leftIcon: {
-        marginLeft: 15,
-    },
-
-    rightIcon: {
+    leftItem: {
         position: 'absolute',
-        right: 10,
-        top: 7
+        top: __ANDROID__ ? 0 : 20,
+        left: 0,
+        height: __ANDROID__ ? 50 : 44,
+        width: 60,
+        paddingLeft: 5,
+        justifyContent: 'center'
     },
-
-    rightButton: {
+    rightItem: {
         position: 'absolute',
-        right: 10,
-        height: 44,
+        top: __ANDROID__ ? 0 : 20,
+        right: 0,
+        height: __ANDROID__ ? 50 : 44,
+        paddingRight: 10,
         justifyContent: 'center',
-        flexDirection: 'row',
+        alignItems: 'flex-end'
     },
-
-    buttonTitleFont: {
-        color: 'white',
-        fontSize: 15,
-    },
-
-    rightMenu: {
+    rightIconItem: {
         position: 'absolute',
-        right: 10,
-        height: 44,
+        top: __ANDROID__ ? 0 : 20,
+        right: 0,
+        height: __ANDROID__ ? 50 : 44,
+        paddingRight: 10,
         justifyContent: 'center',
-        flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'flex-end'
     },
+    renderRight: {
+        position: 'absolute',
+        top: __ANDROID__ ? 0 : 20,
+        right: 0,
+        height: __ANDROID__ ? 50 : 44,
+        paddingRight: 10,
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+    }
 })

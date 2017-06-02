@@ -2,14 +2,11 @@
  * Created by ljunb on 2017/5/25.
  */
 import React from 'react'
-import {Animated, StyleSheet, View, Text, Platform, AppRegistry} from 'react-native'
+import {Animated, StyleSheet, View, Text, AppRegistry} from 'react-native'
 import {Provider} from 'mobx-react/native'
-import {useStrict} from 'mobx'
 import stores from './src/store'
 import NetInfoDecorator from './src/common/NetInfoDecorator'
 import App from './src'
-
-useStrict(true)
 
 if (!__DEV__) {
     global.console = {
@@ -47,7 +44,7 @@ export default class Root extends React.Component {
     render() {
         let positionY = this.state.promptPosition.interpolate({
             inputRange: [0, 1],
-            outputRange: [-30, Platform.OS === 'ios' ? 20 : 0]
+            outputRange: [-30, __IOS__ ? 20 : 0]
         });
         return (
             <View style={{flex: 1}}>
