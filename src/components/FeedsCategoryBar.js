@@ -5,10 +5,14 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     View,
-    Text,
     TouchableOpacity,
-    LayoutAnimation,
+    Animated
 } from 'react-native'
+
+const DEFAULT_SCALE = 1
+const SELECT_SCALE = 1.2
+const DEFAULT_COLOR = 'black'
+const SELECT_COLOR = 'red'
 
 export default class FeedsCategoryBar extends Component {
     static propType = {
@@ -17,42 +21,51 @@ export default class FeedsCategoryBar extends Component {
         tabs: React.PropTypes.array,
 
         tabNames: React.PropTypes.array
-    };
-
-    state = {
-        indicatorPosition: 0
     }
+
+    offsetX = new Animated.Value(0)
 
     componentDidMount() {
         this.props.scrollValue.addListener(this.setAnimationValue)
     }
 
-    setAnimationValue = ({value}) => {
-        LayoutAnimation.linear()
-        this.setState({indicatorPosition: value * gScreen.width / 4})
-    }
+    setAnimationValue = ({value}) => this.offsetX.setValue(value)
 
     render() {
+        const {tabs} = this.props
+        const indicatorX = this.offsetX.interpolate({
+            inputRange: [0, tabs.length - 1],
+            outputRange: [0, gScreen.width * (tabs.length - 1) / tabs.length]
+        })
         return (
             <View style={styles.tabs}>
-                {this.props.tabs.map((tab, i) => {
-                    let color = this.props.activeTab === i ? 'red' : 'black'
+                {tabs.map((tab, i) => {
+                    const scale = this.offsetX.interpolate({
+                        inputRange: [i - 2, i - 1, i, i + 1, i + 2],
+                        outputRange: [DEFAULT_SCALE, DEFAULT_SCALE, SELECT_SCALE, DEFAULT_SCALE, DEFAULT_SCALE]
+                    })
+                    const color = this.offsetX.interpolate({
+                        inputRange: [i - 2, i - 1, i, i + 1, i + 2],
+                        outputRange: [DEFAULT_COLOR, DEFAULT_COLOR, SELECT_COLOR, DEFAULT_COLOR, DEFAULT_COLOR]
+                    })
+
                     return (
-                        <TouchableOpacity
-                            key={i}
-                            activeOpacity={0.8}
-                            style={styles.tab}
-                            onPress={() => this.props.goToPage(i)}
-                        >
-                            <Text style={{color: color, fontSize: 14}}>
-                                {this.props.tabNames[i]}
-                            </Text>
-                        </TouchableOpacity>
+                        <Animated.View key={`Tab_${i}`} style={[styles.tab, {transform: [{scale}]}]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={styles.tab}
+                                onPress={() => this.props.goToPage(i)}
+                            >
+                                <Animated.Text style={{color: color, fontSize: 14}}>
+                                    {this.props.tabNames[i]}
+                                </Animated.Text>
+                            </TouchableOpacity>
+                        </Animated.View>
                     )
                 })}
-                <View style={[styles.indicatorContainer, {left: this.state.indicatorPosition}]}>
+                {/*<Animated.View style={[styles.indicatorContainer, {left: indicatorX}]}>
                     <View style={styles.indicator}/>
-                </View>
+                </Animated.View> */}
             </View>
         )
     }
