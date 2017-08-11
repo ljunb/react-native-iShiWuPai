@@ -1,5 +1,5 @@
 ## iShiWuPai
-iShiWuPai是基于React Native实现的展示型美食类APP。该分支针对原生新版食物派开发，主要针对MobX练习，不做商业用途。目前已适配iOS和Android两端，适合刚入门React Native的朋友学习。Enjoy it！🎉🎉🎉
+iShiWuPai是基于React Native实现的展示型美食类APP。该分支针对原生新版食物派开发，数据来源于[【薄荷】](http://www.boohee.com/)，主要针对MobX练习，不做商业用途。目前已适配iOS和Android两端，适合刚入门React Native的朋友学习。Enjoy it！🎉🎉🎉
 
 ## 运行截图
 ![食物百科](https://github.com/ljunb/react-native-iShiWuPai/blob/alpha/screenshot/food.png)
