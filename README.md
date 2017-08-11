@@ -1,5 +1,5 @@
 ## iShiWuPai
-iShiWuPai是基于React Native实现的展示型美食类APP。master分支采用了Redux数据流管理模式，基本为UI展示型APP，未涉及深层内容，适合新人入门和学习。另因个人学习Mobx，新的分支不定时更新中，如有兴趣可移步[alpha分支](https://github.com/ljunb/react-native-iShiWuPai/tree/alpha)，已适配iOS和Android两端。
+iShiWuPai是基于React Native实现的展示型美食类APP，数据来源于[【薄荷】](http://www.boohee.com/)。master分支采用了Redux数据流管理模式，基本为UI展示型APP，未涉及深层内容，适合新人入门和学习。另因个人学习Mobx，新的分支不定时更新中，如有兴趣可移步[alpha分支](https://github.com/ljunb/react-native-iShiWuPai/tree/alpha)，已适配iOS和Android两端。
 
 ## 完成功能
 主分支只针对iOS端，完成功能：
